@@ -146,21 +146,10 @@ export default class Time_ago extends React.Component
 			throw new Error(`You are required to specify either "time" or "date" for react-time-ago component`)
 		}
 
-		let tip
-
-		if (this.props.full)
-		{
-			tip = this.props.full(time || date)
-		}
-		else
-		{
-			tip = this.date_time_formatter(time || date)
-		}
-
 		const markup =
 		(
 			<span 
-				title={tip} 
+				title={this.full_date(time || date)} 
 				style={css_style} 
 				className={className}>
 
@@ -171,8 +160,13 @@ export default class Time_ago extends React.Component
 		return markup
 	}
 
-	format_date(input)
+	full_date(input)
 	{
+		if (this.props.full)
+		{
+			return this.props.full(input)
+		}
+
 		let date
 
 		if (input.constructor === Date)
@@ -188,7 +182,7 @@ export default class Time_ago extends React.Component
 			throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
 		}
 
-		return this.date_time_formatter.format(date)
+		return this.date_time_formatter.format(date, this.props.date_time_format)
 	}
 
 	register()
