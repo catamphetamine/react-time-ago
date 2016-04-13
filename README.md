@@ -123,7 +123,7 @@ date             : PropTypes.instanceOf(Date),
 // or 1355972400000
 time             : PropTypes.number,
 
-// e.g. 'twitter', 'fuzzy'
+// e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long'}
 style            : PropTypes.any,
 
 // e.g. date => new Intl.DateTimeFormat('en-US', {…}).format(date)
