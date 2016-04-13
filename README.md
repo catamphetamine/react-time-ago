@@ -89,7 +89,12 @@ export default class ReactTimeAgo extends React.Component
 {
   render()
   {
-    return <ReactTimeAgo date={this.props.date}/>
+    return (
+      <div className="user-profile__last-seen">
+        Last seen:
+        <ReactTimeAgo date={this.props.date} className="user-profile__last-seen__time"/>
+      </div>
+    )
   }
 }
 ```
@@ -105,6 +110,38 @@ The `ReactTimeAgo` component accepts a `style` property which can be one of
 ## Localization
 
 Refer to [`javascript-time-ago` docs](https://github.com/halt-hammerzeit/javascript-time-ago#localization).
+
+## Props
+
+```js
+// 'ru-RU', 'en-GB'
+locale           : PropTypes.string,
+
+// new Date()
+date             : PropTypes.instanceOf(Date),
+
+// or 1355972400000
+time             : PropTypes.number,
+
+// e.g. 'twitter', 'fuzzy'
+style            : PropTypes.any,
+
+// e.g. date => new Intl.DateTimeFormat('en-US', {…}).format(date)
+full             : PropTypes.func,
+
+// the `{…}` in the above comment
+date_time_format : PropTypes.object,
+
+// how often to update <ReactTimeAgo/>s
+// (once a minute by default)
+update_interval  : PropTypes.number,
+
+// e.g. { color: white }
+css_style        : PropTypes.object,
+
+// CSS class name
+className        : PropTypes.string
+```
 
 ## Webpack
 

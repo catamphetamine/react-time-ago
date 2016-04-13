@@ -5,17 +5,33 @@ export default class Time_ago extends React.Component
 {
 	static propTypes =
 	{
-		locale          : PropTypes.string,
-		date            : PropTypes.instanceOf(Date),
-		time            : PropTypes.number,
-		style           : PropTypes.any,
-		update_interval : PropTypes.number,
-		css_style       : PropTypes.object,
-		className       : PropTypes.string
+		locale           : PropTypes.string,
+		date             : PropTypes.instanceOf(Date),
+		time             : PropTypes.number,
+		style            : PropTypes.any,
+		full             : PropTypes.func,
+		date_time_format : PropTypes.object,
+		update_interval  : PropTypes.number,
+		css_style        : PropTypes.object,
+		className        : PropTypes.string
 	}
 
 	static defaultProps =
 	{
+		// Thursday, December 20, 2012, 7:00:00 AM GMT+4
+		date_time_format:
+		{
+			weekday      : 'long',
+			day          : 'numeric',
+			month        : 'long',
+			year         : 'numeric',
+			hour         : 'numeric',
+			minute       : 'numeric',
+			second       : 'numeric',
+			timeZoneName : 'short'
+		},
+
+		// Updates once a minute
 		update_interval: 60 * 1000
 	}
 
@@ -79,10 +95,15 @@ export default class Time_ago extends React.Component
 
 		if (!global._react_time_ago[locale])
 		{
-			global._react_time_ago[locale] = new javascript_time_ago(locale)
+			global._react_time_ago[locale] = 
+			{
+				javascript_time_ago : new javascript_time_ago(locale),
+				date_time_formatter : new Intl.DateTimeFormat(locale, this.props.date_time_format)
+			}
 		}
 
-		this.time_ago = global._react_time_ago[locale]
+		this.time_ago            = global._react_time_ago[locale].javascript_time_ago
+		this.date_time_formatter = global._react_time_ago[locale].date_time_formatter
 
 		if (style)
 		{
@@ -118,14 +139,56 @@ export default class Time_ago extends React.Component
 
 	render()
 	{
-		const { time, date, css_style, className } = this.props
+		const { time, date, tooltip, css_style, className } = this.props
 
 		if (!(time || date))
 		{
 			throw new Error(`You are required to specify either "time" or "date" for react-time-ago component`)
 		}
 
-		return <span style={css_style} className={className}>{this.time_ago.format(time || date, this.formatter_style)}</span>
+		let tip
+
+		if (this.props.full)
+		{
+			tip = this.props.full(time || date)
+		}
+		else
+		{
+			tip = this.date_time_formatter(time || date)
+		}
+
+		const markup =
+		(
+			<span 
+				title={tip} 
+				style={css_style} 
+				className={className}>
+
+				{this.time_ago.format(time || date, this.formatter_style)}
+			</span>
+		)
+
+		return markup
+	}
+
+	format_date(input)
+	{
+		let date
+
+		if (input.constructor === Date)
+		{
+			date = input
+		}
+		else if (typeof input === 'number')
+		{
+			date = new Date(input)
+		}
+		else
+		{
+			throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
+		}
+
+		return this.date_time_formatter.format(date)
 	}
 
 	register()
