@@ -1,8 +1,8 @@
 # react-time-ago
 
 [![NPM Version][npm-badge]][npm]
-[![Build Status][travis-badge]][travis]
-[![Test Coverage][coveralls-badge]][coveralls]
+<!-- [![Build Status][travis-badge]][travis] -->
+<!-- [![Test Coverage][coveralls-badge]][coveralls] -->
 
 International higly customizable relative date/time formatter for React (both for past and future dates).
 
