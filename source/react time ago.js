@@ -28,7 +28,7 @@ export default class Time_ago extends React.Component
 			hour         : 'numeric',
 			minute       : 'numeric',
 			second       : 'numeric',
-			timeZoneName : 'short'
+			// timeZoneName : 'short'
 		},
 
 		// Updates once a minute

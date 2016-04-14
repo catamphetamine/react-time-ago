@@ -126,10 +126,11 @@ time             : PropTypes.number,
 // e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long'}
 style            : PropTypes.any,
 
-// e.g. date => new Intl.DateTimeFormat('en-US', {…}).format(date)
+// a function returning what's output in the tooltip
+// (by default is (date) => new Intl.DateTimeFormat('en-US', {…}).format(date))
 full             : PropTypes.func,
 
-// the `{…}` in the above comment
+// the `{…}` in the default `full` function
 date_time_format : PropTypes.object,
 
 // how often to update <ReactTimeAgo/>s
