@@ -53,8 +53,8 @@ import react_time_ago from 'react-time-ago'
 // Load locale specific relative date/time messages
 //
 import javascript_time_ago from 'javascript-time-ago'
-javascript_time_ago.locale('en', require('javascript-time-ago/locales/en'))
-javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
+javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
 
 // Load number pluralization functions for the locales.
 // (the ones that decide if a number is gonna be 
@@ -168,7 +168,7 @@ function load_locale_data(locale)
             require('intl/locale-data/jsonp/ru')
 
             require('intl-messageformat/dist/locale-data/ru')
-            javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+            javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
             
             resolve()
           },
@@ -185,7 +185,7 @@ function load_locale_data(locale)
           require =>
           {
             require('intl-messageformat/dist/locale-data/ru')
-            javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+            javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
             
             resolve()
           },
