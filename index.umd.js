@@ -1,6 +1,4 @@
 'use strict'
 
-var react_time_ago = require('./build/react time ago')
-
-exports = module.exports = react_time_ago
+exports = module.exports = require('./build/react time ago')
 exports['default'] = exports
