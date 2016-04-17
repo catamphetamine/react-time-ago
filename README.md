@@ -61,8 +61,9 @@ javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
 //  "zero", "one", "two", "few", "many" or "other")
 // http://cldr.unicode.org/index/cldr-spec/plural-rules
 // https://github.com/eemeli/make-plural.js
+// http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
 //
-global.IntlMessageFormat = require('intl-messageformat')
+require('javascript-time-ago/intl-messageformat-global')
 require('intl-messageformat/dist/locale-data/en')
 require('intl-messageformat/dist/locale-data/ru')
 

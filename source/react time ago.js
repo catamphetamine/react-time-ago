@@ -26,8 +26,8 @@ export default class Time_ago extends React.Component
 			month        : 'long',
 			year         : 'numeric',
 			hour         : 'numeric',
-			minute       : 'numeric',
-			second       : 'numeric',
+			minute       : '2-digit',
+			second       : '2-digit',
 			// timeZoneName : 'short'
 		},
 
