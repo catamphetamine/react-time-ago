@@ -66,8 +66,7 @@ global.IntlMessageFormat = require('intl-messageformat')
 require('intl-messageformat/dist/locale-data/en')
 require('intl-messageformat/dist/locale-data/ru')
 
-// Client-side initialization complete.
-// (no server-side initialization is required)
+// Initialization complete.
 // Ready to format relative dates and times.
 ```
 
