@@ -97,7 +97,7 @@ The `ReactTimeAgo` component accepts a `style` property which can be one of
 
   * [`twitter`](https://github.com/halt-hammerzeit/javascript-time-ago#twitter-style)
   * [`fuzzy`](https://github.com/halt-hammerzeit/javascript-time-ago#fuzzy-style)
-  * [`{ gradation, units, flavour }`](https://github.com/halt-hammerzeit/javascript-time-ago#customization)
+  * [`{ gradation, units, flavour, override }`](https://github.com/halt-hammerzeit/javascript-time-ago#customization)
 
 ## Localization
 
@@ -115,11 +115,11 @@ date             : PropTypes.instanceOf(Date),
 // or 1355972400000
 time             : PropTypes.number,
 
-// e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long'}
+// e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long', override: function }
 style            : PropTypes.any,
 
 // a function returning what's output in the tooltip
-// (by default is (date) => new Intl.DateTimeFormat('en-US', {…}).format(date))
+// (by default is (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
 full             : PropTypes.func,
 
 // the `{…}` in the default `full` function
@@ -143,7 +143,7 @@ On-demand module loading example (this is an advanced topic and this code is not
 ```js
 import is_intl_locale_supported from 'intl-locales-supported'
 
-global.IntlMessageFormat = require('intl-messageformat')
+require('javascript-time-ago/intl-messageformat-global')
 
 function load_locale_data(locale)
 {
