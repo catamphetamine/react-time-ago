@@ -145,6 +145,32 @@ import is_intl_locale_supported from 'intl-locales-supported'
 
 require('javascript-time-ago/intl-messageformat-global')
 
+// Returns a promise which is resolved when Intl has been polyfilled
+function load_polyfill(locale)
+{
+  if (window.Intl && is_intl_locale_supported(locale))
+  {
+    // all fine: Intl is in the global scope and the locale data is available
+    return Promise.resolve()
+  }
+
+  return new Promise((resolve) =>
+  {
+    debug(`Intl or locale data for "${locale}" not available, downloading the polyfill...`)
+
+    // When building: create a intl chunk with webpack
+    // When executing: run the callback once the chunk has been download.
+    require.ensure(['intl'], (require) =>
+    {
+      // apply the polyfill
+      require('intl')
+      debug(`Intl polyfill for "${locale}" has been loaded`)
+      resolve()
+    },
+    'intl')
+  })
+}
+
 function load_locale_data(locale)
 {
   return new Promise(resolve =>
@@ -153,50 +179,28 @@ function load_locale_data(locale)
     {
       // russian
       case 'ru':
-        if (!is_intl_locale_supported('ru'))
+        // download just relative time specific locale data for this language
+        require.ensure
+        ([
+          'intl-messageformat/dist/locale-data/ru',
+          'javascript-time-ago/locales/ru'
+        ],
+        require =>
         {
-          // download both intl locale data and relative time specific
-          // locale data for this language
-          require.ensure
-          ([
-            'intl/locale-data/jsonp/ru',
-            'intl-messageformat/dist/locale-data/ru',
-            'javascript-time-ago/locales/ru'
-          ],
-          require =>
-          {
-            require('intl/locale-data/jsonp/ru')
-
-            require('intl-messageformat/dist/locale-data/ru')
-            javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
-            
-            resolve()
-          },
-          'locale-ru-with-intl')
-        }
-        else
-        {
-          // download just relative time specific locale data for this language
-          require.ensure
-          ([
-            'intl-messageformat/dist/locale-data/ru',
-            'javascript-time-ago/locales/ru'
-          ],
-          require =>
-          {
-            require('intl-messageformat/dist/locale-data/ru')
-            javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
-            
-            resolve()
-          },
-          'locale-ru')
-        }
+          require('intl-messageformat/dist/locale-data/ru')
+          javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
+          
+          resolve()
+        },
+        'locale-ru')
         break
 
       … // other locales
     }
   }
 }
+
+return load_polyfill('ru-RU').then(() => load_locale_data('ru-RU'))
 ```
 
 A working example project can be found [here](https://github.com/halt-hammerzeit/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
