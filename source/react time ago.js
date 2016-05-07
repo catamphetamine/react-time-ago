@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import javascript_time_ago from 'javascript-time-ago'
 
+const global = typeof window !== 'undefined' ? window : global
+
 export default class Time_ago extends React.Component
 {
 	static propTypes =
@@ -62,35 +64,7 @@ export default class Time_ago extends React.Component
 
 		if (!global._react_time_ago)
 		{
-			function update_relative_times()
-			{
-				for (let component of global._react_time_ago._components)
-				{
-					component.forceUpdate()
-				}
-
-				global._react_time_ago._timer = setTimeout(update_relative_times, props.update_interval)
-			}
-
-			const _react_time_ago =
-			{
-				_components : [],
-				_register   : component => _react_time_ago._components.push(component),
-				_unregister : component => _react_time_ago._components.remove(component),
-				_destroy: () =>
-				{
-					_react_time_ago._components = []
-					clearTimeout(_react_time_ago._timer)
-					delete global._react_time_ago
-				}
-			}
-
-			global._react_time_ago = _react_time_ago
-
-			if (global.window)
-			{
-				update_relative_times()
-			}
+			create_react_time_ago()
 		}
 
 		if (!global._react_time_ago[locale])
@@ -194,4 +168,72 @@ export default class Time_ago extends React.Component
 	{
 		global._react_time_ago._unregister(this)
 	}
+}
+
+function start_relative_times_updater(update_interval)
+{
+	function update_relative_times(dry_run)
+	{
+		if (!dry_run)
+		{
+			for (let component of global._react_time_ago._components)
+			{
+				component.forceUpdate()
+			}
+		}
+
+		global._react_time_ago._timer = setTimeout(update_relative_times, update_interval)
+	}
+
+	update_relative_times(true)
+}
+
+function stop_relative_times_updater()
+{
+	if (global._react_time_ago._timer)
+	{
+		clearTimeout(global._react_time_ago._timer)
+		global._react_time_ago._timer = undefined
+	}
+}
+
+function create_react_time_ago()
+{
+	const _react_time_ago =
+	{
+		_components : [],
+		_register   : component =>
+		{
+			this._components.push(component)
+
+			// If it's the first relative time component,
+			// start periodical time refresh.
+			if (this._components.length === 1)
+			{
+				start_relative_times_updater(props.update_interval)
+			}
+		},
+		_unregister : component =>
+		{
+			this._components.remove(component)
+
+			// If it was the last relative time component,
+			// stop periodical time refresh.
+			if (this._components.length === 0)
+			{
+				stop_relative_times_updater()
+			}
+		},
+		_destroy: () =>
+		{
+			for (let component of this._components)
+			{
+				this._unregister(component)
+			}
+
+			delete global._react_time_ago
+		}
+	}
+
+	global._react_time_ago = _react_time_ago
 }
