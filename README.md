@@ -82,9 +82,9 @@ export default class ReactTimeAgo extends React.Component
   render()
   {
     return (
-      <div className="user-profile__last-seen">
+      <div>
         Last seen:
-        <ReactTimeAgo date={this.props.date} className="user-profile__last-seen__time"/>
+        <ReactTimeAgo date={this.props.date}/>
       </div>
     )
   }
