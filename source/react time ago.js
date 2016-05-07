@@ -9,9 +9,12 @@ export default class Time_ago extends React.Component
 	{
 		locale           : PropTypes.string,
 		date             : PropTypes.instanceOf(Date),
+		// If `date` is not specified
 		time             : PropTypes.number,
 		style            : PropTypes.any,
+		// (optional) Tooltip date formatter
 		full             : PropTypes.func,
+		// Intl.DateTimeFormat options
 		date_time_format : PropTypes.object,
 		update_interval  : PropTypes.number,
 		css_style        : PropTypes.object,
@@ -156,7 +159,7 @@ export default class Time_ago extends React.Component
 			throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
 		}
 
-		return this.date_time_formatter.format(date, this.props.date_time_format)
+		return this.date_time_formatter.format(date)
 	}
 
 	register()
