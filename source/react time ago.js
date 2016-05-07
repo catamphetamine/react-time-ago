@@ -202,7 +202,7 @@ function create_react_time_ago()
 	const _react_time_ago =
 	{
 		_components : [],
-		_register   : component =>
+		_register(component)
 		{
 			this._components.push(component)
 
@@ -213,7 +213,7 @@ function create_react_time_ago()
 				start_relative_times_updater(props.update_interval)
 			}
 		},
-		_unregister : component =>
+		_unregister(component)
 		{
 			this._components.remove(component)
 
@@ -224,7 +224,7 @@ function create_react_time_ago()
 				stop_relative_times_updater()
 			}
 		},
-		_destroy: () =>
+		_destroy()
 		{
 			for (let component of this._components)
 			{
