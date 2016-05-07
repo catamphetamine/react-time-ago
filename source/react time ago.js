@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import javascript_time_ago from 'javascript-time-ago'
 
-const global = typeof window !== 'undefined' ? window : global
+const global_scope = typeof window !== 'undefined' ? window : global
 
 export default class Time_ago extends React.Component
 {
@@ -62,22 +62,22 @@ export default class Time_ago extends React.Component
 			throw new Error(`No locale specified for react-time-ago`)
 		}
 
-		if (!global._react_time_ago)
+		if (!global_scope._react_time_ago)
 		{
-			create_react_time_ago()
+			create_react_time_ago(props.update_interval)
 		}
 
-		if (!global._react_time_ago[locale])
+		if (!global_scope._react_time_ago[locale])
 		{
-			global._react_time_ago[locale] = 
+			global_scope._react_time_ago[locale] = 
 			{
 				javascript_time_ago : new javascript_time_ago(locale),
-				date_time_formatter : new Intl.DateTimeFormat(locale, this.props.date_time_format)
+				date_time_formatter : new Intl.DateTimeFormat(locale, props.date_time_format)
 			}
 		}
 
-		this.time_ago            = global._react_time_ago[locale].javascript_time_ago
-		this.date_time_formatter = global._react_time_ago[locale].date_time_formatter
+		this.time_ago            = global_scope._react_time_ago[locale].javascript_time_ago
+		this.date_time_formatter = global_scope._react_time_ago[locale].date_time_formatter
 
 		if (style)
 		{
@@ -161,12 +161,12 @@ export default class Time_ago extends React.Component
 
 	register()
 	{
-		global._react_time_ago._register(this)
+		global_scope._react_time_ago._register(this)
 	}
 
 	unregister()
 	{
-		global._react_time_ago._unregister(this)
+		global_scope._react_time_ago._unregister(this)
 	}
 }
 
@@ -176,13 +176,13 @@ function start_relative_times_updater(update_interval)
 	{
 		if (!dry_run)
 		{
-			for (let component of global._react_time_ago._components)
+			for (let component of global_scope._react_time_ago._components)
 			{
 				component.forceUpdate()
 			}
 		}
 
-		global._react_time_ago._timer = setTimeout(update_relative_times, update_interval)
+		global_scope._react_time_ago._timer = setTimeout(update_relative_times, update_interval)
 	}
 
 	update_relative_times(true)
@@ -190,14 +190,14 @@ function start_relative_times_updater(update_interval)
 
 function stop_relative_times_updater()
 {
-	if (global._react_time_ago._timer)
+	if (global_scope._react_time_ago._timer)
 	{
-		clearTimeout(global._react_time_ago._timer)
-		global._react_time_ago._timer = undefined
+		clearTimeout(global_scope._react_time_ago._timer)
+		global_scope._react_time_ago._timer = undefined
 	}
 }
 
-function create_react_time_ago()
+function create_react_time_ago(update_interval)
 {
 	const _react_time_ago =
 	{
@@ -210,7 +210,7 @@ function create_react_time_ago()
 			// start periodical time refresh.
 			if (this._components.length === 1)
 			{
-				start_relative_times_updater(props.update_interval)
+				start_relative_times_updater(update_interval)
 			}
 		},
 		_unregister(component)
@@ -231,9 +231,9 @@ function create_react_time_ago()
 				this._unregister(component)
 			}
 
-			delete global._react_time_ago
+			delete global_scope._react_time_ago
 		}
 	}
 
-	global._react_time_ago = _react_time_ago
+	global_scope._react_time_ago = _react_time_ago
 }
