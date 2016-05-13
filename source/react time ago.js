@@ -126,7 +126,7 @@ export default class Time_ago extends React.Component
 		const markup =
 		(
 			<time
-				dateTime={date || new Date(time)}
+				dateTime={(date || new Date(time)).toISOString()}
 				title={this.full_date(time || date)} 
 				style={css_style} 
 				className={className}>
