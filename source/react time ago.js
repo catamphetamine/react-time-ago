@@ -125,13 +125,14 @@ export default class Time_ago extends React.Component
 
 		const markup =
 		(
-			<span 
+			<time
+				datetime={date || new Date(time)}
 				title={this.full_date(time || date)} 
 				style={css_style} 
 				className={className}>
 
 				{this.time_ago.format(time || date, this.formatter_style)}
-			</span>
+			</time>
 		)
 
 		return markup
