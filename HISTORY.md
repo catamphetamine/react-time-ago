@@ -1,9 +1,9 @@
-0.3.0 / 15.09.2016
+0.2.0 / 15.09.2016
 ===================
 
   * Renamed `css_style` to `style` and `style` to `time_style`
 
-0.2.0 / 13.04.2016
+0.1.x / 13.04.2016
 ===================
 
   * Moved `intl-messageformat` to `peerDependencies`
