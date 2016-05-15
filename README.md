@@ -116,7 +116,7 @@ date             : PropTypes.instanceOf(Date),
 time             : PropTypes.number,
 
 // e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long', override: function }
-style            : PropTypes.any,
+time_style       : PropTypes.any,
 
 // a function returning what's output in the tooltip
 // (by default is (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
@@ -130,7 +130,7 @@ date_time_format : PropTypes.object,
 update_interval  : PropTypes.number,
 
 // e.g. { color: white }
-css_style        : PropTypes.object,
+style            : PropTypes.object,
 
 // CSS class name
 className        : PropTypes.string

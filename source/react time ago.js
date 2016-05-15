@@ -11,13 +11,14 @@ export default class Time_ago extends React.Component
 		date             : PropTypes.instanceOf(Date),
 		// If `date` is not specified
 		time             : PropTypes.number,
-		style            : PropTypes.any,
+		// `javascript-time-ago` relative time formatting style
+		time_style       : PropTypes.any,
 		// (optional) Tooltip date formatter
 		full             : PropTypes.func,
 		// Intl.DateTimeFormat options
 		date_time_format : PropTypes.object,
 		update_interval  : PropTypes.number,
-		css_style        : PropTypes.object,
+		style            : PropTypes.object,
 		className        : PropTypes.string
 	}
 
@@ -49,7 +50,7 @@ export default class Time_ago extends React.Component
 	{
 		super(props, context)
 
-		let { locale, style } = props
+		let { locale, time_style } = props
 
 		if (!locale)
 		{
@@ -82,18 +83,18 @@ export default class Time_ago extends React.Component
 		this.time_ago            = global_scope._react_time_ago[locale].javascript_time_ago
 		this.date_time_formatter = global_scope._react_time_ago[locale].date_time_formatter
 
-		if (style)
+		if (time_style)
 		{
-			if (typeof style === 'string')
+			if (typeof time_style === 'string')
 			{
-				if (this.time_ago.style[style])
+				if (this.time_ago.style[time_style])
 				{
-					this.formatter_style = this.time_ago.style[style]()
+					this.formatter_style = this.time_ago.style[time_style]()
 				}
 			}
-			else if (typeof style === 'object')
+			else if (typeof time_style === 'object')
 			{
-				this.formatter_style = style
+				this.formatter_style = time_style
 			}
 		}
 	}
@@ -116,7 +117,7 @@ export default class Time_ago extends React.Component
 
 	render()
 	{
-		const { time, date, tooltip, css_style, className } = this.props
+		const { time, date, tooltip, style, className } = this.props
 
 		if (!(time || date))
 		{
@@ -128,7 +129,7 @@ export default class Time_ago extends React.Component
 			<time
 				dateTime={(date || new Date(time)).toISOString()}
 				title={this.full_date(time || date)} 
-				style={css_style} 
+				style={style} 
 				className={className}>
 
 				{this.time_ago.format(time || date, this.formatter_style)}
