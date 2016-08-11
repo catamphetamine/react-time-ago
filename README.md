@@ -41,7 +41,7 @@ This package assumes that the [`Intl`][Intl] global object exists in the runtime
 
 Node.js 0.12 has the `Intl` APIs built-in, but only includes the English locale data by default. If your app needs to support more locales than English, you'll need to [get Node to load the extra locale data](https://github.com/nodejs/node/wiki/Intl), or (a much simpler approach) just install the Intl polyfill.
 
-If you decide you need the Intl polyfill then [here are some basic installation and configuration instructions](#intl-polyfill-installation)
+If you decide you need the Intl polyfill then [here are some basic installation and configuration instructions](https://github.com/halt-hammerzeit/javascript-time-ago#intl-polyfill-installation)
 
 ## Usage
 
