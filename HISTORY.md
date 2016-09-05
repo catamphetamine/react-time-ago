@@ -1,4 +1,9 @@
-0.2.0 / 15.09.2016
+0.2.3 / 05.09.2016
+===================
+
+  * Fixed `this._components.remove is not a function` error
+
+0.2.0 / 15.08.2016
 ===================
 
   * Renamed `css_style` to `style` and `style` to `time_style`

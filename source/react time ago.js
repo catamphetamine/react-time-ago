@@ -220,7 +220,7 @@ function create_react_time_ago(update_interval)
 		},
 		_unregister(component)
 		{
-			this._components.remove(component)
+			remove_element_from_array(this._components, component)
 
 			// If it was the last relative time component,
 			// stop periodical time refresh.
@@ -241,4 +241,14 @@ function create_react_time_ago(update_interval)
 	}
 
 	global_scope._react_time_ago = _react_time_ago
+}
+
+function remove_element_from_array(array, element)
+{
+	const index = array.indexOf(element)
+	if (index >= 0)
+	{
+		array.splice(index, 1)
+	}
+	return array
 }
