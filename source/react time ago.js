@@ -18,6 +18,7 @@ export default class Time_ago extends React.Component
 		// Intl.DateTimeFormat options
 		date_time_format : PropTypes.object,
 		update_interval  : PropTypes.number,
+		wrapper          : PropTypes.func,
 		style            : PropTypes.object,
 		className        : PropTypes.string
 	}
@@ -76,6 +77,9 @@ export default class Time_ago extends React.Component
 			global_scope._react_time_ago[locale] = 
 			{
 				javascript_time_ago : new javascript_time_ago(locale),
+				// It would be possible to store formatters for each `date_time_format` separately
+				// but I'll just assume that you're using a single one application-wide.
+				// If that's not the case then a Pull Request with a fix can be submitted.
 				date_time_formatter : new Intl.DateTimeFormat(locale, props.date_time_format)
 			}
 		}
@@ -117,24 +121,31 @@ export default class Time_ago extends React.Component
 
 	render()
 	{
-		const { time, date, tooltip, style, className } = this.props
+		const { time, date, tooltip, wrapper, style, className } = this.props
 
 		if (!(time || date))
 		{
 			throw new Error(`You are required to specify either "time" or "date" for react-time-ago component`)
 		}
 
+		const full_date = this.full_date(time || date)
+
 		const markup =
 		(
 			<time
 				dateTime={(date || new Date(time)).toISOString()}
-				title={this.full_date(time || date)} 
+				title={wrapper ? undefined : full_date} 
 				style={style} 
 				className={className}>
 
 				{this.time_ago.format(time || date, this.formatter_style)}
 			</time>
 		)
+
+		if (wrapper)
+		{
+			return React.createElement(wrapper, { verbose: full_date }, markup)
+		}
 
 		return markup
 	}
