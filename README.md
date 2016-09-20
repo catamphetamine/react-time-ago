@@ -205,6 +205,28 @@ return load_polyfill('ru-RU').then(() => load_locale_data('ru-RU'))
 
 A working example project can be found [here](https://github.com/halt-hammerzeit/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
 
+## Tooltip
+
+The default tooltip is implemented using the standard HTML `title` attribute.
+
+If a custom tooltip is desired it can be implemented the following way:
+
+```js
+import React from 'react'
+import ReactTimeAgo from 'react-time-ago'
+import Tooltip from './tooltip'
+
+export default function TimeAgo(props)
+{
+  return <ReactTimeAgo {...props} wrapper={Wrapper}/>
+}
+
+function Wrapper({ verbose, children })
+{
+  return <Tooltip text={verbose}>{children}</Tooltip>
+}
+```
+
 ## Contributing
 
 After cloning this repo, ensure dependencies are installed by running:
