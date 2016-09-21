@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import javascript_time_ago from 'javascript-time-ago'
+import shallow_compare from 'react-addons-shallow-compare'
 
 const global_scope = typeof window !== 'undefined' ? window : global
 
@@ -51,8 +52,10 @@ export default class Time_ago extends React.Component
 	{
 		super(props, context)
 
-		let { locale, time_style } = props
+		let { locale, time_style, date_time_format, update_interval } = props
 
+		// If `locale` was not explicitly set
+		// then try to derive it from `react-intl` context
 		if (!locale)
 		{
 			// supports `react-intl`
@@ -62,31 +65,47 @@ export default class Time_ago extends React.Component
 			}
 		}
 
+		// If no locale is set, then throw an error
 		if (!locale)
 		{
 			throw new Error(`No locale specified for react-time-ago`)
 		}
 
+		// `_react_time_ago` holds cached formatters
+		// and the global refresh timer
 		if (!global_scope._react_time_ago)
 		{
-			create_react_time_ago(props.update_interval)
+			create_react_time_ago(update_interval)
 		}
 
+		// `Intl.DateTimeFormat` verbose formatter caching key
+		const date_time_format_id = JSON.stringify(date_time_format)
+
+		// Cache `javascript-time-ago` formatter
 		if (!global_scope._react_time_ago[locale])
 		{
 			global_scope._react_time_ago[locale] = 
 			{
 				javascript_time_ago : new javascript_time_ago(locale),
-				// It would be possible to store formatters for each `date_time_format` separately
-				// but I'll just assume that you're using a single one application-wide.
-				// If that's not the case then a Pull Request with a fix can be submitted.
-				date_time_formatter : new Intl.DateTimeFormat(locale, props.date_time_format)
+				date_time_formatter : {}
 			}
 		}
 
-		this.time_ago            = global_scope._react_time_ago[locale].javascript_time_ago
-		this.date_time_formatter = global_scope._react_time_ago[locale].date_time_formatter
+		// This `locale` entry in the cache
+		const locale_cache = global_scope._react_time_ago[locale]
 
+		// Cache `Intl.DateTimeFormat` verbose formatter
+		if (!locale_cache.date_time_formatter[date_time_format_id])
+		{
+			locale_cache.date_time_formatter[date_time_format_id] = new Intl.DateTimeFormat(locale, date_time_format)
+		}
+
+		// Take `javascript-time-ago` formatter and 
+		// `Intl.DateTimeFormat` verbose formatter from cache
+		this.time_ago            = locale_cache.javascript_time_ago
+		this.date_time_formatter = locale_cache.date_time_formatter[date_time_format_id]
+
+		// Get time formatting style object by name
 		if (time_style)
 		{
 			if (typeof time_style === 'string')
@@ -100,13 +119,16 @@ export default class Time_ago extends React.Component
 			{
 				this.formatter_style = time_style
 			}
+			else
+			{
+				throw new Error(`Unknown time formatter style: ${time_style}`)
+			}
 		}
 	}
 
 	shouldComponentUpdate(nextProps, nextState)
 	{
-		return nextProps.date !== this.props.date 
-			|| nextProps.time !== this.props.time
+		return shallow_compare(this, nextProps, nextState)
 	}
 
 	componentDidMount()
@@ -150,6 +172,11 @@ export default class Time_ago extends React.Component
 		return markup
 	}
 
+	// Verbose date string.
+	// Is used as a tooltip text.
+	//
+	// E.g. "Sunday, May 18th, 2012, 18:45"
+	//
 	full_date(input)
 	{
 		if (this.props.full)
