@@ -84,7 +84,7 @@ export default class ReactTimeAgo extends React.Component
     return (
       <div>
         Last seen:
-        <ReactTimeAgo date={this.props.date}/>
+        <ReactTimeAgo>{this.props.date}</ReactTimeAgo>
       </div>
     )
   }

@@ -1,3 +1,8 @@
+0.3.0 / 01.10.2016
+===================
+
+  * Removed `date` and `time` properties and resorted to React `children` instead
+
 0.2.4 / 20.09.2016
 ===================
 

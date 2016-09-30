@@ -9,9 +9,7 @@ export default class Time_ago extends React.Component
 	static propTypes =
 	{
 		locale           : PropTypes.string,
-		date             : PropTypes.instanceOf(Date),
-		// If `date` is not specified
-		time             : PropTypes.number,
+		children         : PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
 		// `javascript-time-ago` relative time formatting style
 		time_style       : PropTypes.any,
 		// (optional) Tooltip date formatter
@@ -143,14 +141,17 @@ export default class Time_ago extends React.Component
 
 	render()
 	{
-		const { time, date, tooltip, wrapper, style, className } = this.props
+		const { children, tooltip, wrapper, style, className } = this.props
 
-		if (!(time || date))
+		if (!children)
 		{
-			throw new Error(`You are required to specify either "time" or "date" for react-time-ago component`)
+			throw new Error(`You are required to specify either a timestamp (in milliseconds) or Date as a child of react-time-ago component`)
 		}
 
-		const full_date = this.full_date(time || date)
+		const full_date = this.full_date(children)
+
+		const date = children instanceof Date && children
+		const time = typeof children === 'number' && children
 
 		const markup =
 		(
