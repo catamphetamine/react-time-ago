@@ -1,3 +1,9 @@
+0.3.1 / 01.10.2016
+===================
+
+  * Added an exported class `new Date_time_formatter(locale)` for plain-text full date formatting
+  * Added an exported class `new Time_ago(locale)` for plain-text relative date formatting
+
 0.3.0 / 01.10.2016
 ===================
 

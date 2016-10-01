@@ -4,7 +4,7 @@ import shallow_compare from 'react-addons-shallow-compare'
 
 const global_scope = typeof window !== 'undefined' ? window : global
 
-export default class Time_ago extends React.Component
+export default class React_time_ago extends React.Component
 {
 	static propTypes =
 	{
@@ -76,52 +76,10 @@ export default class Time_ago extends React.Component
 			create_react_time_ago(update_interval)
 		}
 
-		// `Intl.DateTimeFormat` verbose formatter caching key
-		const date_time_format_id = JSON.stringify(date_time_format)
-
-		// Cache `javascript-time-ago` formatter
-		if (!global_scope._react_time_ago[locale])
-		{
-			global_scope._react_time_ago[locale] = 
-			{
-				javascript_time_ago : new javascript_time_ago(locale),
-				date_time_formatter : {}
-			}
-		}
-
-		// This `locale` entry in the cache
-		const locale_cache = global_scope._react_time_ago[locale]
-
-		// Cache `Intl.DateTimeFormat` verbose formatter
-		if (!locale_cache.date_time_formatter[date_time_format_id])
-		{
-			locale_cache.date_time_formatter[date_time_format_id] = new Intl.DateTimeFormat(locale, date_time_format)
-		}
-
 		// Take `javascript-time-ago` formatter and 
 		// `Intl.DateTimeFormat` verbose formatter from cache
-		this.time_ago            = locale_cache.javascript_time_ago
-		this.date_time_formatter = locale_cache.date_time_formatter[date_time_format_id]
-
-		// Get time formatting style object by name
-		if (time_style)
-		{
-			if (typeof time_style === 'string')
-			{
-				if (this.time_ago.style[time_style])
-				{
-					this.formatter_style = this.time_ago.style[time_style]()
-				}
-			}
-			else if (typeof time_style === 'object')
-			{
-				this.formatter_style = time_style
-			}
-			else
-			{
-				throw new Error(`Unknown time formatter style: ${time_style}`)
-			}
-		}
+		this.time_ago            = new Time_ago(locale)
+		this.date_time_formatter = new Date_time_formatter(locale, date_time_format)
 	}
 
 	shouldComponentUpdate(nextProps, nextState)
@@ -141,7 +99,7 @@ export default class Time_ago extends React.Component
 
 	render()
 	{
-		const { children, tooltip, wrapper, style, className } = this.props
+		const { children, tooltip, wrapper, style, className, time_style } = this.props
 
 		if (!children)
 		{
@@ -161,7 +119,7 @@ export default class Time_ago extends React.Component
 				style={style} 
 				className={className}>
 
-				{this.time_ago.format(time || date, this.formatter_style)}
+				{this.time_ago.format(time || date, time_style)}
 			</time>
 		)
 
@@ -290,4 +248,89 @@ function remove_element_from_array(array, element)
 		array.splice(index, 1)
 	}
 	return array
+}
+
+export class Date_time_formatter
+{
+	constructor(locale, date_time_format = React_time_ago.defaultProps.date_time_format)
+	{
+		// Formatters
+		if (!global_scope._date_time_formatters)
+		{
+			global_scope._date_time_formatters = {}
+		}
+
+		// Formatters for this locale
+		if (!global_scope._date_time_formatters[locale])
+		{
+			global_scope._date_time_formatters[locale] = {}
+		}
+
+		// `Intl.DateTimeFormat` format caching key
+		const date_time_format_id = JSON.stringify(date_time_format)
+
+		// Cache `Intl.DateTimeFormat` for this locale
+		if (!global_scope._date_time_formatters[locale][date_time_format_id])
+		{
+			global_scope._date_time_formatters[locale][date_time_format_id] = new Intl.DateTimeFormat(locale, date_time_format)
+		}
+
+		this.formatter = global_scope._date_time_formatters[locale][date_time_format_id]
+	}
+
+	format(date)
+	{
+		return this.formatter.format(date)
+	}
+}
+
+export class Time_ago
+{
+	constructor(locale)
+	{
+		// Formatters
+		if (!global_scope._time_ago_formatters)
+		{
+			global_scope._time_ago_formatters = {}
+		}
+
+		// Cache `javascript-time-ago` formatter for this locale
+		if (!global_scope._time_ago_formatters[locale])
+		{
+			global_scope._time_ago_formatters[locale] = new javascript_time_ago(locale)
+		}
+
+		this.formatter = global_scope._time_ago_formatters[locale]
+	}
+
+	format(date, time_style)
+	{
+		return this.formatter.format(date, this.parse_time_ago_style(time_style))
+	}
+
+	parse_time_ago_style(time_style)
+	{
+		if (!time_style)
+		{
+			return
+		}
+
+		if (typeof time_style === 'string')
+		{
+			if (!this.formatter_styles[time_style])
+			{
+				this.formatter_styles[time_style] = this.formatter.style[time_style]()
+			}
+
+			return this.formatter_styles[time_style]
+		}
+		else if (typeof time_style === 'object')
+		{
+			return time_style
+		}
+		else
+		{
+			throw new Error(`Unknown time formatter style: ${time_style}`)
+		}
+	}
 }
