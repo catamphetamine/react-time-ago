@@ -1,0 +1,184 @@
+
+
+<html>
+	<head>
+		<title>Input Format</title>
+
+		<script src="https://unpkg.com/react@15.3.1/dist/react.js"></script>
+		<script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.js"></script>
+		<script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+
+		<script src="./javascript-time-ago.min.js"></script>
+		<script src="./locales.en.js"></script>
+		<script src="./react-time-ago.min.js"></script>
+	</head>
+
+	<style>
+		body
+		{
+			padding: 40px;
+		}
+
+		body, input, button
+		{
+			font-family: Arial, Helvetica;
+			font-size: 20px;
+		}
+
+		input[type="tel"],
+		input[type="text"]
+		{
+			padding-bottom: 4px;
+			border: none;
+			border-bottom: 1px solid #0093C4;
+			outline: none;
+		}
+
+		h2
+		{
+			margin-top: 60px;
+			margin-bottom: 40px;
+			border-bottom: 1px solid #afafaf;
+		}
+
+		h2:first-child
+		{
+			margin-top: 0;
+		}
+
+		.section
+		{
+			margin-top: 20px;
+		}
+
+		a
+		{
+			text-decoration: none;
+			color: #0093C4;
+		}
+
+		a:hover
+		{
+			text-decoration: underline;
+		}
+
+		a.main
+		{
+			display: block;
+			font-size: 32px;
+		}
+
+		p
+		{
+			margin-top: 10px;
+			margin-bottom: 40px;
+		}
+
+		pre
+		{
+			margin-top: 50px;
+			margin-bottom: 40px;
+			padding: 20px;
+			border: 1px solid #cfcfcf;
+			border-radius: 4px;
+			background: #fafafa;
+		}
+
+		button
+		{
+			display: block;
+			margin-top: 10px;
+
+			background : none;
+			border     : none;
+			outline    : none;
+			padding    : 0;
+
+			white-space: nowrap;
+
+			color: #0093C4;
+		}
+
+		.section__line
+		{
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		.date
+		{
+			margin-top: 30px;
+			color: #9f9f9f;
+		}
+	</style>
+
+	<body>
+		<a target="_blank" class="main" href="https://github.com/halt-hammerzeit/react-time-ago"><code>react-time-ago</code></a>
+
+		<p>International highly customizable relative time formatting for React</p>
+
+		<p>(the time labels below constantly refresh themselves)</p>
+
+		<div id="content"></div>
+
+		<script type="text/babel">
+			var javascript_time_ago = window['javascript-time-ago'].default
+
+			javascript_time_ago.locale(window['javascript-time-ago/locales/en'])
+
+			var Content = React.createClass
+			({
+				getInitialState: function()
+				{
+					return {
+						recent            : new Date(),
+						a_minute_earlier  : new Date(Date.now() - 60 * 1000),
+						two_hours_earlier : new Date(Date.now() - 2 * 60 * 60 * 1000),
+						a_day_earlier     : new Date(Date.now() - 24 * 60 * 60 * 1000)
+					}
+				},
+
+				render: function()
+				{
+					const library = window['react-time-ago']
+
+					const ReactTimeAgo = library.default
+
+					return (
+						<div>
+							<h2>Recently</h2>
+
+							<ReactTimeAgo locale="en-US">{this.state.recent}</ReactTimeAgo>
+
+							<div className="date">{this.state.recent.toString()}</div>
+
+							<h2>A minute ago</h2>
+
+							<ReactTimeAgo locale="en-US">{this.state.a_minute_earlier}</ReactTimeAgo>
+
+							<div className="date">{this.state.a_minute_earlier.toString()}</div>
+
+							<h2>A couple of hours ago</h2>
+
+							<ReactTimeAgo locale="en-US">{this.state.two_hours_earlier}</ReactTimeAgo>
+
+							<div className="date">{this.state.two_hours_earlier.toString()}</div>
+
+							<h2>Yesterday</h2>
+
+							<ReactTimeAgo locale="en-US">{this.state.a_day_earlier}</ReactTimeAgo>
+						
+							<div className="date">{this.state.a_day_earlier.toString()}</div>
+						</div>
+					)
+				}
+			})
+
+			ReactDOM.render
+			(
+				<Content />,
+				document.getElementById('content')
+			)
+		</script>
+	</body>
+</html>
