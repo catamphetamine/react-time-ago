@@ -39,7 +39,10 @@
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test --recursive",
     "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/runner.js --recursive",
     "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/runner.js --recursive",
-    "prepublish": "npm-run-all build"
+    "browser-build": "WEBPACK_ENV=build webpack",
+    "browser-build-dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "build": "npm-run-all clean-for-build build-modules",
+    "prepublish": "npm-run-all build test browser-build"
   },
   "repository": {
     "type": "git",
