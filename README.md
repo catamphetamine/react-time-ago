@@ -6,6 +6,8 @@
 
 International higly customizable relative date/time formatter for React (both for past and future dates).
 
+[See Demo](https://halt-hammerzeit.github.io/react-time-ago/)
+
 Formats a date to something like:
 
   * just now
