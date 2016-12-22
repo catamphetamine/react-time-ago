@@ -1,3 +1,9 @@
+0.3.2 / 22.12.2016
+===================
+
+  * Added a camelCase alias for `time_style` (it's now also `timeStyle`)
+  * Added dummy tests
+
 0.3.1 / 01.10.2016
 ===================
 

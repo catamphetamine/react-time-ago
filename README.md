@@ -93,7 +93,7 @@ export default class ReactTimeAgo extends React.Component
 
 ## Customization
 
-The `ReactTimeAgo` component accepts a `style` property which can be one of
+The `ReactTimeAgo` component accepts a `timeStyle` property which can be one of
 
   * [`twitter`](https://github.com/halt-hammerzeit/javascript-time-ago#twitter-style)
   * [`fuzzy`](https://github.com/halt-hammerzeit/javascript-time-ago#fuzzy-style)
@@ -116,7 +116,7 @@ date             : PropTypes.instanceOf(Date),
 time             : PropTypes.number,
 
 // e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long', override: function }
-time_style       : PropTypes.any,
+timeStyle        : PropTypes.any,
 
 // a function returning what's output in the tooltip
 // (by default is (date) => new Intl.DateTimeFormat(locale, {…}).format(date))

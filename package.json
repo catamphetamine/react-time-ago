@@ -1,8 +1,8 @@
 {
   "name": "react-time-ago",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "International highly customizable relative time formatting",
-  "main": "index.umd.js",
+  "main": "index.common.js",
   "jsnext:main": "index.es6.js",
   "peerDependencies": {
     "intl-messageformat": "^1.3.0",
@@ -24,16 +24,21 @@
     "chai": "^3.5.0",
     "intl": "^1.1.0",
     "intl-locales-supported": "^1.0.0",
+    "intl-messageformat": "^1.3.0",
     "istanbul": "^1.1.0-alpha.1",
+    "javascript-time-ago": "^0.4.4",
     "mocha": "^2.4.5",
     "npm-run-all": "^1.4.0",
-    "rimraf": "^2.5.0",
-    "javascript-time-ago": "^0.2.1"
+    "react": "^15.4.1",
+    "rimraf": "^2.5.0"
   },
   "scripts": {
     "clean-for-build": "rimraf ./build/**/*",
     "build-modules": "babel ./source --optional runtime --out-dir ./build --source-maps",
     "build": "npm-run-all clean-for-build build-modules",
+    "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test --recursive",
+    "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/runner.js --recursive",
+    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/runner.js --recursive",
     "prepublish": "npm-run-all build"
   },
   "repository": {

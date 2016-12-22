@@ -12,6 +12,7 @@ export default class React_time_ago extends React.Component
 		children         : PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
 		// `javascript-time-ago` relative time formatting style
 		time_style       : PropTypes.any,
+		timeStyle        : PropTypes.any,
 		// (optional) Tooltip date formatter
 		full             : PropTypes.func,
 		// Intl.DateTimeFormat options
@@ -50,7 +51,7 @@ export default class React_time_ago extends React.Component
 	{
 		super(props, context)
 
-		let { locale, time_style, date_time_format, update_interval } = props
+		let { locale, date_time_format, update_interval } = props
 
 		// If `locale` was not explicitly set
 		// then try to derive it from `react-intl` context
@@ -99,7 +100,17 @@ export default class React_time_ago extends React.Component
 
 	render()
 	{
-		const { children, tooltip, wrapper, style, className, time_style } = this.props
+		const
+		{
+			children,
+			tooltip,
+			wrapper,
+			time_style,
+			timeStyle,
+			style,
+			className
+		}
+		= this.props
 
 		if (!children)
 		{
@@ -119,7 +130,7 @@ export default class React_time_ago extends React.Component
 				style={style} 
 				className={className}>
 
-				{this.time_ago.format(time || date, time_style)}
+				{this.time_ago.format(time || date, time_style || timeStyle)}
 			</time>
 		)
 
