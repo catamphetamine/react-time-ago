@@ -23,6 +23,7 @@ describe(`exports`, function()
 		const Library = require('../index.common')
 
 		new Library({ locale: 'en-US' })
+		new Library.default({ locale: 'en-US' })
 		new Library.Time_ago('en-US')
 		new Library.Date_time_formatter('en-US')
 	})
