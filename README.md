@@ -91,6 +91,8 @@ export default class ReactTimeAgo extends React.Component
 }
 ```
 
+The React component refreshes itself as the time goes by.
+
 ## Customization
 
 The `ReactTimeAgo` component accepts a `timeStyle` property which can be one of

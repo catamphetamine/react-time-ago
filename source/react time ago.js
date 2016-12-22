@@ -103,7 +103,6 @@ export default class React_time_ago extends React.Component
 		const
 		{
 			children,
-			tooltip,
 			wrapper,
 			time_style,
 			timeStyle,
