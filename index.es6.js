@@ -1,1 +1,1 @@
-export { default, Time_ago, Date_time_formatter } from './source/react time ago'
+export { default, Time_ago, Date_time_formatter } from './es6/react time ago'
