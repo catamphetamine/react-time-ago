@@ -15,6 +15,7 @@
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.2",
+    "babel-loader": "^6.2.10",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-react-display-name": "^6.5.0",
     "babel-plugin-transform-runtime": "^6.6.0",
@@ -39,8 +40,8 @@
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test --recursive",
     "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/runner.js --recursive",
     "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/runner.js --recursive",
-    "browser-build": "WEBPACK_ENV=build webpack",
-    "browser-build-dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "browser-build": "npm run build-es6-modules && WEBPACK_ENV=build webpack",
+    "browser-build-dev": "npm run build-es6-modules && WEBPACK_ENV=dev webpack --progress --colors --watch",
     "clean-for-build": "rimraf ./build/**/* ./es6/**/*",
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
     "build-es6-modules": "better-npm-run build-es6-modules",
