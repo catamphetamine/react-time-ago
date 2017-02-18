@@ -231,6 +231,10 @@ function Wrapper({ verbose, children })
 }
 ```
 
+## Future
+
+When given negative time intervals this library outputs future dates, like "in 5 minutes", "in a year", etc.
+
 ## Contributing
 
 After cloning this repo, ensure dependencies are installed by running:
