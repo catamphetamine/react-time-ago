@@ -1,8 +1,6 @@
 # react-time-ago
 
-[![NPM Version][npm-badge]][npm]
-<!-- [![Build Status][travis-badge]][travis] -->
-<!-- [![Test Coverage][coveralls-badge]][coveralls] -->
+[![npm version](https://img.shields.io/npm/v/react-time-ago.svg?style=flat-square)](https://www.npmjs.com/package/react-time-ago)
 
 International higly customizable relative date/time formatter for React (both for past and future dates).
 
@@ -39,7 +37,7 @@ npm install javascript-time-ago --save
 npm install react-time-ago --save
 ```
 
-This package assumes that the [`Intl`][Intl] global object exists in the runtime. `Intl` is present in all modern browsers [_except_ Internet Explorer 10 and Safari 9](http://caniuse.com/#search=intl) (which can be solved with the Intl polyfill).
+This package assumes that the [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) global object exists in the runtime. `Intl` is present in all modern browsers [_except_ Internet Explorer 10 and Safari 9](http://caniuse.com/#search=intl) (which can be solved with the Intl polyfill).
 
 Node.js starting from `0.12` has the `Intl` APIs built-in, but only includes the English locale data by default. If your app needs to support more locales than English, you'll need to [get Node to load the extra locale data](https://github.com/nodejs/node/wiki/Intl), or (a much simpler approach) just install the Intl polyfill.
 
@@ -268,11 +266,3 @@ npm install [module name with version].tar.gz
 ## License
 
 [MIT](LICENSE)
-[npm]: https://www.npmjs.org/package/react-time-ago
-[npm-badge]: https://img.shields.io/npm/v/react-time-ago.svg?style=flat-square
-[travis]: https://travis-ci.org/halt-hammerzeit/react-time-ago
-[travis-badge]: https://img.shields.io/travis/halt-hammerzeit/react-time-ago/master.svg?style=flat-square
-[CLDR]: http://cldr.unicode.org/
-[Intl]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
-[coveralls]: https://coveralls.io/r/halt-hammerzeit/react-time-ago?branch=master
-[coveralls-badge]: https://img.shields.io/coveralls/halt-hammerzeit/react-time-ago/master.svg?style=flat-square
