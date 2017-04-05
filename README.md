@@ -131,6 +131,9 @@ date_time_format : PropTypes.object,
 // (once a minute by default)
 update_interval  : PropTypes.number,
 
+// Set to `false` to disable automatic refresh as time goes by
+tick             : PropTypes.bool,
+
 // e.g. { color: white }
 style            : PropTypes.object,
 
