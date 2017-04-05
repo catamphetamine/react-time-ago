@@ -19,6 +19,7 @@ export default class React_time_ago extends React.Component
 		date_time_format : PropTypes.object,
 		update_interval  : PropTypes.number,
 		wrapper          : PropTypes.func,
+		tick             : PropTypes.bool.isRequired,
 		style            : PropTypes.object,
 		className        : PropTypes.string
 	}
@@ -39,7 +40,9 @@ export default class React_time_ago extends React.Component
 		},
 
 		// Updates once a minute
-		update_interval: 60 * 1000
+		update_interval: 60 * 1000,
+
+		tick: true
 	}
 
 	static contextTypes =
@@ -90,12 +93,22 @@ export default class React_time_ago extends React.Component
 
 	componentDidMount()
 	{
-		this.register()
+		const { tick } = this.props
+
+		if (tick)
+		{
+			this.register()
+		}
 	}
 
 	componentWillUnmount()
 	{
-		this.unregister()
+		const { tick } = this.props
+		
+		if (tick)
+		{
+			this.unregister()
+		}
 	}
 
 	render()
