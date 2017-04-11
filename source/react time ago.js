@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import javascript_time_ago from 'javascript-time-ago'
 import shallow_compare from 'react-addons-shallow-compare'
 
@@ -47,7 +48,7 @@ export default class React_time_ago extends React.Component
 
 	static contextTypes =
 	{
-		intl: React.PropTypes.object
+		intl: PropTypes.object
 	}
 
 	constructor(props, context)
