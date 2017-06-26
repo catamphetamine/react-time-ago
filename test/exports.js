@@ -13,7 +13,7 @@ describe(`exports`, function()
 {
 	it(`should export ES6`, function()
 	{
-		new ReactTimeAgo({ locale: 'en-US' })
+		new ReactTimeAgo({ locale: 'en-US' }, {})
 		new Time_ago('en-US')
 		new Date_time_formatter('en-US')
 	})
@@ -22,8 +22,8 @@ describe(`exports`, function()
 	{
 		const Library = require('../index.common')
 
-		new Library({ locale: 'en-US' })
-		new Library.default({ locale: 'en-US' })
+		new Library({ locale: 'en-US' }, {})
+		new Library.default({ locale: 'en-US' }, {})
 		new Library.Time_ago('en-US')
 		new Library.Date_time_formatter('en-US')
 	})

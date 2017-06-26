@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import javascript_time_ago from 'javascript-time-ago'
-import shallow_compare from 'react-addons-shallow-compare'
 
-const global_scope = typeof window !== 'undefined' ? window : global
+import shallow_equal from './shallow equal'
+import { start_time_updater, get_time_updater } from './updater'
+import Time_ago from './time ago'
+import Date_time_formatter from './date time formatter'
 
 export default class React_time_ago extends React.Component
 {
@@ -12,12 +13,17 @@ export default class React_time_ago extends React.Component
 		locale           : PropTypes.string,
 		children         : PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
 		// `javascript-time-ago` relative time formatting style
-		time_style       : PropTypes.any,
 		timeStyle        : PropTypes.any,
+		// Legacy property name
+		time_style       : PropTypes.any,
 		// (optional) Tooltip date formatter
 		full             : PropTypes.func,
 		// Intl.DateTimeFormat options
+		dateTimeFormat   : PropTypes.object.isRequired,
+		// Legacy property name
 		date_time_format : PropTypes.object,
+		updateInterval   : PropTypes.number.isRequired,
+		// Legacy property name
 		update_interval  : PropTypes.number,
 		wrapper          : PropTypes.func,
 		tick             : PropTypes.bool.isRequired,
@@ -28,7 +34,7 @@ export default class React_time_ago extends React.Component
 	static defaultProps =
 	{
 		// Thursday, December 20, 2012, 7:00:00 AM GMT+4
-		date_time_format:
+		dateTimeFormat:
 		{
 			weekday      : 'long',
 			day          : 'numeric',
@@ -41,8 +47,9 @@ export default class React_time_ago extends React.Component
 		},
 
 		// Updates once a minute
-		update_interval: 60 * 1000,
+		updateInterval: 60 * 1000,
 
+		// Refreshes time in a web browser by default
 		tick: true
 	}
 
@@ -51,45 +58,47 @@ export default class React_time_ago extends React.Component
 		intl: PropTypes.object
 	}
 
+	state = {}
+
 	constructor(props, context)
 	{
 		super(props, context)
 
-		let { locale, date_time_format, update_interval } = props
+		let { locale } = this.props
+		const { intl } = this.context
+
+		// Legacy property name support
+		const date_time_format = this.props.date_time_format || this.props.dateTimeFormat
+		const update_interval  = this.props.update_interval  || this.props.updateInterval
 
 		// If `locale` was not explicitly set
-		// then try to derive it from `react-intl` context
-		if (!locale)
+		// then try to obtain it from `react-intl` context.
+		if (!locale && intl)
 		{
-			// supports `react-intl`
-			if (context.intl)
-			{
-				locale = context.intl.locale
-			}
+			locale = intl.locale
 		}
 
 		// If no locale is set, then throw an error
 		if (!locale)
 		{
-			throw new Error(`No locale specified for react-time-ago`)
+			throw new Error(`No "locale" specified for "react-time-ago"`)
 		}
 
-		// `_react_time_ago` holds cached formatters
-		// and the global refresh timer
-		if (!global_scope._react_time_ago)
+		// Automatically updates time in a web browser
+		if (!get_time_updater())
 		{
-			create_react_time_ago(update_interval)
+			start_time_updater(update_interval)
 		}
 
 		// Take `javascript-time-ago` formatter and 
-		// `Intl.DateTimeFormat` verbose formatter from cache
+		// `Intl.DateTimeFormat` verbose formatter from cache.
 		this.time_ago            = new Time_ago(locale)
 		this.date_time_formatter = new Date_time_formatter(locale, date_time_format)
 	}
 
 	shouldComponentUpdate(nextProps, nextState)
 	{
-		return shallow_compare(this, nextProps, nextState)
+		return !shallow_equal(this.props, nextProps) || !shallow_equal(this.state, nextState)
 	}
 
 	componentDidMount()
@@ -98,17 +107,22 @@ export default class React_time_ago extends React.Component
 
 		if (tick)
 		{
-			this.register()
+			// Register for the relative time autoupdate as the time goes by
+			this.stop_autoupdate = get_time_updater().add(() =>
+			{
+				this.setState
+				({
+					updatedAt: Date.now()
+				})
+			})
 		}
 	}
 
 	componentWillUnmount()
 	{
-		const { tick } = this.props
-		
-		if (tick)
+		if (this.stop_autoupdate)
 		{
-			this.unregister()
+			this.stop_autoupdate()
 		}
 	}
 
@@ -138,12 +152,12 @@ export default class React_time_ago extends React.Component
 		const markup =
 		(
 			<time
-				dateTime={(date || new Date(time)).toISOString()}
-				title={wrapper ? undefined : full_date} 
-				style={style} 
-				className={className}>
+				dateTime={ (date || new Date(time)).toISOString() }
+				title={ wrapper ? undefined : full_date } 
+				style={ style } 
+				className={ className }>
 
-				{this.time_ago.format(time || date, time_style || timeStyle)}
+				{ this.time_ago.format(time || date, time_style || timeStyle) }
 			</time>
 		)
 
@@ -183,178 +197,5 @@ export default class React_time_ago extends React.Component
 		}
 
 		return this.date_time_formatter.format(date)
-	}
-
-	register()
-	{
-		global_scope._react_time_ago._register(this)
-	}
-
-	unregister()
-	{
-		global_scope._react_time_ago._unregister(this)
-	}
-}
-
-function start_relative_times_updater(update_interval)
-{
-	function update_relative_times(dry_run)
-	{
-		if (!dry_run)
-		{
-			for (let component of global_scope._react_time_ago._components)
-			{
-				component.forceUpdate()
-			}
-		}
-
-		global_scope._react_time_ago._timer = setTimeout(update_relative_times, update_interval)
-	}
-
-	update_relative_times(true)
-}
-
-function stop_relative_times_updater()
-{
-	if (global_scope._react_time_ago._timer)
-	{
-		clearTimeout(global_scope._react_time_ago._timer)
-		global_scope._react_time_ago._timer = undefined
-	}
-}
-
-function create_react_time_ago(update_interval)
-{
-	const _react_time_ago =
-	{
-		_components : [],
-		_register(component)
-		{
-			this._components.push(component)
-
-			// If it's the first relative time component,
-			// start periodical time refresh.
-			if (this._components.length === 1)
-			{
-				start_relative_times_updater(update_interval)
-			}
-		},
-		_unregister(component)
-		{
-			remove_element_from_array(this._components, component)
-
-			// If it was the last relative time component,
-			// stop periodical time refresh.
-			if (this._components.length === 0)
-			{
-				stop_relative_times_updater()
-			}
-		},
-		_destroy()
-		{
-			for (let component of this._components)
-			{
-				this._unregister(component)
-			}
-
-			delete global_scope._react_time_ago
-		}
-	}
-
-	global_scope._react_time_ago = _react_time_ago
-}
-
-function remove_element_from_array(array, element)
-{
-	const index = array.indexOf(element)
-	if (index >= 0)
-	{
-		array.splice(index, 1)
-	}
-	return array
-}
-
-export class Date_time_formatter
-{
-	constructor(locale, date_time_format = React_time_ago.defaultProps.date_time_format)
-	{
-		// Formatters
-		if (!global_scope._date_time_formatters)
-		{
-			global_scope._date_time_formatters = {}
-		}
-
-		// Formatters for this locale
-		if (!global_scope._date_time_formatters[locale])
-		{
-			global_scope._date_time_formatters[locale] = {}
-		}
-
-		// `Intl.DateTimeFormat` format caching key
-		const date_time_format_id = JSON.stringify(date_time_format)
-
-		// Cache `Intl.DateTimeFormat` for this locale
-		if (!global_scope._date_time_formatters[locale][date_time_format_id])
-		{
-			global_scope._date_time_formatters[locale][date_time_format_id] = new Intl.DateTimeFormat(locale, date_time_format)
-		}
-
-		this.formatter = global_scope._date_time_formatters[locale][date_time_format_id]
-	}
-
-	format(date)
-	{
-		return this.formatter.format(date)
-	}
-}
-
-export class Time_ago
-{
-	constructor(locale)
-	{
-		// Formatters
-		if (!global_scope._time_ago_formatters)
-		{
-			global_scope._time_ago_formatters = {}
-		}
-
-		// Cache `javascript-time-ago` formatter for this locale
-		if (!global_scope._time_ago_formatters[locale])
-		{
-			global_scope._time_ago_formatters[locale] = new javascript_time_ago(locale)
-		}
-
-		this.formatter = global_scope._time_ago_formatters[locale]
-	}
-
-	format(date, time_style)
-	{
-		return this.formatter.format(date, this.parse_time_ago_style(time_style))
-	}
-
-	parse_time_ago_style(time_style)
-	{
-		if (!time_style)
-		{
-			return
-		}
-
-		if (typeof time_style === 'string')
-		{
-			if (!this.formatter_styles[time_style])
-			{
-				this.formatter_styles[time_style] = this.formatter.style[time_style]()
-			}
-
-			return this.formatter_styles[time_style]
-		}
-		else if (typeof time_style === 'object')
-		{
-			return time_style
-		}
-		else
-		{
-			throw new Error(`Unknown time formatter style: ${time_style}`)
-		}
 	}
 }

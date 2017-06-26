@@ -48,13 +48,13 @@ If you decide you need the Intl polyfill then [here are some basic installation 
 #### application.js
 
 ```js
-import react_time_ago from 'react-time-ago'
+import reactTimeAgo from 'react-time-ago'
 
 // Load locale specific relative date/time messages
 //
-import javascript_time_ago from 'javascript-time-ago'
-javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
-javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
+import javascriptTimeAgo from 'javascript-time-ago'
+javascriptTimeAgo.locale(require('javascript-time-ago/locales/en'))
+javascriptTimeAgo.locale(require('javascript-time-ago/locales/ru'))
 
 // Load number pluralization functions for the locales.
 // (the ones that decide if a number is gonna be 
@@ -77,10 +77,8 @@ require('intl-messageformat/dist/locale-data/ru')
 import React from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
-export default class ReactTimeAgo extends React.Component
-{
-  render()
-  {
+export default class ReactTimeAgo extends React.Component {
+  render() {
     return (
       <div>
         Last seen:
@@ -125,11 +123,11 @@ timeStyle        : PropTypes.any,
 full             : PropTypes.func,
 
 // the `{…}` in the default `full` function
-date_time_format : PropTypes.object,
+dateTimeFormat   : PropTypes.object,
 
 // how often to update <ReactTimeAgo/>s
 // (once a minute by default)
-update_interval  : PropTypes.number,
+updateInterval   : PropTypes.number,
 
 // Set to `false` to disable automatic refresh as time goes by
 tick             : PropTypes.bool,
@@ -146,54 +144,57 @@ className        : PropTypes.string
 On-demand module loading example (this is an advanced topic and this code is not neccessary to make the whole thing work, it's just an optimization for those who need it):
 
 ```js
-import is_intl_locale_supported from 'intl-locales-supported'
+import isIntlLocaleSupported from 'intl-locales-supported'
 
 require('javascript-time-ago/intl-messageformat-global')
 
 // Returns a promise which is resolved when Intl has been polyfilled
-function load_polyfill(locale)
-{
-  if (window.Intl && is_intl_locale_supported(locale))
-  {
+function loadLolyfill(locale) {
+  if (window.Intl && isIntlLocaleSupported(locale)) {
     // all fine: Intl is in the global scope and the locale data is available
     return Promise.resolve()
   }
 
-  return new Promise((resolve) =>
-  {
+  return new Promise((resolve) => {
     debug(`Intl or locale data for "${locale}" not available, downloading the polyfill...`)
 
-    // When building: create a intl chunk with webpack
-    // When executing: run the callback once the chunk has been download.
-    require.ensure(['intl'], (require) =>
-    {
-      // apply the polyfill
-      require('intl')
-      debug(`Intl polyfill for "${locale}" has been loaded`)
-      resolve()
-    },
-    'intl')
+    switch (getLanguageFromLocale(locale)) {
+      // russian
+      case 'ru':
+        // When building: create a intl chunk with webpack
+        // When executing: run the callback once the chunk has been download.
+        require.ensure([
+          'intl',
+          'intl/locale-data/jsonp/ru.js'
+        ],
+        (require) => {
+          // apply the polyfill
+          require('intl')
+          require('intl/locale-data/jsonp/ru.js')
+          console.log(`Intl polyfill for "${locale}" has been loaded`)
+          resolve()
+        },
+        'intl')
+        break
+
+      … // other locales
+    }
   })
 }
 
-function load_locale_data(locale)
-{
-  return new Promise(resolve =>
-  {
-    switch (get_language_from_locale(locale))
-    {
+function loadLocaleData(locale) {
+  return new Promise((resolve) => {
+    switch (getLanguageFromLocale(locale)) {
       // russian
       case 'ru':
         // download just relative time specific locale data for this language
-        require.ensure
-        ([
+        require.ensure([
           'intl-messageformat/dist/locale-data/ru',
           'javascript-time-ago/locales/ru'
         ],
-        require =>
-        {
+        (require) => {
           require('intl-messageformat/dist/locale-data/ru')
-          javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
+          javascriptTimeAgo.locale(require('javascript-time-ago/locales/ru'))
           
           resolve()
         },
@@ -205,7 +206,7 @@ function load_locale_data(locale)
   }
 }
 
-return load_polyfill('ru-RU').then(() => load_locale_data('ru-RU'))
+return loadPolyfill('ru-RU').then(() => loadLocaleData('ru-RU'))
 ```
 
 A working example project can be found [here](https://github.com/halt-hammerzeit/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
@@ -221,13 +222,11 @@ import React from 'react'
 import ReactTimeAgo from 'react-time-ago'
 import Tooltip from './tooltip'
 
-export default function TimeAgo(props)
-{
+export default function TimeAgo(props) {
   return <ReactTimeAgo {...props} wrapper={Wrapper}/>
 }
 
-function Wrapper({ verbose, children })
-{
+function Wrapper({ verbose, children }) {
   return <Tooltip text={verbose}>{children}</Tooltip>
 }
 ```
