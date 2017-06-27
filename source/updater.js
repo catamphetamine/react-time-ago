@@ -10,10 +10,11 @@ function set_time_updater(instance)
 	global_scope._react_time_ago = instance
 }
 
-export function start_time_updater(update_interval)
+export function start_time_updater(interval)
 {
 	set_time_updater
 	({
+		interval,
 		updaters : new Set(),
 		add(update)
 		{
@@ -23,7 +24,7 @@ export function start_time_updater(update_interval)
 			// start periodical time refresh.
 			if (this.updaters.size === 1)
 			{
-				start_relative_times_updater(update_interval)
+				start_relative_times_updater()
 			}
 
 			return () => this.remove(update)
@@ -49,7 +50,7 @@ export function start_time_updater(update_interval)
 	})
 }
 
-function start_relative_times_updater(update_interval)
+function start_relative_times_updater()
 {
 	if (get_time_updater().timer)
 	{
@@ -66,7 +67,7 @@ function start_relative_times_updater(update_interval)
 			}
 		}
 
-		get_time_updater().timer = setTimeout(update_relative_times, update_interval)
+		get_time_updater().timer = setTimeout(update_relative_times, get_time_updater().interval)
 	}
 
 	update_relative_times(true)
