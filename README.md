@@ -148,65 +148,61 @@ import isIntlLocaleSupported from 'intl-locales-supported'
 
 require('javascript-time-ago/intl-messageformat-global')
 
-// Returns a promise which is resolved when Intl has been polyfilled
-function loadLolyfill(locale) {
-  if (window.Intl && isIntlLocaleSupported(locale)) {
-    // all fine: Intl is in the global scope and the locale data is available
-    return Promise.resolve()
-  }
-
-  return new Promise((resolve) => {
-    debug(`Intl or locale data for "${locale}" not available, downloading the polyfill...`)
-
-    switch (getLanguageFromLocale(locale)) {
-      // russian
-      case 'ru':
-        // When building: create a intl chunk with webpack
-        // When executing: run the callback once the chunk has been download.
-        require.ensure([
-          'intl',
-          'intl/locale-data/jsonp/ru.js'
-        ],
-        (require) => {
-          // apply the polyfill
-          require('intl')
-          require('intl/locale-data/jsonp/ru.js')
-          console.log(`Intl polyfill for "${locale}" has been loaded`)
-          resolve()
-        },
-        'intl')
-        break
-
-      … // other locales
-    }
+export default function internationalize(locale) {
+  return loadIntlPolyfill(locale).then(() => {
+    return loadLocaleSpecificData(locale)
+  }).then(([_, javascriptTimeAgoData]) => {
+    javascriptTimeAgo.locale(javascriptTimeAgoData)
   })
 }
 
-function loadLocaleData(locale) {
-  return new Promise((resolve) => {
-    switch (getLanguageFromLocale(locale)) {
-      // russian
-      case 'ru':
-        // download just relative time specific locale data for this language
-        require.ensure([
-          'intl-messageformat/dist/locale-data/ru',
-          'javascript-time-ago/locales/ru'
-        ],
-        (require) => {
-          require('intl-messageformat/dist/locale-data/ru')
-          javascriptTimeAgo.locale(require('javascript-time-ago/locales/ru'))
-          
-          resolve()
-        },
-        'locale-ru')
-        break
+// Loads `Intl` polyfill and its locale-specific data.
+function loadIntlPolyfill(locale) {
+  if (window.Intl && is_intl_locale_supported(locale)) {
+    // `Intl` is in the global scope and the locale data is available
+    return Promise.resolve()
+  }
+  return Promise.all([
+    import(/* webpackChunkName: "intl" */ 'intl'),
+    loadLanguageSpecificIntlData(locale)
+  ])
+}
 
-      … // other locales
-    }
+// Loads `Intl` locale-specific data.
+function loadLanguageSpecificIntlData(locale) {
+  // Do not remove code duplication via an inline `${locale}` variable,
+  // otherwise Webpack will include **all** contents
+  // of the `intl/locale-data/jsonp` folder in the bundle.
+  switch (getLanguageFromLocale(locale)) {
+    // Russian
+    case 'ru':
+      return import('intl/locale-data/jsonp/ru.js')
+    // English
+    default:
+      return import('intl/locale-data/jsonp/en.js')
   }
 }
 
-return loadPolyfill('ru-RU').then(() => loadLocaleData('ru-RU'))
+// Loads all locale-specific data
+function loadLocaleSpecificData(locale) {
+  // Do not remove code duplication via an inline `${locale}` variable,
+  // otherwise Webpack will include **all** contents
+  // of the locale data folders in the bundle.
+  switch (getLanguageFromLocale(locale)) {
+    // Russian
+    case 'ru':
+      return Promise.all([
+        import('intl-messageformat/dist/locale-data/ru'),
+        import('javascript-time-ago/locales/ru')
+      ])
+    // English
+    default:
+      return Promise.all([
+        import('intl-messageformat/dist/locale-data/en'),
+        import('javascript-time-ago/locales/en')
+      ])
+  }
+}
 ```
 
 A working example project can be found [here](https://github.com/halt-hammerzeit/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
