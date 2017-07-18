@@ -4,7 +4,7 @@
 
 International higly customizable relative date/time formatter for React (both for past and future dates).
 
-[See Demo](https://halt-hammerzeit.github.io/react-time-ago/)
+[See Demo](https://catamphetamine.github.io/react-time-ago/)
 
 Formats a date to something like:
 
@@ -41,7 +41,7 @@ This package assumes that the [`Intl`](https://developer.mozilla.org/en-US/docs/
 
 Node.js starting from `0.12` has the `Intl` APIs built-in, but only includes the English locale data by default. If your app needs to support more locales than English, you'll need to [get Node to load the extra locale data](https://github.com/nodejs/node/wiki/Intl), or (a much simpler approach) just install the Intl polyfill.
 
-If you decide you need the Intl polyfill then [here are some basic installation and configuration instructions](https://github.com/halt-hammerzeit/javascript-time-ago#intl-polyfill-installation)
+If you decide you need the Intl polyfill then [here are some basic installation and configuration instructions](https://github.com/catamphetamine/javascript-time-ago#intl-polyfill-installation)
 
 ## Usage
 
@@ -95,13 +95,13 @@ The React component refreshes itself as the time goes by.
 
 The `ReactTimeAgo` component accepts a `timeStyle` property which can be one of
 
-  * [`twitter`](https://github.com/halt-hammerzeit/javascript-time-ago#twitter-style)
-  * [`fuzzy`](https://github.com/halt-hammerzeit/javascript-time-ago#fuzzy-style)
-  * [`{ gradation, units, flavour, override }`](https://github.com/halt-hammerzeit/javascript-time-ago#customization)
+  * [`twitter`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
+  * [`fuzzy`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
+  * [`{ gradation, units, flavour, override }`](https://github.com/catamphetamine/javascript-time-ago#customization)
 
 ## Localization
 
-Refer to [`javascript-time-ago` docs](https://github.com/halt-hammerzeit/javascript-time-ago#localization).
+Refer to [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#localization).
 
 ## Props
 
@@ -205,7 +205,7 @@ function loadLocaleSpecificData(locale) {
 }
 ```
 
-A working example project can be found [here](https://github.com/halt-hammerzeit/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
+A working example project can be found [here](https://github.com/catamphetamine/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
 
 ## Tooltip
 
