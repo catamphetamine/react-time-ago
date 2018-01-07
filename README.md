@@ -67,8 +67,6 @@ import 'intl-messageformat/dist/locale-data/ru'
 
 // Time ago formatter.
 import javascriptTimeAgo from 'javascript-time-ago'
-// And its React component.
-import reactTimeAgo from 'react-time-ago'
 
 // Load locale-specific relative date/time formatting rules.
 import en from 'javascript-time-ago/locales/en'
