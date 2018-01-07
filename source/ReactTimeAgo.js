@@ -194,7 +194,7 @@ export default class React_time_ago extends React.Component
 				style={ style } 
 				className={ className }>
 
-				{ this.time_ago.format(time || date, normalize_time_ago_style(timeStyle)) }
+				{ this.time_ago.format(time || date, timeStyle) }
 			</time>
 		)
 
@@ -261,32 +261,4 @@ function get_input_date(input)
 	}
 
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
-}
-
-// Converts a string time style (e.g. "twitter") into an object one.
-// See `javascript-time-ago` docs for more info on time style.
-function normalize_time_ago_style(style)
-{
-	if (!style)
-	{
-		return
-	}
-
-	// Convert a string style into an object one (and cache it)
-	if (typeof style === 'string')
-	{
-		if (!this.formatter_styles[style])
-		{
-			this.formatter_styles[style] = this.formatter.style[style]()
-		}
-
-		return this.formatter_styles[style]
-	}
-
-	if (typeof style === 'object')
-	{
-		return style
-	}
-
-	throw new Error(`Unknown time formatter style: ${style}`)
 }
