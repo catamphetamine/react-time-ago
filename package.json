@@ -1,11 +1,11 @@
 {
   "name": "react-time-ago",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "International highly customizable relative time formatting",
   "main": "index.common.js",
   "module": "index.es6.js",
   "peerDependencies": {
-    "intl-messageformat": "^1.3.0",
+    "intl-messageformat": "*",
     "javascript-time-ago": ">=0.4.0"
   },
   "dependencies": {
@@ -27,7 +27,7 @@
     "chai": "^3.5.0",
     "intl": "^1.1.0",
     "intl-locales-supported": "^1.0.0",
-    "intl-messageformat": "^1.3.0",
+    "intl-messageformat": "^2.2.0",
     "istanbul": "^1.1.0-alpha.1",
     "javascript-time-ago": "^0.4.5",
     "mocha": "^2.4.5",
@@ -40,7 +40,7 @@
     "test": "mocha --compilers js:babel-core/register --colors --bail --reporter spec test --recursive",
     "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --reporter dot test/runner.js --recursive",
     "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --reporter spec test/runner.js --recursive",
-    "browser-build": "npm run build-es6-modules && WEBPACK_ENV=build webpack",
+    "browser-build": "better-npm-run browser-build",
     "browser-build-dev": "npm run build-es6-modules && WEBPACK_ENV=dev webpack --progress --colors --watch",
     "clean-for-build": "rimraf ./build/**/* ./es6/**/*",
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
@@ -49,6 +49,12 @@
     "prepublish": "npm-run-all build test browser-build"
   },
   "betterScripts": {
+    "browser-build": {
+      "command": "npm run build-es6-modules && webpack --progress --colors",
+      "env": {
+        "WEBPACK_ENV": "build"
+      }
+    },
     "build-commonjs-modules": {
       "command": "babel ./source --out-dir ./build --source-maps",
       "env": {

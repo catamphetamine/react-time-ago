@@ -32,30 +32,24 @@ Formats a date to something like:
 ## Installation
 
 ```
-npm install intl-messageformat@^1.3.0 --save
+npm install intl-messageformat --save
 npm install javascript-time-ago --save
 npm install react-time-ago --save
 ```
 
 This package assumes that the [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) global object exists in the runtime. `Intl` is present in all modern browsers [_except_ Internet Explorer 10 and Safari 9](http://caniuse.com/#search=intl) (which can be solved with the Intl polyfill).
 
-Node.js starting from `0.12` has the `Intl` APIs built-in, but only includes the English locale data by default. If your app needs to support more locales than English, you'll need to [get Node to load the extra locale data](https://github.com/nodejs/node/wiki/Intl), or (a much simpler approach) just install the Intl polyfill.
+Node.js starting from `0.12` has the `Intl` APIs built-in, but only includes English locale data by default. If your app needs to support more locales than English on server side then you'll need to [get Node to load the extra locale data](https://github.com/nodejs/node/wiki/Intl), or (a much simpler approach) just install the Intl polyfill.
 
 If you decide you need the Intl polyfill then [here are some basic installation and configuration instructions](https://github.com/catamphetamine/javascript-time-ago#intl-polyfill-installation)
 
 ## Usage
 
-#### application.js
+First, the library must be initialized with a set of desired locales.
+
+#### ./react-time-ago.js
 
 ```js
-import reactTimeAgo from 'react-time-ago'
-
-// Load locale specific relative date/time messages
-//
-import javascriptTimeAgo from 'javascript-time-ago'
-javascriptTimeAgo.locale(require('javascript-time-ago/locales/en'))
-javascriptTimeAgo.locale(require('javascript-time-ago/locales/ru'))
-
 // Load number pluralization functions for the locales.
 // (the ones that decide if a number is gonna be 
 //  "zero", "one", "two", "few", "many" or "other")
@@ -63,29 +57,56 @@ javascriptTimeAgo.locale(require('javascript-time-ago/locales/ru'))
 // https://github.com/eemeli/make-plural.js
 // http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
 //
-require('javascript-time-ago/intl-messageformat-global')
-require('intl-messageformat/dist/locale-data/en')
-require('intl-messageformat/dist/locale-data/ru')
+// `IntlMessageFormat` global variable must exist
+// in order for this to work:
+// https://github.com/yahoo/intl-messageformat/issues/159
+// For Webpack this is done via `ProvidePlugin` (see below).
+//
+import 'intl-messageformat/dist/locale-data/en'
+import 'intl-messageformat/dist/locale-data/ru'
 
-// Initialization complete.
-// Ready to format relative dates and times.
+// Time ago formatter.
+import javascriptTimeAgo from 'javascript-time-ago'
+// And its React component.
+import reactTimeAgo from 'react-time-ago'
+
+// Load locale-specific relative date/time formatting rules.
+import en from 'javascript-time-ago/locales/en'
+import ru from 'javascript-time-ago/locales/ru'
+
+// Add locale-specific relative date/time formatting rules.
+javascriptTimeAgo.locale(en)
+javascriptTimeAgo.locale(ru)
 ```
 
-#### ReactComponent.js
+`javascript-time-ago` uses `intl-messageformat` internally. [`IntlMessageFormat`](https://github.com/yahoo/intl-messageformat) is a helper library made by Yahoo which formats plurals internationally (e.g. "1 second", "2 seconds", etc).
+
+Both these libraries must be initialized with a set of desired locales first. For that, `IntlMessageFormat` [needs to be accessible as a global variable](https://github.com/yahoo/intl-messageformat/issues/159) (though I don't agree with such a design choice). For Webpack that would be:
+
+```js
+plugins: [
+  new webpack.ProvidePlugin({
+    IntlMessageFormat: ['intl-messageformat', 'default'],
+  }),
+  // ...
+]
+```
+
+After the initialization step is complete it is ready to format relative dates.
+
+#### LastSeen.js
 
 ```js
 import React from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
-export default class ReactTimeAgo extends React.Component {
-  render() {
-    return (
-      <div>
-        Last seen:
-        <ReactTimeAgo>{this.props.date}</ReactTimeAgo>
-      </div>
-    )
-  }
+export default function LastSeen({ date }) {
+  return (
+    <div>
+      Last seen:
+      <ReactTimeAgo>{date}</ReactTimeAgo>
+    </div>
+  )
 }
 ```
 
@@ -97,7 +118,7 @@ The `ReactTimeAgo` component accepts a `timeStyle` property which can be one of
 
   * [`twitter`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
   * [`fuzzy`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
-  * [`{ gradation, units, flavour, override }`](https://github.com/catamphetamine/javascript-time-ago#customization)
+  * [`{ gradation, units, flavour, override() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
 
 ## Localization
 
@@ -106,63 +127,100 @@ Refer to [`javascript-time-ago` docs](https://github.com/catamphetamine/javascri
 ## Props
 
 ```js
-// 'ru-RU', 'en-GB'
-locale           : PropTypes.string,
+// Preferred locale.
+// E.g. 'ru-RU'.
+locale : PropTypes.string,
 
-// new Date()
-date             : PropTypes.instanceOf(Date),
+// Preferred locales (ordered).
+// E.g. `['ru-RU', 'en-GB']`.
+locales : PropTypes.arrayOf(PropTypes.string),
 
-// or 1355972400000
-time             : PropTypes.number,
+// The date to format.
+// Alternatively can be passed as a child.
+// E.g. `new Date()`.
+date : PropTypes.instanceOf(Date),
 
-// e.g. 'twitter', 'fuzzy', { gradation: […], units: […], flavour: 'long', override: function }
-timeStyle        : PropTypes.any,
+// The date to format.
+// Alternatively can be passed as a child.
+// E.g. `1355972400000`.
+time : PropTypes.number,
 
-// a function returning what's output in the tooltip
-// (by default is (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
-full             : PropTypes.func,
+// Date/time formatting style.
+// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', override: function }`)
+timeStyle : PropTypes.any,
 
-// the `{…}` in the default `full` function
-dateTimeFormat   : PropTypes.object,
+// An optional function returning what will be output in the HTML `title` tooltip attribute.
+// (by default it's (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
+full : PropTypes.func,
 
-// how often to update <ReactTimeAgo/>s
+// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
+// Is used when `full` is not specified.
+// By default outputs a verbose full date.
+dateTimeFormat : PropTypes.object,
+
+// How often to update all `<ReactTimeAgo/>`s on a page.
 // (once a minute by default)
-updateInterval   : PropTypes.number,
+updateInterval : PropTypes.number,
 
-// Set to `false` to disable automatic refresh as time goes by
-tick             : PropTypes.bool,
+// Set to `false` to disable automatic refresh as time goes by.
+tick : PropTypes.bool,
 
-// e.g. { color: white }
-style            : PropTypes.object,
+// CSS `style` object.
+// E.g. `{ color: white }`.
+style : PropTypes.object,
 
 // CSS class name
-className        : PropTypes.string
+className : PropTypes.string
 ```
+
+## Tooltip
+
+The default tooltip is implemented using the standard HTML `title` attribute.
+
+If a custom tooltip is desired it can be implemented the following way:
+
+```js
+import React from 'react'
+import ReactTimeAgo from 'react-time-ago'
+import Tooltip from './tooltip'
+
+export default function TimeAgo(props) {
+  return <ReactTimeAgo {...props} wrapper={Wrapper}/>
+}
+
+function Wrapper({ verbose, children }) {
+  return (
+    <Tooltip text={ verbose }>
+      { children }
+    </Tooltip>
+  )
+}
+```
+
+## Future
+
+When given future dates `.format()` produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
 
 ## Webpack
 
-On-demand module loading example (this is an advanced topic and this code is not neccessary to make the whole thing work, it's just an optimization for those who need it):
+On-demand module loading example (this is an advanced topic and should be skipped unless you know that you really need it):
 
 ```js
 import isIntlLocaleSupported from 'intl-locales-supported'
 
-require('javascript-time-ago/intl-messageformat-global')
-
-export default function internationalize(locale) {
-  return loadIntlPolyfill(locale).then(() => {
-    return loadLocaleSpecificData(locale)
-  }).then(([_, javascriptTimeAgoData]) => {
-    javascriptTimeAgo.locale(javascriptTimeAgoData)
-  })
+export default async function internationalize(locale) {
+  await loadIntlPolyfill(locale)
+  const [_, javascriptTimeAgoData] = await loadLocaleSpecificData(locale)
+  javascriptTimeAgo.locale(javascriptTimeAgoData)
 }
 
 // Loads `Intl` polyfill and its locale-specific data.
-function loadIntlPolyfill(locale) {
+async function loadIntlPolyfill(locale) {
   if (window.Intl && is_intl_locale_supported(locale)) {
     // `Intl` is in the global scope and the locale data is available
-    return Promise.resolve()
+    return
   }
-  return Promise.all([
+  await Promise.all([
     import(/* webpackChunkName: "intl" */ 'intl'),
     loadLanguageSpecificIntlData(locale)
   ])
@@ -203,62 +261,6 @@ function loadLocaleSpecificData(locale) {
       ])
   }
 }
-```
-
-A working example project can be found [here](https://github.com/catamphetamine/webapp). `react-time-ago` is used there, for example, on user profile pages to display how long ago the user has been online.
-
-## Tooltip
-
-The default tooltip is implemented using the standard HTML `title` attribute.
-
-If a custom tooltip is desired it can be implemented the following way:
-
-```js
-import React from 'react'
-import ReactTimeAgo from 'react-time-ago'
-import Tooltip from './tooltip'
-
-export default function TimeAgo(props) {
-  return <ReactTimeAgo {...props} wrapper={Wrapper}/>
-}
-
-function Wrapper({ verbose, children }) {
-  return <Tooltip text={verbose}>{children}</Tooltip>
-}
-```
-
-## Future
-
-When given negative time intervals this library outputs future dates, like "in 5 minutes", "in a year", etc.
-
-## Contributing
-
-After cloning this repo, ensure dependencies are installed by running:
-
-```sh
-npm install
-```
-
-This module is written in ES6 and uses [Babel](http://babeljs.io/) for ES5
-transpilation. Widely consumable JavaScript can be produced by running:
-
-```sh
-npm run build
-```
-
-Once `npm run build` has run, you may `import` or `require()` directly from
-node.
-
-When you're ready to test your new functionality on a real project, you can run
-
-```sh
-npm pack
-```
-
-It will `build`, `test` and then create a `.tgz` archive which you can then install in your project folder
-
-```sh
-npm install [module name with version].tar.gz
 ```
 
 ## License
