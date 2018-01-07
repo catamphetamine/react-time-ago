@@ -47,7 +47,7 @@ If you decide you need the Intl polyfill then [here are some basic installation 
 
 First, the library must be initialized with a set of desired locales.
 
-#### ./react-time-ago.js
+#### ./javascript-time-ago.js
 
 ```js
 // Load number pluralization functions for the locales.
