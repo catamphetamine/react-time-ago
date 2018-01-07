@@ -2,6 +2,8 @@
 	<head>
 		<title>Input Format</title>
 
+		<meta charset="utf-8"/>
+
 		<script src="https://unpkg.com/react@15.3.1/dist/react.js"></script>
 		<script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.js"></script>
 		<script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
@@ -9,6 +11,7 @@
 		<script src="./intl-messageformat-with-locales.min.js"></script>
 		<script src="./javascript-time-ago.min.js"></script>
 		<script src="./locales.en.js"></script>
+		<script src="./locales.ru.js"></script>
 		<script src="./react-time-ago.min.js"></script>
 	</head>
 
@@ -24,19 +27,10 @@
 			font-size: 20px;
 		}
 
-		input[type="tel"],
-		input[type="text"]
-		{
-			padding-bottom: 4px;
-			border: none;
-			border-bottom: 1px solid #0093C4;
-			outline: none;
-		}
-
 		h2
 		{
 			margin-top: 60px;
-			margin-bottom: 40px;
+			margin-bottom: 26px;
 			border-bottom: 1px solid #afafaf;
 		}
 
@@ -73,41 +67,27 @@
 			margin-bottom: 40px;
 		}
 
-		pre
-		{
-			margin-top: 50px;
-			margin-bottom: 40px;
-			padding: 20px;
-			border: 1px solid #cfcfcf;
-			border-radius: 4px;
-			background: #fafafa;
-		}
-
-		button
-		{
-			display: block;
-			margin-top: 10px;
-
-			background : none;
-			border     : none;
-			outline    : none;
-			padding    : 0;
-
-			white-space: nowrap;
-
-			color: #0093C4;
-		}
-
-		.section__line
-		{
-			margin-top: 10px;
-			margin-bottom: 10px;
-		}
-
 		.date
 		{
 			margin-top: 30px;
 			color: #9f9f9f;
+		}
+
+		.time
+		{
+			display: block;
+			margin-top: 1em;
+		}
+
+		time
+		{
+			margin-left: 0.5em;
+			font-weight: bold;
+		}
+
+		.case
+		{
+			margin-top: 3rem;
 		}
 	</style>
 
@@ -124,50 +104,90 @@
 			var javascript_time_ago = window['javascript-time-ago'].default
 
 			javascript_time_ago.locale(window['javascript-time-ago/locales/en'])
+			javascript_time_ago.locale(window['javascript-time-ago/locales/ru'])
+
+			const dates =
+			{
+				recently      : new Date(),
+				a_minute_ago  : new Date(Date.now() - 60 * 1000),
+				two_hours_ago : new Date(Date.now() - 2 * 60 * 60 * 1000),
+				a_day_ago     : new Date(Date.now() - 24 * 60 * 60 * 1000),
+				a_year_ago    : new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
+				in_5_minutes  : new Date(Date.now() + 5 * 60 * 1000)
+			}
 
 			var Content = React.createClass
 			({
-				getInitialState: function()
-				{
-					return {
-						recent            : new Date(),
-						a_minute_earlier  : new Date(Date.now() - 60 * 1000),
-						two_hours_earlier : new Date(Date.now() - 2 * 60 * 60 * 1000),
-						a_day_earlier     : new Date(Date.now() - 24 * 60 * 60 * 1000)
-					}
-				},
-
 				render: function()
 				{
 					const library = window['react-time-ago']
 
 					const ReactTimeAgo = library.default
 
+					const styles = [undefined, 'twitter']
+					const locales = ['en-US', 'ru-RU']
+
+					const cases =
+					[{
+						title : 'Recently',
+						date  : dates.recently
+					},
+					{
+						title : 'A minute ago',
+						date  : dates.a_minute_ago
+					},
+					{
+						title : 'A couple of hours ago',
+						date  : dates.two_hours_ago
+					},
+					{
+						title : 'A day ago',
+						date  : dates.a_day_ago
+					},
+					{
+						title : 'A year ago',
+						date  : dates.a_year_ago
+					},
+					{
+						title : 'In 5 minutes (future date)',
+						date  : dates.in_5_minutes
+					}]
+
 					return (
 						<div>
-							<h2>Recently</h2>
+							{cases.map(({ title, date }) => (
+								<div key={title} className="case">
+									<h2>{title}</h2>
 
-							<ReactTimeAgo locale="en-US">{this.state.recent}</ReactTimeAgo>
+									<div className="time">
+										Default style, English: 
+										<ReactTimeAgo locale="en-US">
+											{date}
+										</ReactTimeAgo>
+									</div>
 
-							<div className="date">{this.state.recent.toString()}</div>
+									<div className="time">
+										Twitter style, English: 
+										<ReactTimeAgo locale="en-US" timeStyle="twitter">
+											{date}
+										</ReactTimeAgo>
+									</div>
 
-							<h2>A minute ago</h2>
+									<div className="time">
+										Default style, Russian: 
+										<ReactTimeAgo locale="ru-RU">
+											{date}
+										</ReactTimeAgo>
+									</div>
 
-							<ReactTimeAgo locale="en-US">{this.state.a_minute_earlier}</ReactTimeAgo>
-
-							<div className="date">{this.state.a_minute_earlier.toString()}</div>
-
-							<h2>A couple of hours ago</h2>
-
-							<ReactTimeAgo locale="en-US">{this.state.two_hours_earlier}</ReactTimeAgo>
-
-							<div className="date">{this.state.two_hours_earlier.toString()}</div>
-
-							<h2>Yesterday</h2>
-
-							<ReactTimeAgo locale="en-US">{this.state.a_day_earlier}</ReactTimeAgo>
-						
-							<div className="date">{this.state.a_day_earlier.toString()}</div>
+									<div className="time">
+										Twitter style, Russian: 
+										<ReactTimeAgo locale="ru-RU" timeStyle="twitter">
+											{date}
+										</ReactTimeAgo>
+									</div>
+								</div>
+							))}
 						</div>
 					)
 				}

@@ -1,13 +1,11 @@
 var long = {
   "year": {
-    "previous": "a year ago",
-    "next": "in a year",
     "future": {
-      "one": "in {0} year",
+      "one": "in a year",
       "other": "in {0} years"
     },
     "past": {
-      "one": "{0} year ago",
+      "one": "a year ago",
       "other": "{0} years ago"
     }
   },
@@ -20,50 +18,42 @@ var long = {
     }
   },
   "month": {
-    "previous": "a month ago",
-    "next": "in a month",
     "future": {
-      "one": "in {0} month",
+      "one": "in a month",
       "other": "in {0} months"
     },
     "past": {
-      "one": "{0} month ago",
+      "one": "a month ago",
       "other": "{0} months ago"
     }
   },
   "week": {
-    "previous": "a week ago",
-    "next": "in a week",
     "future": {
-      "one": "in {0} week",
+      "one": "in a week",
       "other": "in {0} weeks"
     },
     "past": {
-      "one": "{0} week ago",
+      "one": "a week ago",
       "other": "{0} weeks ago"
     }
   },
   "day": {
-    "previous": "a day ago",
-    "next": "in a day",
     "future": {
-      "one": "in {0} day",
+      "one": "in a day",
       "other": "in {0} days"
     },
     "past": {
-      "one": "{0} day ago",
+      "one": "a day ago",
       "other": "{0} days ago"
     }
   },
   "hour": {
-    "previous": "an hour ago",
-    "next": "in an hour",
     "future": {
-      "one": "in {0} hour",
+      "one": "in an hour",
       "other": "in {0} hours"
     },
     "past": {
-      "one": "{0} hour ago",
+      "one": "an hour ago",
       "other": "{0} hours ago"
     }
   },
@@ -76,25 +66,22 @@ var long = {
     }
   },
   "minute": {
-    "previous": "a minute ago",
-    "next": "in a minute",
     "future": {
-      "one": "in {0} minute",
+      "one": "in a minute",
       "other": "in {0} minutes"
     },
     "past": {
-      "one": "{0} minute ago",
+      "one": "a minute ago",
       "other": "{0} minutes ago"
     }
   },
   "second": {
-    "current": "now",
     "future": {
-      "one": "in {0} second",
+      "one": "in a second",
       "other": "in {0} seconds"
     },
     "past": {
-      "one": "{0} second ago",
+      "one": "a second ago",
       "other": "{0} seconds ago"
     }
   },
@@ -110,8 +97,6 @@ var long = {
 
 var long_concise = {
   "year": {
-    "previous": "a year",
-    "next": "a year",
     "future": {
       "one": "{0} year",
       "other": "{0} years"
@@ -130,8 +115,6 @@ var long_concise = {
     }
   },
   "month": {
-    "previous": "a month",
-    "next": "a month",
     "future": {
       "one": "{0} month",
       "other": "{0} months"
@@ -142,8 +125,6 @@ var long_concise = {
     }
   },
   "week": {
-    "previous": "a week",
-    "next": "a week",
     "future": {
       "one": "{0} week",
       "other": "{0} weeks"
@@ -164,8 +145,6 @@ var long_concise = {
     }
   },
   "hour": {
-    "previous": "an hour",
-    "next": "an hour",
     "future": {
       "one": "{0} hour",
       "other": "{0} hours"
@@ -194,7 +173,6 @@ var long_concise = {
     }
   },
   "second": {
-    "current": "now",
     "future": {
       "one": "{0} second",
       "other": "{0} seconds"
@@ -278,7 +256,6 @@ var short = {
     }
   },
   "second": {
-    "current": "now",
     "past": {
       "one": "{0} sec. ago",
       "other": "{0} sec. ago"
@@ -360,7 +337,6 @@ var short_concise = {
     }
   },
   "second": {
-    "current": "now",
     "past": {
       "one": "{0} sec.",
       "other": "{0} sec."
@@ -430,7 +406,6 @@ var tiny = {
     }
   },
   "second": {
-    "current": "now",
     "past": {
       "other": "{0}s"
     },
@@ -451,7 +426,6 @@ var tiny = {
 window['javascript-time-ago/locales/en'] =
 {
   locale        : 'en',
-  default       : long,
 
   tiny          : tiny,
   short         : short,
