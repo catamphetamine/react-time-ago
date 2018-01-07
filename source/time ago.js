@@ -14,20 +14,28 @@ function set_formatters(object)
 
 // An instance of this class formats a `date` with a
 // `javascript-time-ago` formatter given a `time_style`:
-// `new Time_ago('ru-RU').format(new Date(), 'twitter')`
+// `new TimeAgo(['ru-RU']).format(new Date(), 'twitter')`
 //
 // The purpose of this class is also caching `javascript-time-ago` formatters.
 // I didn't measure the performance impact but I guess it would be
 // substantial in case of many `<ReactTimeAgo/>` components on a page,
 // not to mention server side which caches the formatters once and forever.
 //
-export default class Time_ago
+export default class TimeAgo
 {
 	// Caches string to object formatting style mapping
 	formatter_styles = {}
 
-	constructor(locale)
+	constructor(locales)
 	{
+		// Legacy argument
+		if (typeof locales === 'string')
+		{
+			locales = [locales]
+		}
+
+		const locale = this.locale = javascript_time_ago.choose_locale(locales)
+
 		// Formatters
 		if (!get_formatters())
 		{
@@ -37,14 +45,14 @@ export default class Time_ago
 		// Cache `javascript-time-ago` formatter for this locale
 		if (!get_formatters()[locale])
 		{
-			get_formatters()[locale] = new javascript_time_ago(locale)
+			get_formatters()[locale] = new javascript_time_ago([locale])
 		}
 
 		this.formatter = get_formatters()[locale]
 	}
 
 	// Formats a `date` with a `javascript-time-ago` formatter given a `time_style`:
-	// `new Time_ago('ru-RU').format(new Date(), 'twitter')`
+	// `new TimeAgo('ru-RU').format(new Date(), 'twitter')`
 	format(date, time_style)
 	{
 		return this.formatter.format(date, this.parse_time_ago_style(time_style))

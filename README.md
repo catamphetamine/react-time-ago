@@ -122,6 +122,16 @@ The `ReactTimeAgo` component accepts a `timeStyle` property which can be one of
 
 Refer to [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#localization).
 
+## Thread safety
+
+Since thread safety is hard most likely `intl-messageformat` isn't thread safe. Same goes for `Intl.DateTimeFormat` (both native and polyfill): most likely they aren't thread safe either. Therefore `react-time-ago` should be considered non-thread-safe.
+
+But it doesn't really matter because javascript is inherently single-threaded: both in a web browser and in Node.js.
+
+## Caching
+
+`react-time-ago` caches `javascript-time-ago` formatters in a global cache variable (both in a web browser and on server). This is supposed to be a bit (perhaps negligibly) faster while staying safe.
+
 ## Props
 
 ```js

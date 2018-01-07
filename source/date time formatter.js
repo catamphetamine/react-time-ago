@@ -19,7 +19,7 @@ function set_formatters(object)
 //
 // An instance of this class has a `.format(date)` method.
 //
-export default class Date_time_formatter
+export default class DateTimeFormatter
 {
 	constructor(locale, format)
 	{

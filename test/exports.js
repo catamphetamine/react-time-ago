@@ -1,6 +1,8 @@
 import
 {
 	default as ReactTimeAgo,
+	TimeAgo,
+	// Legacy export
 	Time_ago,
 	Date_time_formatter
 }
@@ -14,6 +16,7 @@ describe(`exports`, function()
 	it(`should export ES6`, function()
 	{
 		new ReactTimeAgo({ locale: 'en-US' }, {})
+		new TimeAgo('en-US')
 		new Time_ago('en-US')
 		new Date_time_formatter('en-US')
 	})
@@ -24,6 +27,7 @@ describe(`exports`, function()
 
 		new Library({ locale: 'en-US' }, {})
 		new Library.default({ locale: 'en-US' }, {})
+		new Library.TimeAgo('en-US')
 		new Library.Time_ago('en-US')
 		new Library.Date_time_formatter('en-US')
 	})
