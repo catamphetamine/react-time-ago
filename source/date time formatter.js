@@ -28,8 +28,8 @@ export default class DateTimeFormatter
 		const format_fingerprint = JSON.stringify(format)
 
 		// Cache `Intl.DateTimeFormat` for these `locale` and `format`.
-		this.formatter = cache.get(locale, format_id) ||
-			cache.put(locale, format_id, new Intl.DateTimeFormat(locale, format))
+		this.formatter = cache.get(locale, format_fingerprint) ||
+			cache.put(locale, format_fingerprint, new Intl.DateTimeFormat(locale, format))
 	}
 
 	/**
