@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "description": "International highly customizable relative time formatting",
   "main": "index.common.js",
   "module": "index.es6.js",
@@ -29,7 +29,7 @@
     "intl-locales-supported": "^1.0.0",
     "intl-messageformat": "^2.2.0",
     "istanbul": "^1.1.0-alpha.1",
-    "javascript-time-ago": "^0.4.12",
+    "javascript-time-ago": "^0.4.14",
     "mocha": "^2.4.5",
     "npm-run-all": "^1.4.0",
     "react": "^15.4.1",

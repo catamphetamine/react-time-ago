@@ -1,52 +1,41 @@
-const global_scope = typeof window !== 'undefined' ? window : global
+import cache from './cache'
 
-function get_formatters()
-{
-	return global_scope._date_time_formatters
-}
-
-function set_formatters(object)
-{
-	global_scope._date_time_formatters = object
-}
-
-// Creates a `new Intl.DateTimeFormat()` (and caches it).
-//
-// The whole purpose of this class is caching the formatter.
-// I didn't measure the performance impact but I guess it would be
-// substantial in case of many `<ReactTimeAgo/>` components on a page,
-// not to mention server side which caches the formats once and forever.
-//
-// An instance of this class has a `.format(date)` method.
-//
+/**
+ * The whole purpose of this class is caching the formatter.
+ * I didn't measure the performance impact but I guess it would be
+ * reasonable in case of many `<ReactTimeAgo/>` components on a page,
+ * not to mention server side which caches the formats once and forever.
+ * Since both web browser and Node.js are single-threaded
+ * such caching approach is safe.
+ */
 export default class DateTimeFormatter
 {
+	/**
+	 * @param {string} locale - Date formatting locale
+	 * @param {object} format - Formatted date format
+	 * @param {string} format.day     - Day format
+	 * @param {string} format.month   - Month format
+	 * @param {string} format.year    - Year format
+	 * @param {string} format.weekday - Weekday format
+	 * @param {string} format.hour    - Hour format
+	 * @param {string} format.minute  - Minute format
+	 * @param {string} format.second  - Second format
+	 */
 	constructor(locale, format)
 	{
-		if (!get_formatters())
-		{
-			set_formatters({})
-		}
-
-		// Formatters for this locale
-		if (!get_formatters()[locale])
-		{
-			get_formatters()[locale] = {}
-		}
-
 		// `Intl.DateTimeFormat` format caching key.
 		// E.g. `"{"day":"numeric","month":"short",...}"`.
-		const format_id = JSON.stringify(format)
+		const format_fingerprint = JSON.stringify(format)
 
-		// Cache `Intl.DateTimeFormat` for this locale
-		if (!get_formatters()[locale][format_id])
-		{
-			get_formatters()[locale][format_id] = new Intl.DateTimeFormat(locale, format)
-		}
-
-		this.formatter = get_formatters()[locale][format_id]
+		// Cache `Intl.DateTimeFormat` for these `locale` and `format`.
+		this.formatter = cache.get(locale, format_id) ||
+			cache.put(locale, format_id, new Intl.DateTimeFormat(locale, format))
 	}
 
+	/**
+	 * Formats the date
+	 * @param {Date} date
+	 */
 	format(date)
 	{
 		return this.formatter.format(date)

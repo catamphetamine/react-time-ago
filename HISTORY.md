@@ -1,3 +1,11 @@
+0.4.0 / 08.01.2018
+===================
+
+  * (breaking change) `wrapper` property renamed to `container`
+  * (breaking change) `container` `verbose` property renamed to `verboseDate`
+  * (breaking change) Removed old deprecated underscored property names
+  * Overall cleaning and a bit of refactoring
+
 0.3.2 / 22.12.2016
 ===================
 

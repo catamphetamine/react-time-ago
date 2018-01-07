@@ -128,8 +128,6 @@ Since thread safety is hard most likely `intl-messageformat` isn't thread safe. 
 
 But it doesn't really matter because javascript is inherently single-threaded: both in a web browser and in Node.js.
 
-## Caching
-
 `react-time-ago` caches `javascript-time-ago` formatters in a global cache variable (both in a web browser and on server). This is supposed to be a bit (perhaps negligibly) faster while staying safe.
 
 ## Props
@@ -155,7 +153,23 @@ time : PropTypes.number,
 
 // Date/time formatting style.
 // E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', override: function }`)
-timeStyle : PropTypes.any,
+timeStyle : PropTypes.oneOfType
+([
+  PropTypes.string,
+  PropTypes.shape
+  ({
+    gradation : PropTypes.arrayOf(PropTypes.shape
+    ({
+      name        : PropTypes.string.isRequired,
+      granularity : PropTypes.number,
+      threshold   : PropTypes.number,
+      // Specific `threshold_[unit]` properties may also be defined
+    })),
+    units    : PropTypes.arrayOf(PropTypes.string),
+    flavour  : PropTypes.string,
+    override : PropTypes.func
+  })
+]),
 
 // An optional function returning what will be output in the HTML `title` tooltip attribute.
 // (by default it's (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
@@ -172,6 +186,10 @@ updateInterval : PropTypes.number,
 
 // Set to `false` to disable automatic refresh as time goes by.
 tick : PropTypes.bool,
+
+// React Component to wrap the resulting `<time/>` React Element.
+// Can be used for displaying time in an "on mouse over" tooltip.
+container : PropTypes.func,
 
 // CSS `style` object.
 // E.g. `{ color: white }`.
@@ -193,12 +211,12 @@ import ReactTimeAgo from 'react-time-ago'
 import Tooltip from './tooltip'
 
 export default function TimeAgo(props) {
-  return <ReactTimeAgo {...props} wrapper={Wrapper}/>
+  return <ReactTimeAgo {...props} container={TooltipContainer}/>
 }
 
-function Wrapper({ verbose, children }) {
+function TooltipContainer({ verboseDate, children }) {
   return (
-    <Tooltip text={ verbose }>
+    <Tooltip text={ verboseDate }>
       { children }
     </Tooltip>
   )

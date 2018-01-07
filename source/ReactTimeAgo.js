@@ -1,35 +1,86 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import JavascriptTimeAgo from 'javascript-time-ago'
 
 import shallow_equal from './shallow equal'
 import { start_time_updater, get_time_updater } from './updater'
-import TimeAgo from './time ago'
 import DateTimeFormatter from './date time formatter'
 
 export default class React_time_ago extends React.Component
 {
 	static propTypes =
 	{
-		locale           : PropTypes.string,
-		locales          : PropTypes.arrayOf(PropTypes.string),
-		children         : PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.number]),
-		// `javascript-time-ago` relative time formatting style
-		timeStyle        : PropTypes.any,
-		// Legacy property name
-		time_style       : PropTypes.any,
-		// (optional) Tooltip date formatter
-		full             : PropTypes.func,
-		// Intl.DateTimeFormat options
-		dateTimeFormat   : PropTypes.object.isRequired,
-		// Legacy property name
-		date_time_format : PropTypes.object,
-		updateInterval   : PropTypes.number.isRequired,
-		// Legacy property name
-		update_interval  : PropTypes.number,
-		wrapper          : PropTypes.func,
-		tick             : PropTypes.bool.isRequired,
-		style            : PropTypes.object,
-		className        : PropTypes.string
+		// Preferred locale.
+		// E.g. 'ru-RU'.
+		locale : PropTypes.string,
+
+		// Preferred locales (ordered).
+		// E.g. `['ru-RU', 'en-GB']`.
+		locales : PropTypes.arrayOf(PropTypes.string),
+
+		// The date to format.
+		// Alternatively can be passed as a child.
+		// E.g. `new Date()`.
+		date : PropTypes.instanceOf(Date),
+
+		// The date to format.
+		// Alternatively can be passed as a child.
+		// E.g. `1355972400000`.
+		time : PropTypes.number,
+
+		// Date/time formatting style.
+		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', override: function }`)
+		timeStyle : PropTypes.oneOfType
+		([
+			PropTypes.string,
+			PropTypes.shape
+			({
+				gradation : PropTypes.arrayOf(PropTypes.shape
+				({
+					name        : PropTypes.string.isRequired,
+					granularity : PropTypes.number,
+					factor      : PropTypes.number,
+					threshold   : PropTypes.number,
+					// Specific `threshold_[unit]` properties may also be defined
+				})),
+				units    : PropTypes.arrayOf(PropTypes.string),
+				flavour  : PropTypes.string,
+				override : PropTypes.func
+			})
+		]),
+
+		// An optional function returning what will be output in the HTML `title` tooltip attribute.
+		// (by default it's (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
+		full : PropTypes.func,
+
+		// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
+		// Is used when `full` is not specified.
+		// By default outputs a verbose full date.
+		dateTimeFormat : PropTypes.object,
+
+		// How often to update all `<ReactTimeAgo/>`s on a page.
+		// (once a minute by default)
+		updateInterval : PropTypes.number,
+
+		// Set to `false` to disable automatic refresh as time goes by.
+		tick : PropTypes.bool,
+
+		// React Component to wrap the resulting `<time/>` React Element.
+		// Can be used for displaying time in an "on mouse over" tooltip.
+		container : PropTypes.func,
+
+		// CSS `style` object.
+		// E.g. `{ color: white }`.
+		style : PropTypes.object,
+
+		// CSS class name
+		className : PropTypes.string,
+
+		children : PropTypes.oneOfType
+		([
+			PropTypes.instanceOf(Date),
+			PropTypes.number
+		]),
 	}
 
 	static defaultProps =
@@ -50,15 +101,15 @@ export default class React_time_ago extends React.Component
 		},
 
 		// Updates once a minute
-		updateInterval: 60 * 1000,
+		updateInterval : 60 * 1000,
 
 		// Refreshes time in a web browser by default
-		tick: true
+		tick : true
 	}
 
 	static contextTypes =
 	{
-		intl: PropTypes.object
+		intl : PropTypes.object
 	}
 
 	state = {}
@@ -79,7 +130,7 @@ export default class React_time_ago extends React.Component
 
 		// Take `javascript-time-ago` formatter and 
 		// `Intl.DateTimeFormat` verbose formatter from cache.
-		this.time_ago            = new TimeAgo(this.get_preferred_locales())
+		this.time_ago            = new JavascriptTimeAgo(this.get_preferred_locales())
 		this.date_time_formatter = new DateTimeFormatter(this.time_ago.locale, date_time_format)
 	}
 
@@ -118,8 +169,7 @@ export default class React_time_ago extends React.Component
 		const
 		{
 			children,
-			wrapper,
-			time_style,
+			container,
 			timeStyle,
 			style,
 			className
@@ -140,17 +190,17 @@ export default class React_time_ago extends React.Component
 		(
 			<time
 				dateTime={ (date || new Date(time)).toISOString() }
-				title={ wrapper ? undefined : full_date } 
+				title={ container ? undefined : full_date } 
 				style={ style } 
 				className={ className }>
 
-				{ this.time_ago.format(time || date, time_style || timeStyle) }
+				{ this.time_ago.format(time || date, normalize_time_ago_style(timeStyle)) }
 			</time>
 		)
 
-		if (wrapper)
+		if (container)
 		{
-			return React.createElement(wrapper, { verbose: full_date }, markup)
+			return React.createElement(container, { verboseDate: full_date }, markup)
 		}
 
 		return markup
@@ -211,4 +261,32 @@ function get_input_date(input)
 	}
 
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
+}
+
+// Converts a string time style (e.g. "twitter") into an object one.
+// See `javascript-time-ago` docs for more info on time style.
+function normalize_time_ago_style(style)
+{
+	if (!style)
+	{
+		return
+	}
+
+	// Convert a string style into an object one (and cache it)
+	if (typeof style === 'string')
+	{
+		if (!this.formatter_styles[style])
+		{
+			this.formatter_styles[style] = this.formatter.style[style]()
+		}
+
+		return this.formatter_styles[style]
+	}
+
+	if (typeof style === 'object')
+	{
+		return style
+	}
+
+	throw new Error(`Unknown time formatter style: ${style}`)
 }
