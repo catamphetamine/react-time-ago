@@ -106,6 +106,8 @@ export default class ReactTimeAgo extends Component
 	{
 		locales : [],
 
+		tooltip : true,
+
 		// Thursday, December 20, 2012, 7:00:00 AM GMT+4
 		verboseDateFormat:
 		{
