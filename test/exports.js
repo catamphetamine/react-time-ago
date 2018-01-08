@@ -1,19 +1,17 @@
 import
 {
-	default as ReactTimeAgo,
-	Date_time_formatter
+	default as ReactTimeAgo
 }
 from '../index.es6'
 
 import javascript_time_ago from 'javascript-time-ago'
-javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
+javascript_time_ago.locale(require('javascript-time-ago/locale/en'))
 
 describe(`exports`, function()
 {
 	it(`should export ES6`, function()
 	{
 		new ReactTimeAgo({ locale: 'en-US' }, {})
-		new Date_time_formatter('en-US')
 	})
 
 	it(`should export CommonJS`, function()
@@ -22,6 +20,5 @@ describe(`exports`, function()
 
 		new Library({ locale: 'en-US' }, {})
 		new Library.default({ locale: 'en-US' }, {})
-		new Library.Date_time_formatter('en-US')
 	})
 })

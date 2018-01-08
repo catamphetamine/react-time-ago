@@ -29,30 +29,6 @@ Formats a date to something like:
   * 5 years ago
   * … or whatever else
 
-## Intl
-
-This package assumes that the [`Intl`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl) global object exists in the runtime. `Intl` is present in all modern browsers and is absent from some of the old ones: [Internet Explorer 10, Safari 9 and iOS Safari 9.x](http://caniuse.com/#search=intl) (which can be solved using the `Intl` polyfill).
-
-Node.js starting from `0.12` has the `Intl` APIs built-in, but only includes English locale data by default. If your app needs to support more locales than English on server side then you'll need to use the `Intl` polyfill.
-
-```
-npm install intl@1.2.4 --save
-```
-
-Node.js
-
-```js
-import Intl from 'intl'
-global.Intl = Intl
-```
-
-Web browser
-
-```js
-import Intl from 'intl'
-window.Intl = Intl
-```
-
 ## Usage
 
 ```
@@ -87,7 +63,9 @@ export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <ReactTimeAgo>{date}</ReactTimeAgo>
+      <ReactTimeAgo>
+        {date}
+      </ReactTimeAgo>
     </div>
   )
 }
@@ -97,23 +75,13 @@ The React component refreshes itself as the time goes by.
 
 ## Customization
 
-The `ReactTimeAgo` component accepts a `timeStyle` property which can be one of
+See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#advanced).
+
+`ReactTimeAgo` component accepts a `timeStyle` property which can be one of
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
   * [`"fuzzy"`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
   * [`{ gradation, units, flavour, override() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
-
-## Localization internals
-
-Refer to [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#localization-internals).
-
-## Thread safety
-
-Since thread safety is hard most likely `Intl.DateTimeFormat` (both native and polyfill) isn't thread-safe. Therefore `react-time-ago` should be considered non-thread-safe.
-
-But it doesn't really matter because javascript is inherently single-threaded: both in a web browser and in Node.js.
-
-`react-time-ago` caches `javascript-time-ago` formatters in a global cache variable (both in a web browser and on server). This is supposed to be a bit (perhaps negligibly) faster while staying safe.
 
 ## Props
 
@@ -183,7 +151,6 @@ tick : PropTypes.bool,
 // `verboseDate` can be used for displaying verbose date label
 // in an "on mouse over" (or "on touch") tooltip.
 //
-// ```js
 // import React from 'react'
 // import ReactTimeAgo from 'react-time-ago'
 // import { Tooltip } from 'react-responsive-ui'
@@ -197,7 +164,6 @@ tick : PropTypes.bool,
 //     {children}
 //   </Tooltip>
 // )
-// ```
 //
 container : PropTypes.func,
 
@@ -211,27 +177,9 @@ className : PropTypes.string
 
 ## Tooltip
 
-The default tooltip is implemented using the standard HTML `title` attribute.
+The default tooltip is implemented using the standard HTML `title` attribute and displays verbose date label. If `Intl` is supported then `Intl.DateTimeFormat` is used for formatting the verbose date label. Otherwise, simple `date.toString()` is used.
 
-If a custom tooltip is desired it can be implemented the following way:
-
-```js
-import React from 'react'
-import ReactTimeAgo from 'react-time-ago'
-import Tooltip from './tooltip'
-
-export default function TimeAgo(props) {
-  return <ReactTimeAgo {...props} container={TooltipContainer}/>
-}
-
-function TooltipContainer({ verboseDate, children }) {
-  return (
-    <Tooltip text={ verboseDate }>
-      { children }
-    </Tooltip>
-  )
-}
-```
+If a more advanced way of displaying a tooltip is required, one may use the `container` property to get the `verboseDate` label.
 
 ## Future
 

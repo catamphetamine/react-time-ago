@@ -157,9 +157,6 @@ export default class ReactTimeAgo extends Component
 		}
 		= this.props
 
-		// Format verbose date for HTML `tooltip` attribute.
-		this.format_verbose_date = createVerboseDateFormatter(this.get_preferred_locales(), verboseDateFormat)
-
 		// If time label autoupdates are enabled.
 		if (tick)
 		{
@@ -172,6 +169,10 @@ export default class ReactTimeAgo extends Component
 			// Register for the relative time autoupdate as the time goes by.
 			this.stop_autoupdate = get_time_updater().add(() => this.forceUpdate())
 		}
+
+		// Format verbose date for HTML `tooltip` attribute.
+		this.format_verbose_date = createVerboseDateFormatter(this.get_preferred_locales(), verboseDateFormat)
+		this.forceUpdate()
 	}
 
 	componentWillUnmount()
