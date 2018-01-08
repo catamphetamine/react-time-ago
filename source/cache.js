@@ -1,6 +1,4 @@
 // This cache is used for tooltip date formatter.
-// The same cache gives 20x performance boost
-// for `javascript-time-ago` relative date/time formatters.
 export default
 {
 	cache: {},

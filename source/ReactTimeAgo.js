@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
 
 import shallow_equal from './shallow equal'
 import { start_time_updater, get_time_updater } from './updater'
-import DateTimeFormatter from './date time formatter'
+import createVerboseDateFormatter from './verbose date formatter'
 
-export default class React_time_ago extends React.Component
+export default class ReactTimeAgo extends Component
 {
 	static propTypes =
 	{
@@ -18,15 +18,14 @@ export default class React_time_ago extends React.Component
 		// E.g. `['ru-RU', 'en-GB']`.
 		locales : PropTypes.arrayOf(PropTypes.string),
 
-		// The date to format.
-		// Alternatively can be passed as a child.
-		// E.g. `new Date()`.
-		date : PropTypes.instanceOf(Date),
-
-		// The date to format.
-		// Alternatively can be passed as a child.
-		// E.g. `1355972400000`.
-		time : PropTypes.number,
+		// The `date` or `timestamp`.
+		// E.g. `new Date()` or `1355972400000`.
+		children : PropTypes.oneOfType
+		([
+			PropTypes.instanceOf(Date),
+			PropTypes.number
+		])
+		.isRequired,
 
 		// Date/time formatting style.
 		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', override: function }`)
@@ -44,19 +43,26 @@ export default class React_time_ago extends React.Component
 					// Specific `threshold_[unit]` properties may also be defined
 				})),
 				units    : PropTypes.arrayOf(PropTypes.string),
-				flavour  : PropTypes.string,
+				flavour  : PropTypes.oneOfType([
+					PropTypes.string,
+					PropTypes.arrayOf(PropTypes.string)
+				]),
 				override : PropTypes.func
 			})
 		]),
 
+		// Whether HTML `tooltip` attribute should be set
+		// to verbosely formatted date (is `true` by default).
+		tooltip : PropTypes.bool.isRequired,
+
 		// An optional function returning what will be output in the HTML `title` tooltip attribute.
 		// (by default it's (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
-		full : PropTypes.func,
+		formatVerboseDate : PropTypes.func,
 
 		// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
-		// Is used when `full` is not specified.
+		// Is used when `formatVerboseDate` is not specified.
 		// By default outputs a verbose full date.
-		dateTimeFormat : PropTypes.object,
+		verboseDateFormat : PropTypes.object,
 
 		// How often to update all `<ReactTimeAgo/>`s on a page.
 		// (once a minute by default)
@@ -66,7 +72,26 @@ export default class React_time_ago extends React.Component
 		tick : PropTypes.bool,
 
 		// React Component to wrap the resulting `<time/>` React Element.
-		// Can be used for displaying time in an "on mouse over" tooltip.
+		// Receives `verboseDate` and `children` properties.
+		// `verboseDate` can be used for displaying verbose date label
+		// in an "on mouse over" (or "on touch") tooltip.
+		//
+		// ```js
+		// import React from 'react'
+		// import ReactTimeAgo from 'react-time-ago'
+		// import { Tooltip } from 'react-responsive-ui'
+		// 
+		// export default function TimeAgo(props) {
+		//   return <ReactTimeAgo {...props} container={Container}/>
+		// }
+		// 
+		// const Container = ({ verboseDate, children }) => (
+		//   <Tooltip text={verboseDate}>
+		//     {children}
+		//   </Tooltip>
+		// )
+		// ```
+		//
 		container : PropTypes.func,
 
 		// CSS `style` object.
@@ -74,13 +99,7 @@ export default class React_time_ago extends React.Component
 		style : PropTypes.object,
 
 		// CSS class name
-		className : PropTypes.string,
-
-		children : PropTypes.oneOfType
-		([
-			PropTypes.instanceOf(Date),
-			PropTypes.number
-		]),
+		className : PropTypes.string
 	}
 
 	static defaultProps =
@@ -88,7 +107,7 @@ export default class React_time_ago extends React.Component
 		locales : [],
 
 		// Thursday, December 20, 2012, 7:00:00 AM GMT+4
-		dateTimeFormat:
+		verboseDateFormat:
 		{
 			weekday      : 'long',
 			day          : 'numeric',
@@ -112,47 +131,44 @@ export default class React_time_ago extends React.Component
 		intl : PropTypes.object
 	}
 
-	state = {}
-
 	constructor(props, context)
 	{
+		// `this.props` and `this.context`
+		// are used in `.get_preferred_locales()`.
 		super(props, context)
 
-		// Legacy property name support
-		const date_time_format = this.props.date_time_format || this.props.dateTimeFormat
-		const update_interval  = this.props.update_interval  || this.props.updateInterval
-
-		// Automatically updates time in a web browser
-		if (!get_time_updater())
-		{
-			start_time_updater(update_interval)
-		}
-
-		// Take `javascript-time-ago` formatter and 
-		// `Intl.DateTimeFormat` verbose formatter from cache.
-		this.time_ago            = new JavascriptTimeAgo(this.get_preferred_locales())
-		this.date_time_formatter = new DateTimeFormatter(this.time_ago.locale, date_time_format)
+		this.time_ago = new JavascriptTimeAgo(this.get_preferred_locales())
 	}
 
-	shouldComponentUpdate(nextProps, nextState)
+	shouldComponentUpdate(nextProps)
 	{
-		return !shallow_equal(this.props, nextProps) || !shallow_equal(this.state, nextState)
+		return !shallow_equal(this.props, nextProps)
 	}
 
 	componentDidMount()
 	{
-		const { tick } = this.props
+		const
+		{
+			tick,
+			updateInterval,
+			verboseDateFormat
+		}
+		= this.props
 
+		// Format verbose date for HTML `tooltip` attribute.
+		this.format_verbose_date = createVerboseDateFormatter(this.get_preferred_locales(), verboseDateFormat)
+
+		// If time label autoupdates are enabled.
 		if (tick)
 		{
-			// Register for the relative time autoupdate as the time goes by
-			this.stop_autoupdate = get_time_updater().add(() =>
+			// Run automatic time label updater (in a web browser).
+			if (!get_time_updater())
 			{
-				this.setState
-				({
-					updatedAt: Date.now()
-				})
-			})
+				start_time_updater(updateInterval)
+			}
+
+			// Register for the relative time autoupdate as the time goes by.
+			this.stop_autoupdate = get_time_updater().add(() => this.forceUpdate())
 		}
 	}
 
@@ -169,38 +185,39 @@ export default class React_time_ago extends React.Component
 		const
 		{
 			children,
-			container,
 			timeStyle,
+			tooltip,
+			container,
 			style,
 			className
 		}
 		= this.props
 
-		if (!children)
-		{
-			throw new Error(`You are required to specify either a timestamp (in milliseconds) or Date as a child of react-time-ago component`)
-		}
+		// The date or timestamp that was passed.
+		let date   = (children instanceof Date) && children
+		const time = (typeof children === 'number') && children
 
-		const full_date = this.full_date(children)
+		// Convert timestamp to `Date`.
+		date = date || new Date(time)
 
-		const date = children instanceof Date && children
-		const time = typeof children === 'number' && children
+		// Only after `componentDidMount()` (only on client side).
+		const verbose_date = this.format_verbose_date ? this.get_verbose_date(date) : undefined
 
 		const markup =
 		(
 			<time
-				dateTime={ (date || new Date(time)).toISOString() }
-				title={ container ? undefined : full_date } 
+				dateTime={ date.toISOString() }
+				title={ tooltip ? verbose_date : undefined } 
 				style={ style } 
 				className={ className }>
 
-				{ this.time_ago.format(time || date, timeStyle) }
+				{ this.time_ago.format(date, timeStyle) }
 			</time>
 		)
 
 		if (container)
 		{
-			return React.createElement(container, { verboseDate: full_date }, markup)
+			return React.createElement(container, { verboseDate: verbose_date }, markup)
 		}
 
 		return markup
@@ -234,21 +251,21 @@ export default class React_time_ago extends React.Component
 	//
 	// E.g. "Sunday, May 18th, 2012, 18:45"
 	//
-	full_date(input)
+	get_verbose_date(input)
 	{
-		const { full } = this.props
+		const { formatVerboseDate } = this.props
 
-		if (full)
+		if (formatVerboseDate)
 		{
-			return full(input)
+			return formatVerboseDate(convert_to_date(input))
 		}
 
-		return this.date_time_formatter.format(get_input_date(input))
+		return this.format_verbose_date(convert_to_date(input))
 	}
 }
 
-// Converts input into a `Date`.
-function get_input_date(input)
+// Converts argument into a `Date`.
+function convert_to_date(input)
 {
 	if (input.constructor === Date)
 	{
