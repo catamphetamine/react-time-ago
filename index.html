@@ -149,12 +149,13 @@
 					},
 					{
 						title : 'In 5 minutes (future date)',
-						date  : dates.in_5_minutes
+						date  : dates.in_5_minutes,
+						twitter : false
 					}]
 
 					return (
 						<div>
-							{cases.map(({ title, date }) => (
+							{cases.map(({ title, date, twitter }) => (
 								<div key={title} className="case">
 									<h2>{title}</h2>
 
@@ -165,12 +166,14 @@
 										</ReactTimeAgo>
 									</div>
 
-									<div className="time">
-										Twitter style, English: 
-										<ReactTimeAgo locale="en-US" timeStyle="twitter">
-											{date}
-										</ReactTimeAgo>
-									</div>
+									{twitter !== false &&
+										<div className="time">
+											Twitter style, English: 
+											<ReactTimeAgo locale="en-US" timeStyle="twitter">
+												{date}
+											</ReactTimeAgo>
+										</div>
+									}
 
 									<div className="time">
 										Default style, Russian: 
@@ -179,12 +182,14 @@
 										</ReactTimeAgo>
 									</div>
 
-									<div className="time">
-										Twitter style, Russian: 
-										<ReactTimeAgo locale="ru-RU" timeStyle="twitter">
-											{date}
-										</ReactTimeAgo>
-									</div>
+									{twitter !== false &&
+										<div className="time">
+											Twitter style, Russian: 
+											<ReactTimeAgo locale="ru-RU" timeStyle="twitter">
+												{date}
+											</ReactTimeAgo>
+										</div>
+									}
 								</div>
 							))}
 						</div>
