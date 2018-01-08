@@ -545,5 +545,7 @@ window['javascript-time-ago/locales/ru'] =
   short         : short,
   short_concise : short_concise,
   long          : long,
-  long_concise  : long_concise
+  long_concise  : long_concise,
+
+  plural : function(e){var i=String(e).split("."),n=i[0],r=!i[1],s=n.slice(-1),t=n.slice(-2);return r&&1==s&&11!=t?"one":r&&s>=2&&s<=4&&(t<12||t>14)?"few":r&&0==s||r&&s>=5&&s<=9||r&&t>=11&&t<=14?"many":"other"}
 }

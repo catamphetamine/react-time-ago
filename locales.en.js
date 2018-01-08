@@ -431,5 +431,7 @@ window['javascript-time-ago/locales/en'] =
   short         : short,
   short_concise : short_concise,
   long          : long,
-  long_concise  : long_concise
+  long_concise  : long_concise,
+
+  plural : function(n){var r=!String(n).split(".")[1];return 1==n&&r?"one":"other"}
 }
