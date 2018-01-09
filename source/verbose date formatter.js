@@ -45,7 +45,7 @@ export default function createVerboseDateFormatter(locales, format)
  */
 function choose_locale(locales)
 {
-	if (typeof Intel === 'object' && Intl.DateTimeFormat)
+	if (typeof Intl === 'object' && Intl.DateTimeFormat)
 	{
 		return Intl.DateTimeFormat.supportedLocalesOf(locales)[0]
 	}
