@@ -32,8 +32,8 @@ Formats a date to something like:
 ## Usage
 
 ```
-# (also installs "javascript-time-ago")
 npm install react-time-ago --save
+# (also installs "javascript-time-ago" as a dependency)
 ```
 
 First, the library must be initialized with a set of desired locales.
