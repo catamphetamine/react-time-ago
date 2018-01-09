@@ -1,4 +1,6 @@
-import cache from './cache'
+import Cache from './cache'
+
+const cache = new Cache()
 
 /**
  * Creates verbose date formatter.

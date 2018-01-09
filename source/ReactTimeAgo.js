@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
 
 import shallow_equal from './shallow equal'
-import { start_time_updater, get_time_updater } from './updater'
+import Periodic from './periodic'
 import createVerboseDateFormatter from './verbose date formatter'
 
 export default class ReactTimeAgo extends Component
@@ -161,13 +161,13 @@ export default class ReactTimeAgo extends Component
 		if (tick)
 		{
 			// Run automatic time label updater (in a web browser).
-			if (!get_time_updater())
+			if (!window._react_time_ago_updater)
 			{
-				start_time_updater(updateInterval)
+				window._react_time_ago_updater = new Periodic(updateInterval)
 			}
 
 			// Register for the relative time autoupdate as the time goes by.
-			this.stop_autoupdate = get_time_updater().add(() => this.forceUpdate())
+			this.stop_autoupdate = window._react_time_ago_updater.add(() => this.forceUpdate())
 		}
 
 		// Format verbose date for HTML `tooltip` attribute.

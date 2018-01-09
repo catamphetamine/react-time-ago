@@ -1,7 +1,7 @@
-// This cache is used for tooltip date formatter.
-export default
+// A basic in-memory cache.
+export default class Cache
 {
-	cache: {},
+	cache = {}
 
 	get(...keys)
 	{
@@ -16,7 +16,7 @@ export default
 		}
 
 		return cache
-	},
+	}
 
 	put(...keys)
 	{
