@@ -6,7 +6,6 @@
   "module": "index.es6.js",
   "dependencies": {
     "babel-runtime": "^6.6.1",
-    "intl-locales-supported": "^1.0.0",
     "javascript-time-ago": "^1.0.8",
     "prop-types": "^15.5.6"
   },
