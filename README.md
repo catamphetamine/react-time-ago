@@ -183,7 +183,7 @@ If a more advanced way of displaying a tooltip is required, one may use the `con
 
 ## Future
 
-When given future dates `.format()` produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
+When given future dates it produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
 
 ## License
 
