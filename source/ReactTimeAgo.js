@@ -61,7 +61,7 @@ export default class ReactTimeAgo extends Component
 
 		// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
 		// Is used when `formatVerboseDate` is not specified.
-		// By default outputs a verbose full date.
+		// By default outputs a verbose date.
 		verboseDateFormat : PropTypes.object,
 
 		// How often to update all `<ReactTimeAgo/>`s on a page.
