@@ -6,11 +6,16 @@ import ReactTimeAgo from './ReactTimeAgo'
 import Tooltip from 'react-responsive-ui/commonjs/Tooltip'
 
 export default function TimeAgo(props) {
-  return <ReactTimeAgo {...props} container={Container}/>
+	return (
+		<ReactTimeAgo
+			{...props}
+			container={Container}
+			tooltip={false}/>
+	)
 }
 
 const Container = ({ verboseDate, children }) => (
-  <Tooltip text={verboseDate}>
-    {children}
-  </Tooltip>
+	<Tooltip text={verboseDate}>
+		{children}
+	</Tooltip>
 )
