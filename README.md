@@ -78,7 +78,7 @@ See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-ti
 `TimeAgo` component accepts a `timeStyle` property which can be one of
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
-  * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
+  * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#just-time-style)
   * [`{ gradation, units, flavour, override() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
 
 ## Tooltip
