@@ -63,7 +63,7 @@ export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <TimeAgo> {date} </TimeAgo>
+      <TimeAgo>{date}</TimeAgo>
     </div>
   )
 }
@@ -92,9 +92,11 @@ import TimeAgo from 'react-time-ago'
 
 // Tooltip CSS styles:
 import 'react-time-ago/Tooltip.css'
+// Also make sure that `document.body` has no `margin`
+// otherwise tooltip `left` and `top` positions will be slightly off.
 
 // Shows a verbose date tooltip on mouse over and on touch down.
-<TimeAgo> {date} </TimeAgo>
+<TimeAgo>{date}</TimeAgo>
 ```
 
 If the prepackaged `<Tooltip/>` component doesn't fit the bill then any other custom `<Tooltip/>` component may be used (see `./source/WithTooltip.js`).
@@ -104,7 +106,7 @@ Finally, one can use bare `react-time-ago` without any `<Tooltip/>` component:
 ```js
 import { TimeAgo } from 'react-time-ago'
 // Shows a verbose date tooltip on mouse over (HTML `title` attribute).
-<TimeAgo> {date} </TimeAgo>
+<TimeAgo>{date}</TimeAgo>
 ```
 
 ## Future

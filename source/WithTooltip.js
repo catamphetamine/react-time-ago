@@ -14,8 +14,8 @@ export default function TimeAgo(props) {
 	)
 }
 
-const Container = ({ verboseDate, children }) => (
-	<Tooltip text={verboseDate}>
+const Container = ({ verboseDate, children, ...rest }) => (
+	<Tooltip text={verboseDate} {...rest}>
 		{children}
 	</Tooltip>
 )

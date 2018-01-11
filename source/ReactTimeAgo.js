@@ -213,8 +213,8 @@ export default class ReactTimeAgo extends Component
 			<time
 				dateTime={ date.toISOString() }
 				title={ tooltip ? verbose_date : undefined } 
-				style={ style } 
-				className={ className }>
+				style={ container ? undefined : style } 
+				className={ container ? undefined : className }>
 
 				{ this.time_ago.format(date, timeStyle) }
 			</time>
@@ -222,7 +222,13 @@ export default class ReactTimeAgo extends Component
 
 		if (container)
 		{
-			return React.createElement(container, { verboseDate: verbose_date }, time_ago)
+			return React.createElement(container,
+			{
+				verboseDate : verbose_date,
+				className,
+				style
+			},
+			time_ago)
 		}
 
 		return time_ago
