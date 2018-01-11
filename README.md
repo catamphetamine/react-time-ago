@@ -78,8 +78,26 @@ See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-ti
 `TimeAgo` component accepts a `timeStyle` property which can be one of
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
-  * [`"fuzzy"`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
+  * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
   * [`{ gradation, units, flavour, override() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
+
+## Tooltip
+
+The default tooltip is implemented using the standard HTML `title` attribute and displays verbose date label. If `Intl` is supported then `Intl.DateTimeFormat` is used for formatting the verbose date label. Otherwise, simple `date.toString()` is used.
+
+Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip).
+
+```js
+import { WithTooltip as TimeAgo } from 'react-time-ago'
+import 'react-time-ago/Tooltip.css'
+
+// Shows a verbose date tooltip on mouse over and on tap.
+<TimeAgo .../>
+```
+
+## Future
+
+When given future dates it produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
 
 ## Props
 
@@ -158,24 +176,6 @@ style : PropTypes.object,
 // CSS class name
 className : PropTypes.string
 ```
-
-## Tooltip
-
-The default tooltip is implemented using the standard HTML `title` attribute and displays verbose date label. If `Intl` is supported then `Intl.DateTimeFormat` is used for formatting the verbose date label. Otherwise, simple `date.toString()` is used.
-
-Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip).
-
-```js
-import { WithTooltip as TimeAgo } from 'react-time-ago'
-import 'react-time-ago/Tooltip.css'
-
-// Shows a verbose date tooltip on mouse over and on tap.
-<TimeAgo .../>
-```
-
-## Future
-
-When given future dates it produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
 
 ## License
 
