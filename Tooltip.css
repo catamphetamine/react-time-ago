@@ -1,0 +1,46 @@
+.rrui__tooltip
+{
+	color      : white;
+	background : black;
+
+	border-radius : 3pt;
+
+	padding-left   : calc(0.3rem * 2);
+	padding-right  : calc(0.3rem * 2);
+	padding-top    : calc(0.3rem * 1);
+	padding-bottom : calc(0.3rem * 1);
+
+	margin-top : -0.3em;
+	opacity    : 0;
+	/* transform  : scale(0.8); */
+	transform  : translateY(0.5em);
+
+	cursor : default;
+}
+
+.rrui__tooltip--after-show
+{
+	opacity: 1;
+	/* transform: scale(1); */
+	transform: translateY(0);
+}
+
+.rrui__tooltip--before-hide
+{
+	opacity: 0;
+	/* transform: scale(0.8); */
+	transform: translateY(0.5em);
+}
+
+.rrui__tooltip--after-show,
+.rrui__tooltip--before-hide
+{
+	transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+/* Prevents entering text selection mode
+   on mobile devices when tapping down and holding */
+.rrui__tooltip__target
+{
+	user-select: none;
+}
