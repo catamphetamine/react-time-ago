@@ -2,6 +2,7 @@
 ===================
 
   * The default export is now `<WithTooltip/>` instead of bare `<ReactTimeAgo/>`.
+  * `{ WithTooltip }` export is no longer avaible. The bare version of `<ReactTimeAgo/>` is being exported as `{ TimeAgo }`.
 
 1.0.0 / 09.01.2018
 ===================
