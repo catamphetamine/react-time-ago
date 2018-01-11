@@ -57,15 +57,13 @@ After the initialization step is complete it is ready to format relative dates.
 
 ```js
 import React from 'react'
-import ReactTimeAgo from 'react-time-ago'
+import TimeAgo from 'react-time-ago'
 
 export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <ReactTimeAgo>
-        {date}
-      </ReactTimeAgo>
+      <TimeAgo>{ date }</TimeAgo>
     </div>
   )
 }
@@ -77,7 +75,7 @@ The React component refreshes itself as the time goes by.
 
 See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#advanced).
 
-`ReactTimeAgo` component accepts a `timeStyle` property which can be one of
+`TimeAgo` component accepts a `timeStyle` property which can be one of
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
   * [`"fuzzy"`](https://github.com/catamphetamine/javascript-time-ago#fuzzy-style)
@@ -139,7 +137,7 @@ formatVerboseDate : PropTypes.func,
 // By default outputs a verbose date.
 verboseDateTimeFormat : PropTypes.object,
 
-// How often to update all `<ReactTimeAgo/>`s on a page.
+// How often to update all `<TimeAgo/>`s on a page.
 // (once a minute by default)
 updateInterval : PropTypes.number,
 
@@ -168,11 +166,11 @@ The default tooltip is implemented using the standard HTML `title` attribute and
 Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip).
 
 ```js
-import { WithTooltip as ReactTimeAgo } from 'react-time-ago'
+import { WithTooltip as TimeAgo } from 'react-time-ago'
 import 'react-time-ago/Tooltip.css'
 
 // Shows a verbose date tooltip on mouse over and on tap.
-<ReactTimeAgo .../>
+<TimeAgo .../>
 ```
 
 ## Future
