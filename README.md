@@ -105,7 +105,8 @@ Finally, one can use bare `react-time-ago` without any `<Tooltip/>` component:
 
 ```js
 import { TimeAgo } from 'react-time-ago'
-// Shows a verbose date tooltip on mouse over (HTML `title` attribute).
+// Shows a verbose date tooltip on mouse over
+// (via HTML `title` attribute).
 <TimeAgo>{date}</TimeAgo>
 ```
 
