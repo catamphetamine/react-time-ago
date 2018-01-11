@@ -19,22 +19,29 @@ const cache = new Cache()
  */
 export default function createVerboseDateFormatter(locales, format)
 {
-	const locale = choose_locale(locales)
-
-	// If none of the `locales` are supported
-	// return a simple fallback date formatter.
-	if (!locale)
+	// Fall back to `date.toString()` for old web browsers.
+	// https://caniuse.com/#search=intl
+	if (!hasDateTimeFormat())
 	{
 		return date => date.toString()
 	}
 
+	// If none of the `locales` are supported
+	// a default system locale will be used.
+	const locale = choose_locale(locales)
+
 	// `Intl.DateTimeFormat` format caching key.
 	// E.g. `"{"day":"numeric","month":"short",...}"`.
+	// Didn't benchmark what's faster:
+	// creating a new `Intl.DateTimeFormat` instance
+	// or stringifying a small JSON `format`.
+	// Perhaps strigifying JSON `format` is faster.
 	const format_fingerprint = JSON.stringify(format)
 
 	// Get `Intl.DateTimeFormat` instance for these `locale` and `format`.
-	const formatter = cache.get(locale, format_fingerprint) ||
-		cache.put(locale, format_fingerprint, new Intl.DateTimeFormat(locale, format))
+	// (`locale` can be `undefined` therefore `String(locale)`)
+	const formatter = cache.get(String(locale), format_fingerprint) ||
+		cache.put(String(locale), format_fingerprint, new Intl.DateTimeFormat(locale, format))
 
 	// Return date formatter
 	return date => formatter.format(date)
@@ -47,8 +54,17 @@ export default function createVerboseDateFormatter(locales, format)
  */
 function choose_locale(locales)
 {
-	if (typeof Intl === 'object' && Intl.DateTimeFormat)
+	if (hasDateTimeFormat())
 	{
 		return Intl.DateTimeFormat.supportedLocalesOf(locales)[0]
 	}
+}
+
+/**
+ * Checks support for `Intl.DateTimeFormat`.
+ * @return {Boolean}
+ */
+function hasDateTimeFormat()
+{
+	return typeof Intl === 'object' && Intl.DateTimeFormat
 }
