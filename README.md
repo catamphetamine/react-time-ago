@@ -150,7 +150,7 @@ tick : PropTypes.bool,
 // Receives `verboseDate` and `children` properties.
 // `verboseDate` can be used for displaying verbose date label
 // in an "on mouse over" (or "on touch") tooltip.
-// See the "Tooltip" section of the readme for an example.
+// See "./source/WithTooltip.js" for usage example.
 container : PropTypes.func,
 
 // CSS `style` object.
@@ -165,23 +165,14 @@ className : PropTypes.string
 
 The default tooltip is implemented using the standard HTML `title` attribute and displays verbose date label. If `Intl` is supported then `Intl.DateTimeFormat` is used for formatting the verbose date label. Otherwise, simple `date.toString()` is used.
 
-Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip)
+Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip).
 
 ```js
-import React from 'react'
-import ReactTimeAgo from 'react-time-ago'
-import { Tooltip } from 'react-responsive-ui'
+import { WithTooltip as ReactTimeAgo } from 'react-time-ago'
 import 'react-responsive-ui/styles/Tooltip.css'
 
-export default function TimeAgo(props) {
-  return <ReactTimeAgo {...props} container={Container}/>
-}
- 
-const Container = ({ verboseDate, children }) => (
-  <Tooltip text={verboseDate}>
-    {children}
-  </Tooltip>
-)
+// Shows a verbose date tooltip on mouse over and on tap.
+<ReactTimeAgo .../>
 ```
 
 ## Future
