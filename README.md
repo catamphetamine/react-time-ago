@@ -165,7 +165,7 @@ className : PropTypes.string
 
 The default tooltip is implemented using the standard HTML `title` attribute and displays verbose date label. If `Intl` is supported then `Intl.DateTimeFormat` is used for formatting the verbose date label. Otherwise, simple `date.toString()` is used.
 
-Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`]()
+Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is suggested such as using a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip)
 
 ```js
 import React from 'react'
