@@ -4,7 +4,8 @@
 		{
 			"follow_symlinks": true,
 			"path": ".",
-			"folder_exclude_patterns": ["react-time-ago/node_modules", "react-time-ago/coverage", "react-time-ago/commonjs", "react-time-ago/modules", "react-time-ago/styles", "project.sublime-workspace"]
+			"file_exclude_patterns": ["Tooltip.css"],
+			"folder_exclude_patterns": ["react-time-ago/node_modules", "react-time-ago/coverage", "react-time-ago/commonjs", "react-time-ago/modules", "project.sublime-workspace"]
 		}
 	]
 }

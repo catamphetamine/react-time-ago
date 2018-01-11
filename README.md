@@ -169,7 +169,7 @@ Using the standard HTML `title` attribute works for desktop web browsers but doe
 
 ```js
 import { WithTooltip as ReactTimeAgo } from 'react-time-ago'
-import 'react-time-ago/styles/Tooltip.css'
+import 'react-time-ago/Tooltip.css'
 
 // Shows a verbose date tooltip on mouse over and on tap.
 <ReactTimeAgo .../>
