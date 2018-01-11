@@ -8,7 +8,7 @@
     "babel-runtime": "^6.6.1",
     "javascript-time-ago": "^1.0.8",
     "prop-types": "^15.6.0",
-    "react-responsive-ui": "^0.10.15"
+    "react-responsive-ui": "^0.10.17"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",

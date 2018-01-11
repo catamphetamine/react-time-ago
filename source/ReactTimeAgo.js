@@ -234,7 +234,7 @@ export default class ReactTimeAgo extends Component
 		const { locale } = this.props
 		let { locales } = this.props
 
-		// Convert `locale` to `locales`
+		// Convert `locale` to `locales`.
 		if (locale)
 		{
 			locales = [locale].concat(locales)
@@ -245,6 +245,9 @@ export default class ReactTimeAgo extends Component
 		{
 			locales = locales.concat(intl.locale)
 		}
+
+		// `javascript-time-ago` default locale.
+		locales = locales.concat(JavascriptTimeAgo.default_locale)
 
 		return locales
 	}
