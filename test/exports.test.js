@@ -1,7 +1,7 @@
 import
 {
-	default as ReactTimeAgo,
-	WithTooltip
+	default as WithTooltip,
+	TimeAgo as ReactTimeAgo
 }
 from '../index'
 
@@ -20,8 +20,8 @@ describe(`exports`, function()
 	{
 		const Library = require('../index.commonjs')
 
-		new Library({ locale: 'en-US' }, {})
-		new Library.default({ locale: 'en-US' }, {})
-		Library.WithTooltip({ locale: 'en-US' })
+		new Library.TimeAgo({ locale: 'en-US' }, {})
+		Library.default({ locale: 'en-US' })
+		Library({ locale: 'en-US' })
 	})
 })

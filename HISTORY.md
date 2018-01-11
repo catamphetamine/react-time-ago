@@ -1,3 +1,8 @@
+1.0.7 / 11.01.2018
+===================
+
+  * The default export is now `<WithTooltip/>` instead of bare `<ReactTimeAgo/>`.
+
 1.0.0 / 09.01.2018
 ===================
 

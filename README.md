@@ -63,7 +63,7 @@ export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <TimeAgo>{ date }</TimeAgo>
+      <TimeAgo> {date} </TimeAgo>
     </div>
   )
 }
@@ -83,16 +83,28 @@ See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-ti
 
 ## Tooltip
 
-The default "on mouse over" tooltip is implemented using the standard HTML `title` attribute and displays verbose date label. If `Intl` is supported then `Intl.DateTimeFormat` is used for formatting the verbose date label. Otherwise, simple `date.toString()` is used.
+The default component exported from this library comes prepackaged with a [`<Tooltip/>`](https://catamphetamine.github.io/react-responsive-ui/#tooltip) component which displays itself "on mouse over" on desktops and "on touch down" on mobile devices. The behaviour of the tooltip is similar to that of the HTML `title` attribute which displays a tooltip "on mouse over". The difference that the custom tooltip also displays itself "on touch down" on mobile devices while the HTML `title` attribute doesn't handle mobile users in any way. That was the primary reason for going with the custom `<Tooltip/>` component instead of the HTML `title` attribute. The other reason is the requirement for custom design.
 
-Using the standard HTML `title` attribute works for desktop web browsers but doesn't work for mobile users therefore a better solution is to use a custom tooltip component which displays itself on mouse over on desktops and on tap on mobile devices. An example of such component is `<Tooltip/>` from [`react-responsive-ui`](https://catamphetamine.github.io/react-responsive-ui/#tooltip).
+The tooltip text is a verbose date label. If [`Intl`](https://caniuse.com/#search=intl) is supported (which is the case for all modern web browsers) then [`Intl.DateTimeFormat`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) is used for formatting the label (`"Thursday, January 11, 2018, 9:53:00 PM"`). Otherwise, it falls back to `date.toString()`.
 
 ```js
-import { WithTooltip as TimeAgo } from 'react-time-ago'
+import TimeAgo from 'react-time-ago'
+
+// Tooltip CSS styles:
 import 'react-time-ago/Tooltip.css'
 
-// Shows a verbose date tooltip on mouse over and on tap.
-<TimeAgo .../>
+// Shows a verbose date tooltip on mouse over and on touch down.
+<TimeAgo> {date} </TimeAgo>
+```
+
+If the prepackaged `<Tooltip/>` component doesn't fit the bill then any other custom `<Tooltip/>` component may be used (see `./source/WithTooltip.js`).
+
+Finally, one can use bare `react-time-ago` without any `<Tooltip/>` component:
+
+```js
+import { TimeAgo } from 'react-time-ago'
+// Shows a verbose date tooltip on mouse over (HTML `title` attribute).
+<TimeAgo> {date} </TimeAgo>
 ```
 
 ## Future

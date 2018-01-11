@@ -204,6 +204,8 @@ export default class ReactTimeAgo extends Component
 		date = date || new Date(time)
 
 		// Only after `componentDidMount()` (only on client side).
+		// The rationale is that if javascript is disabled (e.g. Tor Browser)
+		// then the `<Tooltip/>` component won't ever be able to show itself.
 		const verbose_date = this.format_verbose_date ? this.get_verbose_date(date) : undefined
 
 		const time_ago =
