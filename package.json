@@ -43,8 +43,9 @@
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
     "build-es6-modules": "better-npm-run build-es6-modules",
     "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules",
+    "update-rrui": "npm update react-responsive-ui",
     "copy-styles": "copyfiles --flat node_modules/react-responsive-ui/styles/Tooltip.css styles",
-    "prepublish": "npm-run-all build test browser-build copy-styles"
+    "prepublish": "npm-run-all build test browser-build update-rrui copy-styles"
   },
   "betterScripts": {
     "browser-build": {
