@@ -20,27 +20,27 @@
 
 .rrui__tooltip--after-show
 {
-	opacity: 1;
-	/* transform: scale(1); */
-	transform: translateY(0);
+	opacity   : 1;
+	/* transform : scale(1); */
+	transform : translateY(0);
 }
 
 .rrui__tooltip--before-hide
 {
-	opacity: 0;
-	/* transform: scale(0.8); */
-	transform: translateY(0.5em);
+	opacity   : 0;
+	/* transform : scale(0.8); */
+	transform : translateY(0.5em);
 }
 
 .rrui__tooltip--after-show,
 .rrui__tooltip--before-hide
 {
-	transition: opacity 120ms ease-out, transform 120ms ease-out;
+	transition : opacity 120ms ease-out, transform 120ms ease-out;
 }
 
 /* Prevents entering text selection mode
    on mobile devices when tapping down and holding */
 .rrui__tooltip__target
 {
-	user-select: none;
+	user-select : none;
 }

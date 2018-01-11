@@ -19,6 +19,7 @@
 	<style>
 		body
 		{
+			margin: 0;
 			padding: 40px;
 		}
 
@@ -97,7 +98,7 @@
 
 		<p>International highly customizable relative time formatting for React</p>
 
-		<p>(the time labels constantly refresh themselves)</p>
+		<p>Time labels constantly refresh themselves. Mouse over or touch down the time labels to see verbose date.</p>
 
 		<div id="content"></div>
 
@@ -123,9 +124,10 @@
 				{
 					const library = window['react-time-ago']
 
-					const ReactTimeAgo = library.default
+					const ReactTimeAgo     = library.default
+					const BareReactTimeAgo = library.TimeAgo
 
-					const styles = [undefined, 'twitter']
+					const styles  = [undefined, 'twitter']
 					const locales = ['en-US', 'ru-RU']
 
 					const cases =
@@ -194,6 +196,15 @@
 									}
 								</div>
 							))}
+
+							<h2>Without custom tooltip</h2>
+
+							<div className="time">
+								Default style, English: 
+								<BareReactTimeAgo locale="en-US">
+									{cases[0].date}
+								</BareReactTimeAgo>
+							</div>
 						</div>
 					)
 				}
