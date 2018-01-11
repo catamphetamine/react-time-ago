@@ -28,7 +28,7 @@ export default class ReactTimeAgo extends Component
 		.isRequired,
 
 		// Date/time formatting style.
-		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', override: function }`)
+		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
 		timeStyle : PropTypes.oneOfType
 		([
 			PropTypes.string,
@@ -47,7 +47,7 @@ export default class ReactTimeAgo extends Component
 					PropTypes.string,
 					PropTypes.arrayOf(PropTypes.string)
 				]),
-				override : PropTypes.func
+				custom : PropTypes.func
 			})
 		]),
 

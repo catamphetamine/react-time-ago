@@ -79,7 +79,7 @@ See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-ti
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
   * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#just-time-style)
-  * [`{ gradation, units, flavour, override() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
+  * [`{ gradation, units, flavour, custom() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
 
 ## Tooltip
 
@@ -120,7 +120,7 @@ children : PropTypes.oneOfType
 .isRequired,
 
 // Date/time formatting style.
-// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', override: function }`)
+// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
 timeStyle : PropTypes.oneOfType
 ([
   PropTypes.string,
@@ -138,7 +138,7 @@ timeStyle : PropTypes.oneOfType
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.string)
     ]),
-    override : PropTypes.func
+    custom : PropTypes.func
   })
 ]),
 
