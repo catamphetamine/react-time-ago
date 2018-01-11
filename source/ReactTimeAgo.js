@@ -82,7 +82,7 @@ export default class ReactTimeAgo extends Component
 		// import { Tooltip } from 'react-responsive-ui'
 		// 
 		// export default function TimeAgo(props) {
-		//   return <ReactTimeAgo {...props} container={Container}/>
+		//   return <ReactTimeAgo {...props} container={Container} tooltip={false}/>
 		// }
 		// 
 		// const Container = ({ verboseDate, children }) => (
@@ -206,7 +206,7 @@ export default class ReactTimeAgo extends Component
 		// Only after `componentDidMount()` (only on client side).
 		const verbose_date = this.format_verbose_date ? this.get_verbose_date(date) : undefined
 
-		const markup =
+		const time_ago =
 		(
 			<time
 				dateTime={ date.toISOString() }
@@ -220,10 +220,10 @@ export default class ReactTimeAgo extends Component
 
 		if (container)
 		{
-			return React.createElement(container, { verboseDate: verbose_date }, markup)
+			return React.createElement(container, { verboseDate: verbose_date }, time_ago)
 		}
 
-		return markup
+		return time_ago
 	}
 
 	// Composes a list of preferred locales
