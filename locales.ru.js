@@ -100,7 +100,6 @@ var long = {
     }
   },
   "second": {
-    "current": "сейчас",
     "future": {
       "one": "через секунду",
       "few": "через {0} секунды",
@@ -114,7 +113,7 @@ var long = {
       "other": "{0} секунды назад"
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": "только что"
     },
@@ -124,7 +123,7 @@ var long = {
   }
 }
 
-var long_concise = {
+var long_time = {
   "year": {
     "future": {
       "one": "{0} год",
@@ -240,7 +239,7 @@ var long_concise = {
       "other": "{0} секунды"
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": "только что"
     },
@@ -350,7 +349,7 @@ var short = {
       "other": "{0} сек. назад"
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": "только что"
     },
@@ -360,7 +359,7 @@ var short = {
   }
 }
 
-var short_concise = {
+var short_time = {
   "year": {
     "future": {
       "one": "{0} г.",
@@ -460,7 +459,7 @@ var short_concise = {
       "other": "{0} сек."
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": "только что"
     },
@@ -527,7 +526,7 @@ var tiny = {
       "other": "{0}с"
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": ""
     },
@@ -539,13 +538,13 @@ var tiny = {
 
 window['javascript-time-ago/locales/ru'] =
 {
-  locale        : 'ru',
+  locale : 'ru',
 
-  tiny          : tiny,
-  short         : short,
-  short_concise : short_concise,
-  long          : long,
-  long_concise  : long_concise,
+  tiny       : tiny,
+  short      : short,
+  short_time : short_time,
+  long       : long,
+  long_time  : long_time,
 
-  plural : function(e){var i=String(e).split("."),n=i[0],r=!i[1],s=n.slice(-1),t=n.slice(-2);return r&&1==s&&11!=t?"one":r&&s>=2&&s<=4&&(t<12||t>14)?"few":r&&0==s||r&&s>=5&&s<=9||r&&t>=11&&t<=14?"many":"other"}
+  quantify : function(e){var i=String(e).split("."),n=i[0],r=!i[1],s=n.slice(-1),t=n.slice(-2);return r&&1==s&&11!=t?"one":r&&s>=2&&s<=4&&(t<12||t>14)?"few":r&&0==s||r&&s>=5&&s<=9||r&&t>=11&&t<=14?"many":"other"}
 }

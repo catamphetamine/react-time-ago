@@ -85,7 +85,7 @@ var long = {
       "other": "{0} seconds ago"
     }
   },
-  "just-now": {
+  "now": {
     "future": {
       "other": "in a moment"
     },
@@ -95,7 +95,7 @@ var long = {
   }
 }
 
-var long_concise = {
+var long_time = {
   "year": {
     "future": {
       "one": "{0} year",
@@ -182,7 +182,7 @@ var long_concise = {
       "other": "{0} seconds"
     }
   },
-  "just-now": {
+  "now": {
     "future": {
       "other": "a moment"
     },
@@ -265,7 +265,7 @@ var short = {
       "other": "in {0} sec."
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": "now"
     },
@@ -275,7 +275,7 @@ var short = {
   }
 }
 
-var short_concise = {
+var short_time = {
   "year": {
     "future": {
       "one": "{0} yr.",
@@ -346,7 +346,7 @@ var short_concise = {
       "other": "{0} sec."
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": "now"
     },
@@ -413,7 +413,7 @@ var tiny = {
       "other": "{0}s"
     }
   },
-  "just-now": {
+  "now": {
     "past": {
       "other": ""
     },
@@ -425,13 +425,13 @@ var tiny = {
 
 window['javascript-time-ago/locales/en'] =
 {
-  locale        : 'en',
+  locale : 'en',
 
-  tiny          : tiny,
-  short         : short,
-  short_concise : short_concise,
-  long          : long,
-  long_concise  : long_concise,
+  tiny       : tiny,
+  short      : short,
+  short_time : short_time,
+  long       : long,
+  long_time  : long_time,
 
-  plural : function(n){var r=!String(n).split(".")[1];return 1==n&&r?"one":"other"}
+  quantify : function(n){var r=!String(n).split(".")[1];return 1==n&&r?"one":"other"}
 }
