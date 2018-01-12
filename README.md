@@ -135,27 +135,9 @@ children : PropTypes.oneOfType
 .isRequired,
 
 // Date/time formatting style.
-// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
-timeStyle : PropTypes.oneOfType
-([
-  PropTypes.string,
-  PropTypes.shape
-  ({
-    gradation : PropTypes.arrayOf(PropTypes.shape
-    ({
-      name        : PropTypes.string.isRequired,
-      granularity : PropTypes.number,
-      threshold   : PropTypes.number,
-      // Specific `threshold_[unit]` properties may also be defined
-    })),
-    units    : PropTypes.arrayOf(PropTypes.string),
-    flavour  : PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string)
-    ]),
-    custom : PropTypes.func
-  })
-]),
+// E.g. 'twitter', 'time', or an object.
+// See `javascript-time-ago` docs for more info.
+timeStyle,
 
 // Whether HTML `tooltip` attribute should be set
 // to verbosely formatted date (is `true` by default).

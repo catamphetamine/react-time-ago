@@ -6,7 +6,7 @@
   "module": "index.js",
   "dependencies": {
     "babel-runtime": "^6.6.1",
-    "javascript-time-ago": "^1.0.8",
+    "javascript-time-ago": "^1.0.20",
     "prop-types": "^15.6.0",
     "react-responsive-ui": "^0.10.20"
   },

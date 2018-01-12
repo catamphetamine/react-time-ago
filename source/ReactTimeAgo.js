@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
+import { style } from 'javascript-time-ago/prop-types'
 
 import shallow_equal from './shallow equal'
 import Periodic from './periodic'
@@ -29,27 +30,7 @@ export default class ReactTimeAgo extends Component
 
 		// Date/time formatting style.
 		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
-		timeStyle : PropTypes.oneOfType
-		([
-			PropTypes.string,
-			PropTypes.shape
-			({
-				gradation : PropTypes.arrayOf(PropTypes.shape
-				({
-					name        : PropTypes.string.isRequired,
-					granularity : PropTypes.number,
-					factor      : PropTypes.number,
-					threshold   : PropTypes.number,
-					// Specific `threshold_[unit]` properties may also be defined
-				})),
-				units    : PropTypes.arrayOf(PropTypes.string),
-				flavour  : PropTypes.oneOfType([
-					PropTypes.string,
-					PropTypes.arrayOf(PropTypes.string)
-				]),
-				custom : PropTypes.func
-			})
-		]),
+		timeStyle : style,
 
 		// Whether HTML `tooltip` attribute should be set
 		// to verbosely formatted date (is `true` by default).
