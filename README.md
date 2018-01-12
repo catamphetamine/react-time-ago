@@ -6,26 +6,14 @@ International higly customizable relative date/time formatter for React (both fo
 
 [See Demo](https://catamphetamine.github.io/react-time-ago/)
 
-Formats a date to something like:
+Formats a date/timestamp to:
 
   * just now
   * 5m
   * 15 min
   * 25 minutes
-  * half an hour ago
   * an hour ago
-  * 2h
-  * yesterday
-  * 2d
-  * 1wk
-  * 2 weeks ago
-  * 3 weeks
-  * half a month ago
-  * 1 mo. ago
-  * 2 months
-  * half a year
-  * a year
-  * 2yr
+  * 1 mo.
   * 5 years ago
   * … or whatever else
 
