@@ -91,6 +91,11 @@
 		{
 			margin-top: 3rem;
 		}
+
+		.rrui__tooltip
+		{
+			font-size: 1rem;
+		}
 	</style>
 
 	<body>
@@ -98,7 +103,7 @@
 
 		<p>International highly customizable relative time formatting for React</p>
 
-		<p>Time labels constantly refresh themselves. Mouse over or touch down the time labels to see verbose date.</p>
+		<p>Time labels constantly refresh themselves. Mouse over or touch down the time labels to see verbose date. The tooltip is optional.</p>
 
 		<div id="content"></div>
 
@@ -164,7 +169,7 @@
 									<h2>{title}</h2>
 
 									<div className="time">
-										Default style, English: 
+										Default style, English:
 										<ReactTimeAgo locale="en-US">
 											{date}
 										</ReactTimeAgo>
@@ -172,7 +177,7 @@
 
 									{twitter !== false &&
 										<div className="time">
-											Twitter style, English: 
+											Twitter style, English:
 											<ReactTimeAgo locale="en-US" timeStyle="twitter">
 												{date}
 											</ReactTimeAgo>
@@ -180,7 +185,7 @@
 									}
 
 									<div className="time">
-										Default style, Russian: 
+										Default style, Russian:
 										<ReactTimeAgo locale="ru-RU">
 											{date}
 										</ReactTimeAgo>
@@ -188,7 +193,7 @@
 
 									{twitter !== false &&
 										<div className="time">
-											Twitter style, Russian: 
+											Twitter style, Russian:
 											<ReactTimeAgo locale="ru-RU" timeStyle="twitter">
 												{date}
 											</ReactTimeAgo>
@@ -200,7 +205,7 @@
 							<h2>Without custom tooltip</h2>
 
 							<div className="time">
-								Default style, English: 
+								Default style, English:
 								<BareReactTimeAgo locale="en-US">
 									{cases[0].date}
 								</BareReactTimeAgo>
