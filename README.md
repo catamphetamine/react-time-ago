@@ -24,10 +24,7 @@ npm install react-time-ago --save
 # (installs "javascript-time-ago" as a dependency)
 ```
 
-First, the library must be initialized with a set of desired locales.
-
 ```js
-// Time ago formatter.
 import TimeAgo from 'javascript-time-ago'
 
 // Load locale-specific relative date/time formatting rules.
@@ -38,8 +35,6 @@ import ru from 'javascript-time-ago/locale/ru'
 TimeAgo.locale(en)
 TimeAgo.locale(ru)
 ```
-
-After the initialization step is complete it is ready to format relative dates.
 
 #### LastSeen.js
 
@@ -57,7 +52,7 @@ export default function LastSeen({ date }) {
 }
 ```
 
-The React component refreshes itself as the time goes by.
+`<TimeAgo/>` React component refreshes itself as the time goes by.
 
 ## Customization
 
