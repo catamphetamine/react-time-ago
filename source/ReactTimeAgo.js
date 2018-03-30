@@ -109,16 +109,10 @@ export default class ReactTimeAgo extends Component
 		tick : true
 	}
 
-	static contextTypes =
+	constructor(props)
 	{
-		intl : PropTypes.object
-	}
-
-	constructor(props, context)
-	{
-		// `this.props` and `this.context`
-		// are used in `.get_preferred_locales()`.
-		super(props, context)
+		// `this.props` are used in `.get_preferred_locales()`.
+		super(props)
 
 		this.time_ago = new JavascriptTimeAgo(this.get_preferred_locales())
 	}
@@ -218,8 +212,6 @@ export default class ReactTimeAgo extends Component
 	// Composes a list of preferred locales
 	get_preferred_locales()
 	{
-		const { intl } = this.context
-
 		const { locale } = this.props
 		let { locales } = this.props
 
@@ -227,12 +219,6 @@ export default class ReactTimeAgo extends Component
 		if (locale)
 		{
 			locales = [locale].concat(locales)
-		}
-
-		// Try to obtain fallback locale from `react-intl` context.
-		if (intl)
-		{
-			locales = locales.concat(intl.locale)
 		}
 
 		// `javascript-time-ago` default locale.
