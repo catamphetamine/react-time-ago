@@ -3,7 +3,8 @@
  */
 export default class Periodic
 {
-	subscribers = new Set()
+	// subscribers = new Set()
+	subscribers = []
 
 	/**
 	 * @param {number} period - The interval (in milliseconds).
@@ -16,8 +17,7 @@ export default class Periodic
 	start()
 	{
 		// Do nothing if already started.
-		if (this.scheduled)
-		{
+		if (this.scheduled) {
 			return
 		}
 
@@ -33,8 +33,7 @@ export default class Periodic
 	trigger = (dry_run) =>
 	{
 		// Call all subscribers.
-		for (const subscriber of this.subscribers)
-		{
+		for (const subscriber of this.subscribers) {
 			subscriber()
 		}
 
@@ -51,12 +50,15 @@ export default class Periodic
 	add(subscriber)
 	{
 		// Add subscriber.
-		this.subscribers.add(subscriber)
+		// this.subscribers.add(subscriber)
+		if (this.subscribers.indexOf(subscriber) < 0) {
+			this.subscribers.push(subscriber)
+		}
 
 		// If it's the first subscriber,
 		// start this periodical.
-		if (this.subscribers.size === 1)
-		{
+		// if (this.subscribers.size === 1) {
+		if (this.subscribers.length === 1) {
 			this.start()
 		}
 
@@ -67,12 +69,15 @@ export default class Periodic
 	remove(subscriber)
 	{
 		// Remove subscriber.
-		this.subscribers.delete(subscriber)
+		// this.subscribers.delete(subscriber)
+		if (this.subscribers.indexOf(subscriber) >= 0) {
+			this.subscribers.splice(this.subscribers.indexOf(subscriber), 1)
+		}
 
 		// If it was the last subscriber,
 		// stop periodical time refresh.
-		if (this.subscribers.size === 0)
-		{
+		// if (this.subscribers.size === 0) {
+		if (this.subscribers.length === 0) {
 			this.stop()
 		}
 	}
@@ -80,6 +85,7 @@ export default class Periodic
 	destroy()
 	{
 		this.stop()
-		this.subscribers.clear()
+		// this.subscribers.clear()
+		this.subscribers = []
 	}
 }
