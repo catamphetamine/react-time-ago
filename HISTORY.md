@@ -1,7 +1,8 @@
 2.0.0 / 30.03.2018
 ===================
 
-  * Removed `this.context` from code (was used to get `react-intl` locale) to support React >= 16.3
+  * Removed `this.context` from code (was used to get `react-intl` locale) to support React >= 17.
+  * (breaking change) Removed `babel-runtime` dependency: now requires ES6 polyfill for `Set`. E.g. use `babel-polyfill` or `core-js/fn/set`.
 
 1.0.7 / 11.01.2018
 ===================

@@ -97,6 +97,10 @@ import { TimeAgo } from 'react-time-ago'
 
 When given future dates it produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
 
+## ES6
+
+This library uses ES6 `Set` so any ES6 polyfill for `Set` is required (e.g. `import 'babel-polyfill'` or `import 'core-js/fn/set'`).
+
 ## Props
 
 ```js
