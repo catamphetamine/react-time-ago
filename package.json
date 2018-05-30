@@ -4,6 +4,7 @@
   "description": "International highly customizable relative time formatting",
   "main": "index.commonjs.js",
   "module": "index.js",
+  "sideEffects": ["*.css"],
   "dependencies": {
     "javascript-time-ago": "^1.0.20",
     "prop-types": "^15.6.0",
