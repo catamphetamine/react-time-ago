@@ -4,11 +4,13 @@
   "description": "International highly customizable relative time formatting",
   "main": "index.commonjs.js",
   "module": "index.js",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "dependencies": {
     "javascript-time-ago": "^1.0.20",
     "prop-types": "^15.6.0",
-    "react-responsive-ui": "^0.10.32"
+    "react-responsive-ui": "^0.12.21"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
@@ -29,6 +31,7 @@
     "npm-run-all": "^1.4.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "replace-in-file": "^3.4.0",
     "rimraf": "^2.5.0",
     "webpack": "^2.2.0-rc.3"
   },
@@ -44,7 +47,14 @@
     "build": "npm-run-all clean-for-build build-commonjs-modules build-es6-modules browser-build",
     "update-rrui": "npm update react-responsive-ui",
     "copy-styles": "copyfiles --flat node_modules/react-responsive-ui/styles/Tooltip.css .",
-    "prepublish": "npm-run-all build test update-rrui copy-styles"
+    "set-style-variables": "npm run set-style-variables--side-padding && npm run set-style-variables--height && npm run set-style-variables--white && npm run set-style-variables--black && npm run set-style-variables--border-radius && npm run set-style-variables--unit",
+    "set-style-variables--side-padding": "replace-in-file \"/var\\(--rrui-tooltip-side-padding\\)/g\" \"calc(var(--rrui-unit) * 1.5)\" Tooltip.css --isRegex",
+    "set-style-variables--height": "replace-in-file \"/var\\(--rrui-tooltip-height\\)/g\" \"calc(var(--rrui-unit) * 4)\" ./Tooltip.css --isRegex",
+    "set-style-variables--white": "replace-in-file \"/var\\(--rrui-white-color\\)/g\" \"white\" ./Tooltip.css --isRegex",
+    "set-style-variables--black": "replace-in-file \"/var\\(--rrui-black-color\\)/g\" \"black\" ./Tooltip.css --isRegex",
+    "set-style-variables--border-radius": "replace-in-file \"/var\\(--rrui-border-radius-small\\)/g\" \"0.1rem\" ./Tooltip.css --isRegex",
+    "set-style-variables--unit": "replace-in-file \"/var\\(--rrui-unit\\)/g\" \"0.6rem\" ./Tooltip.css --isRegex",
+    "prepublish": "npm-run-all build test update-rrui copy-styles set-style-variables"
   },
   "betterScripts": {
     "browser-build": {
