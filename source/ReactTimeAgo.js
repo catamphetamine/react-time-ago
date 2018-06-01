@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import { style } from 'javascript-time-ago/prop-types'
 
-import shallow_equal from './shallow equal'
+import shallowEqual from './shallowEqual'
 import Periodic from './periodic'
-import createVerboseDateFormatter from './verbose date formatter'
+import createVerboseDateFormatter from './verboseDateFormatter'
 
 export default class ReactTimeAgo extends Component
 {
@@ -111,15 +111,15 @@ export default class ReactTimeAgo extends Component
 
 	constructor(props)
 	{
-		// `this.props` are used in `.get_preferred_locales()`.
+		// `this.props` are used in `.getPreferredLocales()`.
 		super(props)
 
-		this.time_ago = new JavascriptTimeAgo(this.get_preferred_locales())
+		this.timeAgo = new JavascriptTimeAgo(this.getPreferredLocales())
 	}
 
 	shouldComponentUpdate(nextProps)
 	{
-		return !shallow_equal(this.props, nextProps)
+		return !shallowEqual(this.props, nextProps)
 	}
 
 	componentDidMount()
@@ -136,8 +136,7 @@ export default class ReactTimeAgo extends Component
 		if (tick)
 		{
 			// Run automatic time label updater (in a web browser).
-			if (!window._react_time_ago_updater)
-			{
+			if (!window._react_time_ago_updater) {
 				window._react_time_ago_updater = new Periodic(updateInterval)
 			}
 
@@ -146,14 +145,13 @@ export default class ReactTimeAgo extends Component
 		}
 
 		// Format verbose date for HTML `tooltip` attribute.
-		this.format_verbose_date = createVerboseDateFormatter(this.get_preferred_locales(), verboseDateFormat)
+		this.format_verbose_date = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
 		this.forceUpdate()
 	}
 
 	componentWillUnmount()
 	{
-		if (this.stop_autoupdate)
-		{
+		if (this.stop_autoupdate) {
 			this.stop_autoupdate()
 		}
 	}
@@ -181,9 +179,9 @@ export default class ReactTimeAgo extends Component
 		// Only after `componentDidMount()` (only on client side).
 		// The rationale is that if javascript is disabled (e.g. Tor Browser)
 		// then the `<Tooltip/>` component won't ever be able to show itself.
-		const verbose_date = this.format_verbose_date ? this.get_verbose_date(date) : undefined
+		const verbose_date = this.format_verbose_date ? this.getVerboseDate(date) : undefined
 
-		const time_ago =
+		const timeAgo =
 		(
 			<time
 				dateTime={ date.toISOString() }
@@ -191,7 +189,7 @@ export default class ReactTimeAgo extends Component
 				style={ container ? undefined : style } 
 				className={ container ? undefined : className }>
 
-				{ this.time_ago.format(date, timeStyle) }
+				{ this.timeAgo.format(date, timeStyle) }
 			</time>
 		)
 
@@ -203,21 +201,20 @@ export default class ReactTimeAgo extends Component
 				className,
 				style
 			},
-			time_ago)
+			timeAgo)
 		}
 
-		return time_ago
+		return timeAgo
 	}
 
 	// Composes a list of preferred locales
-	get_preferred_locales()
+	getPreferredLocales()
 	{
 		const { locale } = this.props
 		let { locales } = this.props
 
 		// Convert `locale` to `locales`.
-		if (locale)
-		{
+		if (locale) {
 			locales = [locale].concat(locales)
 		}
 
@@ -232,29 +229,26 @@ export default class ReactTimeAgo extends Component
 	//
 	// E.g. "Sunday, May 18th, 2012, 18:45"
 	//
-	get_verbose_date(input)
+	getVerboseDate(input)
 	{
 		const { formatVerboseDate } = this.props
 
-		if (formatVerboseDate)
-		{
-			return formatVerboseDate(convert_to_date(input))
+		if (formatVerboseDate) {
+			return formatVerboseDate(convertToDate(input))
 		}
 
-		return this.format_verbose_date(convert_to_date(input))
+		return this.format_verbose_date(convertToDate(input))
 	}
 }
 
 // Converts argument into a `Date`.
-function convert_to_date(input)
+function convertToDate(input)
 {
-	if (input.constructor === Date)
-	{
+	if (input.constructor === Date) {
 		return input
 	}
 
-	if (typeof input === 'number')
-	{
+	if (typeof input === 'number') {
 		return new Date(input)
 	}
 
