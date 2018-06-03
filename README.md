@@ -61,13 +61,13 @@ export default function LastSeen({ date }) {
 
 ## Customization
 
-See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#advanced).
-
-`TimeAgo` component accepts a `timeStyle` property which can be one of
+`ReactTimeAgo` component accepts a `timeStyle` property which can be:
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
   * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#just-time-style)
   * [`{ gradation, units, flavour, custom() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
+
+See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#advanced) for more info on how to customize the generated output.
 
 ## Tooltip
 
