@@ -19,40 +19,45 @@ Formats a date/timestamp to:
 
 ## Usage
 
+`react-time-ago` component uses [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago) library internally for generating the output. First, install `react-time-ago` package (it will automatically install `javascript-time-ago`).
+
+```sh
+$ npm install react-time-ago --save
 ```
-npm install react-time-ago --save
-# (installs "javascript-time-ago" as a dependency)
-```
+
+Then, in the application's main file initialize `javascript-time-ago` library with the desired locales. By default no locales are initialized.
+
+#### ./src/index.js
 
 ```js
-import TimeAgo from 'javascript-time-ago'
+import JavascriptTimeAgo from 'javascript-time-ago'
 
-// Load locale-specific relative date/time formatting rules.
+// The desired locales.
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
 
-// Add locale-specific relative date/time formatting rules.
-TimeAgo.locale(en)
-TimeAgo.locale(ru)
+// Initialize the desired locales.
+JavascriptTimeAgo.locale(en)
+JavascriptTimeAgo.locale(ru)
 ```
 
-#### LastSeen.js
+Now `<ReactTimeAgo/>` component can be used on any page. The component refreshes itself every minute (by default).
+
+#### ./src/LastSeen.js
 
 ```js
 import React from 'react'
-import TimeAgo from 'react-time-ago'
+import ReactTimeAgo from 'react-time-ago'
 
 export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <TimeAgo>{date}</TimeAgo>
+      <ReactTimeAgo>{date}</ReactTimeAgo>
     </div>
   )
 }
 ```
-
-`<TimeAgo/>` React component refreshes itself as the time goes by.
 
 ## Customization
 
