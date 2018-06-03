@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import { style } from 'javascript-time-ago/prop-types'
 
+import Periodic from './Periodic'
 import shallowEqual from './shallowEqual'
-import Periodic from './periodic'
 import createVerboseDateFormatter from './verboseDateFormatter'
 
 export default class ReactTimeAgo extends Component
