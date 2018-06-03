@@ -65,7 +65,7 @@ export default function LastSeen({ date }) {
 
   * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter-style)
   * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#just-time-style)
-  * [`{ gradation, units, flavour, custom() }`](https://github.com/catamphetamine/javascript-time-ago#customization)
+  * [`{ gradation, units, flavour }`](https://github.com/catamphetamine/javascript-time-ago#customization)
 
 See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#advanced) for more info on how to customize the generated output.
 
