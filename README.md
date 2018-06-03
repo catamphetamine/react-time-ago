@@ -71,7 +71,7 @@ See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-ti
 
 ## Tooltip
 
-The default component exported from this library comes prepackaged with a [`<Tooltip/>`](https://catamphetamine.github.io/react-responsive-ui/#tooltip) component which displays itself "on mouse over" on desktops and "on touch down" on mobile devices. The behaviour of the tooltip is similar to that of the HTML `title` attribute which displays a tooltip "on mouse over". The difference that the custom tooltip also displays itself "on touch down" on mobile devices while the HTML `title` attribute doesn't handle mobile users in any way. That was the primary reason for going with the custom `<Tooltip/>` component instead of the HTML `title` attribute. The other reason is the requirement for custom design.
+The default component exported from this library comes prepackaged with an optional [`<Tooltip/>`](https://catamphetamine.github.io/react-responsive-ui/#tooltip) component which displays itself "on mouse over" on desktops and "on touch down" on mobile devices. The behaviour of the tooltip is similar to that of the HTML `title` attribute which displays a tooltip "on mouse over". The difference that the custom tooltip also displays itself "on touch down" on mobile devices while the HTML `title` attribute doesn't handle mobile users in any way. That was the primary reason for going with the custom `<Tooltip/>` component instead of the HTML `title` attribute. The other reason is the requirement for custom design.
 
 The tooltip text is a verbose date label. If [`Intl`](https://caniuse.com/#search=intl) is supported (which is the case for all modern web browsers) then [`Intl.DateTimeFormat`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) is used for formatting the label (`"Thursday, January 11, 2018, 9:53:00 PM"`). Otherwise, it falls back to `date.toString()`.
 
@@ -87,14 +87,12 @@ import 'react-time-ago/Tooltip.css'
 <TimeAgo>{date}</TimeAgo>
 ```
 
-If the prepackaged `<Tooltip/>` component doesn't fit the bill then any other custom `<Tooltip/>` component may be used (see `./source/WithTooltip.js`).
-
-Finally, one can use bare `react-time-ago` without any `<Tooltip/>` component:
+If the default `<Tooltip/>` component doesn't fit the application then use the `TimeAgo` export which doesn't have the `<Tooltip/>`:
 
 ```js
 import { TimeAgo } from 'react-time-ago'
-// Shows a verbose date tooltip on mouse over
-// (via HTML `title` attribute).
+// No custom `<Tooltip/>` will be added,
+// just a standard HTML `title` tooltip on mouse over.
 <TimeAgo>{date}</TimeAgo>
 ```
 
