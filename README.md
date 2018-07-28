@@ -53,7 +53,7 @@ export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <ReactTimeAgo>{date}</ReactTimeAgo>
+      <ReactTimeAgo locale="ru"> {date} </ReactTimeAgo>
     </div>
   )
 }
