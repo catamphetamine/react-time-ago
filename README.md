@@ -17,15 +17,17 @@ Formats a date/timestamp to:
   * 5 years ago
   * … or whatever else
 
-## Usage
-
-`react-time-ago` component uses [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago) library internally for generating the output. First, install `react-time-ago` package (it will automatically install `javascript-time-ago`).
+## Install
 
 ```sh
 $ npm install react-time-ago --save
 ```
 
-Then, in the application's main file initialize `javascript-time-ago` library with the desired locales. By default no locales are initialized.
+The requirement for the default exported component (the one with the tooltip component) is React >= 16 because the tooltip uses `ReactDOM.createPortal()`. For older React versions use the `/no-tooltip` export which doesn't use the tooltip component.
+
+## Use
+
+`react-time-ago` component uses [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago) library internally for generating localized relative time strings. When `react-time-ago` package is installed `javascript-time-ago` package is installed automatically with it. In the application's main file initialize `javascript-time-ago` library with the desired locales. By default no locales are initialized.
 
 #### ./src/index.js
 
@@ -53,7 +55,9 @@ export default function LastSeen({ date }) {
   return (
     <div>
       Last seen:
-      <ReactTimeAgo locale="ru"> {date} </ReactTimeAgo>
+      <ReactTimeAgo locale="ru">
+        {date}
+      </ReactTimeAgo>
     </div>
   )
 }
@@ -90,7 +94,7 @@ import 'react-time-ago/Tooltip.css'
 If the default `<Tooltip/>` component doesn't fit the application then use the `TimeAgo` export which doesn't have the `<Tooltip/>`:
 
 ```js
-import { TimeAgo } from 'react-time-ago'
+import TimeAgo from 'react-time-ago/no-tooltip'
 // No custom `<Tooltip/>` will be added,
 // just a standard HTML `title` tooltip on mouse over.
 <TimeAgo>{date}</TimeAgo>

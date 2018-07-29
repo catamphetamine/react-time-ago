@@ -1,3 +1,8 @@
+3.0.0 / 30.07.2018
+===================
+
+  * (breaking change) `Tooltip` component updated to `react-responsive-ui@0.14` which requires React >= 16.
+
 2.0.0 / 30.03.2018
 ===================
 

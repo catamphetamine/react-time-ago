@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactTimeAgo from './ReactTimeAgo'
 
 // Could have been `import { Tooltip } from 'react-responsive-ui'`
@@ -15,7 +16,12 @@ export default function TimeAgo(props) {
 }
 
 const Container = ({ verboseDate, children, ...rest }) => (
-	<Tooltip text={verboseDate} {...rest}>
+	<Tooltip content={verboseDate} {...rest}>
 		{children}
 	</Tooltip>
 )
+
+Container.propTypes =
+{
+	verboseDate : PropTypes.string
+}

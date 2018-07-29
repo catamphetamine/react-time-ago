@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import { style } from 'javascript-time-ago/prop-types'
 
 import Periodic from './Periodic'
-import shallowEqual from './shallowEqual'
 import createVerboseDateFormatter from './verboseDateFormatter'
 
-export default class ReactTimeAgo extends Component
+// `PureComponent` is only available in React >= 15.3.0.
+const PureComponent = React.PureComponent || React.Component
+
+export default class ReactTimeAgo extends PureComponent
 {
 	static propTypes =
 	{
@@ -67,7 +69,7 @@ export default class ReactTimeAgo extends Component
 		// }
 		// 
 		// const Container = ({ verboseDate, children }) => (
-		//   <Tooltip text={verboseDate}>
+		//   <Tooltip content={verboseDate}>
 		//     {children}
 		//   </Tooltip>
 		// )
@@ -117,11 +119,6 @@ export default class ReactTimeAgo extends Component
 		this.timeAgo = new JavascriptTimeAgo(this.getPreferredLocales())
 	}
 
-	shouldComponentUpdate(nextProps)
-	{
-		return !shallowEqual(this.props, nextProps)
-	}
-
 	componentDidMount()
 	{
 		const
@@ -141,18 +138,18 @@ export default class ReactTimeAgo extends Component
 			}
 
 			// Register for the relative time autoupdate as the time goes by.
-			this.stop_autoupdate = window._react_time_ago_updater.add(() => this.forceUpdate())
+			this.stopAutoupdate = window._react_time_ago_updater.add(() => this.forceUpdate())
 		}
 
 		// Format verbose date for HTML `tooltip` attribute.
-		this.format_verbose_date = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
+		this.formatVerboseDate = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
 		this.forceUpdate()
 	}
 
 	componentWillUnmount()
 	{
-		if (this.stop_autoupdate) {
-			this.stop_autoupdate()
+		if (this.stopAutoupdate) {
+			this.stopAutoupdate()
 		}
 	}
 
@@ -179,13 +176,13 @@ export default class ReactTimeAgo extends Component
 		// Only after `componentDidMount()` (only on client side).
 		// The rationale is that if javascript is disabled (e.g. Tor Browser)
 		// then the `<Tooltip/>` component won't ever be able to show itself.
-		const verbose_date = this.format_verbose_date ? this.getVerboseDate(date) : undefined
+		const verboseDate = this.formatVerboseDate ? this.getVerboseDate(date) : undefined
 
 		const timeAgo =
 		(
 			<time
 				dateTime={ date.toISOString() }
-				title={ tooltip ? verbose_date : undefined } 
+				title={ tooltip ? verboseDate : undefined } 
 				style={ container ? undefined : style } 
 				className={ container ? undefined : className }>
 
@@ -197,7 +194,7 @@ export default class ReactTimeAgo extends Component
 		{
 			return React.createElement(container,
 			{
-				verboseDate : verbose_date,
+				verboseDate,
 				className,
 				style
 			},
@@ -237,7 +234,7 @@ export default class ReactTimeAgo extends Component
 			return formatVerboseDate(convertToDate(input))
 		}
 
-		return this.format_verbose_date(convertToDate(input))
+		return this.formatVerboseDate(convertToDate(input))
 	}
 }
 
