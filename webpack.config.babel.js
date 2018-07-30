@@ -31,7 +31,7 @@ const config =
   {
     path           : path.join(__dirname, '/bundle'),
     filename       : output_file,
-    library        : library_name,
+    library        : 'ReactTimeAgo',
     libraryTarget  : 'umd',
     umdNamedDefine : true
   },

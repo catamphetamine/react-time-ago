@@ -35,11 +35,16 @@ npm-debug.log
 *.sublime-project
 *.sublime-workspace
 
-# NUL
-/NUL
-
 # webpack is used in development
 /webpack.config.babel.js
 
 # tests aren't needed for npm
 /test/
+
+# Demo
+/bundle/lib/
+/bundle/index.html
+/bundle/javascript-time-ago.min.js
+/bundle/javascript-time-ago.min.js.map
+/bundle/locales.en.js
+/bundle/locales.ru.js
