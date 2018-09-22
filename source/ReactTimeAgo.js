@@ -81,8 +81,11 @@ export default class ReactTimeAgo extends PureComponent
 		// E.g. `{ color: white }`.
 		style : PropTypes.object,
 
-		// CSS class name
-		className : PropTypes.string
+		// CSS class name.
+		className : PropTypes.string,
+
+		// Tooltip element CSS class name.
+		tooltipClassName : PropTypes.string
 	}
 
 	static defaultProps =
@@ -162,7 +165,8 @@ export default class ReactTimeAgo extends PureComponent
 			tooltip,
 			container,
 			style,
-			className
+			className,
+			tooltipClassName
 		}
 		= this.props
 
@@ -195,6 +199,7 @@ export default class ReactTimeAgo extends PureComponent
 			return React.createElement(container,
 			{
 				verboseDate,
+				tooltipClassName,
 				className,
 				style
 			},

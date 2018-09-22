@@ -88,7 +88,9 @@ import 'react-time-ago/Tooltip.css'
 // otherwise tooltip `left` and `top` positions will be slightly off.
 
 // Shows a verbose date tooltip on mouse over and on touch down.
-<TimeAgo>{date}</TimeAgo>
+<TimeAgo tooltipClassName="...">
+  {date}
+</TimeAgo>
 ```
 
 If the default `<Tooltip/>` component doesn't fit the application then use the `TimeAgo` export which doesn't have the `<Tooltip/>`:
