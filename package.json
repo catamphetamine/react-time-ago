@@ -12,9 +12,9 @@
     "react-dom": ">=0.16.0"
   },
   "dependencies": {
-    "javascript-time-ago": "^1.0.20",
+    "javascript-time-ago": "^1.0.34",
     "prop-types": "^15.6.0",
-    "react-responsive-ui": "^0.14.32"
+    "react-responsive-ui": "^0.14.71"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
