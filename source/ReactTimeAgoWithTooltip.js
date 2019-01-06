@@ -6,22 +6,21 @@ import ReactTimeAgo from './ReactTimeAgo'
 // but in that case Webpack bundles the whole `react-responsive-ui` package.
 import Tooltip from 'react-responsive-ui/commonjs/Tooltip'
 
-export default function TimeAgo(props) {
+export default function ReactTimeAgoWithTooltip(props) {
 	return (
 		<ReactTimeAgo
 			{...props}
-			container={Container}
+			container={ReactTimeAgoContainer}
 			tooltip={false}/>
 	)
 }
 
-const Container = ({ verboseDate, children, ...rest }) => (
+const ReactTimeAgoContainer = ({ verboseDate, children, ...rest }) => (
 	<Tooltip content={verboseDate} {...rest}>
 		{children}
 	</Tooltip>
 )
 
-Container.propTypes =
-{
+ReactTimeAgoContainer.propTypes = {
 	verboseDate : PropTypes.string
 }

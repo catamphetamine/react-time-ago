@@ -43,12 +43,12 @@ export default function createVerboseDateFormatter(locales, format)
 	// creating a new `Intl.DateTimeFormat` instance
 	// or stringifying a small JSON `format`.
 	// Perhaps strigifying JSON `format` is faster.
-	const format_fingerprint = JSON.stringify(format)
+	const formatFingerprint = JSON.stringify(format)
 
 	// Get `Intl.DateTimeFormat` instance for these `locale` and `format`.
 	// (`locale` can be `undefined` therefore `String(locale)`)
-	const formatter = cache.get(String(locale), format_fingerprint) ||
-		cache.put(String(locale), format_fingerprint, new Intl.DateTimeFormat(locale, format))
+	const formatter = cache.get(String(locale), formatFingerprint) ||
+		cache.put(String(locale), formatFingerprint, new Intl.DateTimeFormat(locale, format))
 
 	// Return date formatter
 	return date => formatter.format(date)

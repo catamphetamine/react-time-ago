@@ -1,3 +1,10 @@
+4.0.0 / 06.01.2019
+===================
+
+  * (breaking change) The library now only exports the non-custom-tooltip component from the default `react-time-ago` export. The custom-tooltip component can be imported from `react-time-ago/tooltip` subpackage.
+
+  * (breaking change) The library now accepts a required `date` property instead of `children`: `<ReactTimeAgo date={date}/>` instead of `<ReactTimeAgo>{date}</ReactTimeAgo>`.
+
 3.0.0 / 30.07.2018
 ===================
 

@@ -13,22 +13,23 @@ export default class ReactTimeAgo extends PureComponent
 {
 	static propTypes =
 	{
+		// The `date` or `timestamp`.
+		// E.g. `new Date()` or `1355972400000`.
+		date : PropTypes.oneOfType([
+			PropTypes.instanceOf(Date),
+			PropTypes.number
+		]).isRequired,
+
 		// Preferred locale.
+		// Is 'en' by default.
 		// E.g. 'ru-RU'.
 		locale : PropTypes.string,
 
 		// Preferred locales (ordered).
+		// Will choose the first suitable locale from this list.
+		// (the one that has been initialized)
 		// E.g. `['ru-RU', 'en-GB']`.
 		locales : PropTypes.arrayOf(PropTypes.string),
-
-		// The `date` or `timestamp`.
-		// E.g. `new Date()` or `1355972400000`.
-		children : PropTypes.oneOfType
-		([
-			PropTypes.instanceOf(Date),
-			PropTypes.number
-		])
-		.isRequired,
 
 		// Date/time formatting style.
 		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
@@ -36,10 +37,11 @@ export default class ReactTimeAgo extends PureComponent
 
 		// Whether HTML `tooltip` attribute should be set
 		// to verbosely formatted date (is `true` by default).
+		// Set to `false` to disable the native HTML `tooltip`.
 		tooltip : PropTypes.bool.isRequired,
 
 		// An optional function returning what will be output in the HTML `title` tooltip attribute.
-		// (by default it's (date) => new Intl.DateTimeFormat(locale, {…}).format(date))
+		// (by default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`)
 		formatVerboseDate : PropTypes.func,
 
 		// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
@@ -47,11 +49,13 @@ export default class ReactTimeAgo extends PureComponent
 		// By default outputs a verbose date.
 		verboseDateFormat : PropTypes.object,
 
-		// How often to update all `<ReactTimeAgo/>`s on a page.
-		// (once a minute by default)
+		// How often to update all `<ReactTimeAgo/>` elements on a page.
+		// (is once in a minute by default)
 		updateInterval : PropTypes.number,
 
-		// Set to `false` to disable automatic refresh as time goes by.
+		// Set to `false` to disable automatic refresh of
+		// `<ReactTimeAgo/>` elements on a page as time goes by.
+		// (is `true` by default)
 		tick : PropTypes.bool,
 
 		// React Component to wrap the resulting `<time/>` React Element.
@@ -160,7 +164,6 @@ export default class ReactTimeAgo extends PureComponent
 	{
 		const
 		{
-			children,
 			timeStyle,
 			tooltip,
 			container,
@@ -170,9 +173,11 @@ export default class ReactTimeAgo extends PureComponent
 		}
 		= this.props
 
+		let { date } = this.props
+
 		// The date or timestamp that was passed.
-		let date   = (children instanceof Date) && children
-		const time = (typeof children === 'number') && children
+		date = (date instanceof Date) && date
+		const time = (typeof date === 'number') && date
 
 		// Convert timestamp to `Date`.
 		date = date || new Date(time)

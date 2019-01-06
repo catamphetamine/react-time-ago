@@ -25,7 +25,7 @@ else
 
 const config =
 {
-  entry: path.join(__dirname, '/index.js'),
+  entry: path.join(__dirname, 'tooltip/index.js'),
   devtool: 'source-map',
   output:
   {

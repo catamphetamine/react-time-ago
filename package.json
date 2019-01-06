@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "3.0.4",
+  "version": "4.0.0",
   "description": "International highly customizable relative time formatting",
   "main": "index.commonjs.js",
   "module": "index.js",
@@ -14,7 +14,7 @@
   "dependencies": {
     "javascript-time-ago": "^1.0.34",
     "prop-types": "^15.6.0",
-    "react-responsive-ui": "^0.14.71"
+    "react-responsive-ui": "^0.14.108"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
