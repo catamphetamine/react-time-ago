@@ -17,8 +17,18 @@
 		<script src="./javascript-time-ago.min.js"></script>
 		<script src="./locales.en.js"></script>
 		<script src="./locales.ru.js"></script>
+
+		<script src="./react-time-ago.tooltip.min.js"></script>
+		<script>
+			var ReactTimeAgoWithTooltip = window.ReactTimeAgo.default
+		</script>
+
 		<script src="./react-time-ago.min.js"></script>
+		<script>
+			var ReactTimeAgo = window.ReactTimeAgo.default
+		</script>
 	</head>
+
 
 	<style>
 		body
@@ -140,11 +150,6 @@
 			{
 				render()
 				{
-					const library = window.ReactTimeAgo
-
-					const ReactTimeAgo     = library.default
-					// const BareReactTimeAgo = library.ReactTimeAgo
-
 					const styles  = [undefined, 'twitter']
 					const locales = ['en-US', 'ru-RU']
 
@@ -207,14 +212,12 @@
 								</div>
 							))}
 
-							{/*
-							<h2>Without custom tooltip</h2>
+							<h2>With custom tooltip</h2>
 
 							<div className="time">
 								Default style, English:
-								<BareReactTimeAgo locale="en-US" date={cases[0].date}/>
+								<ReactTimeAgoWithTooltip locale="en-US" date={cases[0].date}/>
 							</div>
-							*/}
 						</div>
 					)
 				}
