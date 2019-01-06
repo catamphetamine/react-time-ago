@@ -96,7 +96,7 @@ The tooltip text is a verbose date label. If [`Intl`](https://caniuse.com/#searc
 import ReactTimeAgo from 'react-time-ago/tooltip'
 
 // Include tooltip CSS:
-import 'react-time-ago/styles/Tooltip.css'
+import 'react-time-ago/Tooltip.css'
 // Also make sure that `document.body` has no `margin`
 // otherwise tooltip `left` and `top` positions will be slightly off.
 
