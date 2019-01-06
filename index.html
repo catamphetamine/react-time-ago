@@ -70,7 +70,7 @@
 		p
 		{
 			margin-top: 10px;
-			margin-bottom: 40px;
+			margin-bottom: 25px;
 		}
 
 		.date
@@ -100,14 +100,23 @@
 		{
 			font-size: 1rem;
 		}
+
+		code.code
+		{
+			color : #965F00;
+		}
 	</style>
 
 	<body>
 		<a target="_blank" class="main" href="https://github.com/catamphetamine/react-time-ago"><code>react-time-ago</code></a>
 
-		<p>International highly customizable relative time formatting for React</p>
+		<p>International relative time formatting for React</p>
 
-		<p>Time labels constantly refresh themselves. Mouse over or touch down the time labels to see verbose date. The tooltip is optional.</p>
+		<p>Time labels refresh themselves every minute. Mouse over or touch down time labels to see verbose date.</p>
+
+		<p>This demo shows the "custom-tooltip" component imported from <code class="code">react-time-ago/tooltip</code>.</p>
+
+		<p>The "base" (default) component (the one with no tooltip) can be imported from <code class="code">react-time-ago</code> directly.</p>
 
 		<div id="content"></div>
 
@@ -134,7 +143,7 @@
 					const library = window.ReactTimeAgo
 
 					const ReactTimeAgo     = library.default
-					const BareReactTimeAgo = library.TimeAgo
+					// const BareReactTimeAgo = library.ReactTimeAgo
 
 					const styles  = [undefined, 'twitter']
 					const locales = ['en-US', 'ru-RU']
@@ -174,46 +183,38 @@
 
 									<div className="time">
 										Default style, English:
-										<ReactTimeAgo locale="en-US">
-											{date}
-										</ReactTimeAgo>
+										<ReactTimeAgo locale="en-US" date={date}/>
 									</div>
 
 									{twitter !== false &&
 										<div className="time">
 											Twitter style, English:
-											<ReactTimeAgo locale="en-US" timeStyle="twitter">
-												{date}
-											</ReactTimeAgo>
+											<ReactTimeAgo locale="en-US" timeStyle="twitter" date={date}/>
 										</div>
 									}
 
 									<div className="time">
 										Default style, Russian:
-										<ReactTimeAgo locale="ru-RU">
-											{date}
-										</ReactTimeAgo>
+										<ReactTimeAgo locale="ru-RU" date={date}/>
 									</div>
 
 									{twitter !== false &&
 										<div className="time">
 											Twitter style, Russian:
-											<ReactTimeAgo locale="ru-RU" timeStyle="twitter">
-												{date}
-											</ReactTimeAgo>
+											<ReactTimeAgo locale="ru-RU" timeStyle="twitter" date={date}/>
 										</div>
 									}
 								</div>
 							))}
 
+							{/*
 							<h2>Without custom tooltip</h2>
 
 							<div className="time">
 								Default style, English:
-								<BareReactTimeAgo locale="en-US">
-									{cases[0].date}
-								</BareReactTimeAgo>
+								<BareReactTimeAgo locale="en-US" date={cases[0].date}/>
 							</div>
+							*/}
 						</div>
 					)
 				}
