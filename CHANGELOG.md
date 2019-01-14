@@ -1,3 +1,8 @@
+5.0.0 / 14.01.2019
+===================
+
+  * (could be a breaking change for someone) Updated `javascript-time-ago` from version `1.x` to version `2.x`. See [migration guide](https://github.com/catamphetamine/javascript-time-ago/blob/master/MIGRATION.md) from version `1.x` to version `2.x`. If no custom `flavour`s were passed via `timeStyle` property then there are no breaking changes.
+
 4.0.0 / 06.01.2019
 ===================
 
