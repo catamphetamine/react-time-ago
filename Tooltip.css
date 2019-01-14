@@ -19,7 +19,7 @@
 .rrui__tooltip
 {
 	opacity    : 0;
-	transform  : translateY(0.2em) scale(0.97);
+	transform  : translateY(0.8em) scale(0.97);
 }
 
 .rrui__tooltip--after-show
@@ -33,17 +33,17 @@
 {
 	opacity   : 0;
 	/* transform : scale(0.8); */
-	transform : translateY(0.2em) scale(0.97);
+	transform : translateY(0.8em) scale(0.97);
 }
 
 .rrui__tooltip--after-show
 {
-	transition : opacity 90ms ease-out, transform 120ms ease-out;
+	transition : opacity 90ms ease-out, transform 200ms ease-out;
 }
 
 .rrui__tooltip--before-hide
 {
-	transition : opacity 90ms ease-out, transform 120ms ease-out;
+	transition : opacity 170ms ease-out, transform 200ms ease-out;
 }
 
 /* Prevents entering text selection mode

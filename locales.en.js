@@ -86,12 +86,8 @@ var long = {
     }
   },
   "now": {
-    "future": {
-      "other": "in a moment"
-    },
-    "past": {
-      "other": "just now"
-    }
+    "future": "in a moment",
+    "past": "just now"
   }
 }
 
@@ -183,12 +179,8 @@ var long_time = {
     }
   },
   "now": {
-    "future": {
-      "other": "a moment"
-    },
-    "past": {
-      "other": "just now"
-    }
+    "future": "a moment",
+    "past": "just now"
   }
 }
 
@@ -266,12 +258,8 @@ var short = {
     }
   },
   "now": {
-    "past": {
-      "other": "now"
-    },
-    "future": {
-      "other": "now"
-    }
+    "past": "now",
+    "future": "now"
   }
 }
 
@@ -347,12 +335,8 @@ var short_time = {
     }
   },
   "now": {
-    "past": {
-      "other": "now"
-    },
-    "future": {
-      "other": "now"
-    }
+    "past": "now",
+    "future": "now"
   }
 }
 
@@ -414,12 +398,8 @@ var tiny = {
     }
   },
   "now": {
-    "past": {
-      "other": ""
-    },
-    "future": {
-      "other": ""
-    }
+    "past": "",
+    "future": ""
   }
 }
 

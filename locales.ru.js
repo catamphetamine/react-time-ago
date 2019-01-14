@@ -114,12 +114,8 @@ var long = {
     }
   },
   "now": {
-    "past": {
-      "other": "только что"
-    },
-    "future": {
-      "other": "сейчас"
-    }
+    "past": "только что",
+    "future": "сейчас"
   }
 }
 
@@ -240,12 +236,8 @@ var long_time = {
     }
   },
   "now": {
-    "past": {
-      "other": "только что"
-    },
-    "future": {
-      "other": "сейчас"
-    }
+    "past": "только что",
+    "future": "сейчас"
   }
 }
 
@@ -350,12 +342,8 @@ var short = {
     }
   },
   "now": {
-    "past": {
-      "other": "только что"
-    },
-    "future": {
-      "other": "сейчас"
-    }
+    "past": "только что",
+    "future": "сейчас"
   }
 }
 
@@ -460,12 +448,8 @@ var short_time = {
     }
   },
   "now": {
-    "past": {
-      "other": "только что"
-    },
-    "future": {
-      "other": "сейчас"
-    }
+    "past": "только что",
+    "future": "сейчас"
   }
 }
 
@@ -527,12 +511,8 @@ var tiny = {
     }
   },
   "now": {
-    "past": {
-      "other": ""
-    },
-    "future": {
-      "other": ""
-    }
+    "past": "",
+    "future": ""
   }
 }
 
