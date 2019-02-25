@@ -28,14 +28,13 @@ export default function createVerboseDateFormatter(locales, format)
 {
 	// Fall back to `date.toString()` for old web browsers.
 	// https://caniuse.com/#search=intl
-	if (!intlDateTimeFormatSupported())
-	{
+	if (!intlDateTimeFormatSupported()) {
 		return date => date.toString()
 	}
 
 	// If none of the `locales` are supported
 	// a default system locale will be used.
-	const locale = intlDateTimeFormatSupportedLocale(locales)
+	const locale = resolveLocale(locales)
 
 	// `Intl.DateTimeFormat` format caching key.
 	// E.g. `"{"day":"numeric","month":"short",...}"`.
@@ -52,4 +51,23 @@ export default function createVerboseDateFormatter(locales, format)
 
 	// Return date formatter
 	return date => formatter.format(date)
+}
+
+// Caching locale resolving for optimizing pages 
+// with a lot of `<ReactTimeAgo/>` elements (say, 100 or more).
+// `Intl.DateTimeFormat.supportedLocalesOf(locales)` is not instantaneous.
+// For example, it could be 25 milliseconds for 200 calls.
+const resolvedLocales = {}
+
+/**
+ * Resolves a list of possible locales to a single ("best fit") supported locale.
+ * @param  {string[]} locales
+ * @return {string}
+ */
+function resolveLocale(locales) {
+	const localesFingerprint = locales.toString()
+	if (resolvedLocales[localesFingerprint]) {
+		return resolvedLocales[localesFingerprint] 
+	}
+	return resolvedLocales[localesFingerprint] = intlDateTimeFormatSupportedLocale(locales)
 }
