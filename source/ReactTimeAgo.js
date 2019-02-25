@@ -160,18 +160,15 @@ export default class ReactTimeAgo extends PureComponent
 		}
 	}
 
-	render()
-	{
-		const
-		{
+	render() {
+		const {
 			timeStyle,
 			tooltip,
 			container,
 			style,
 			className,
 			tooltipClassName
-		}
-		= this.props
+		} = this.props
 
 		let { date } = this.props
 
@@ -187,28 +184,27 @@ export default class ReactTimeAgo extends PureComponent
 		// then the `<Tooltip/>` component won't ever be able to show itself.
 		const verboseDate = this.formatVerboseDate ? this.getVerboseDate(date) : undefined
 
-		const timeAgo =
-		(
+		const timeAgo = (
 			<time
-				dateTime={ date.toISOString() }
-				title={ tooltip ? verboseDate : undefined } 
-				style={ container ? undefined : style } 
-				className={ container ? undefined : className }>
-
-				{ this.timeAgo.format(date, timeStyle) }
+				dateTime={date.toISOString()}
+				title={tooltip ? verboseDate : undefined} 
+				style={container ? undefined : style} 
+				className={container ? undefined : className}>
+				{this.timeAgo.format(date, timeStyle)}
 			</time>
 		)
 
-		if (container)
-		{
-			return React.createElement(container,
-			{
-				verboseDate,
-				tooltipClassName,
-				className,
-				style
-			},
-			timeAgo)
+		if (container) {
+			return React.createElement(
+				container,
+				{
+					verboseDate,
+					tooltipClassName,
+					className,
+					style
+				},
+				timeAgo
+			)
 		}
 
 		return timeAgo
