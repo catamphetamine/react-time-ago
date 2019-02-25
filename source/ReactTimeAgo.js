@@ -79,17 +79,7 @@ export default class ReactTimeAgo extends PureComponent
 		// )
 		// ```
 		//
-		container : PropTypes.func,
-
-		// CSS `style` object.
-		// E.g. `{ color: white }`.
-		style : PropTypes.object,
-
-		// CSS class name.
-		className : PropTypes.string,
-
-		// Tooltip element CSS class name.
-		tooltipClassName : PropTypes.string
+		container : PropTypes.func
 	}
 
 	static defaultProps =
@@ -162,22 +152,23 @@ export default class ReactTimeAgo extends PureComponent
 
 	render() {
 		const {
+			date: _date,
 			timeStyle,
 			tooltip,
 			container,
-			style,
-			className,
-			tooltipClassName
+			// Rest
+			locale,
+			locales,
+			formatVerboseDate,
+			verboseDateFormat,
+			updateInterval,
+			tick,
+			...rest
 		} = this.props
 
-		let { date } = this.props
-
 		// The date or timestamp that was passed.
-		date = (date instanceof Date) && date
-		const time = (typeof date === 'number') && date
-
 		// Convert timestamp to `Date`.
-		date = date || new Date(time)
+		const date = normalizeDate(_date)
 
 		// Only after `componentDidMount()` (only on client side).
 		// The rationale is that if javascript is disabled (e.g. Tor Browser)
@@ -188,8 +179,7 @@ export default class ReactTimeAgo extends PureComponent
 			<time
 				dateTime={date.toISOString()}
 				title={tooltip ? verboseDate : undefined} 
-				style={container ? undefined : style} 
-				className={container ? undefined : className}>
+				{...rest}>
 				{this.timeAgo.format(date, timeStyle)}
 			</time>
 		)
@@ -199,9 +189,7 @@ export default class ReactTimeAgo extends PureComponent
 				container,
 				{
 					verboseDate,
-					tooltipClassName,
-					className,
-					style
+					...rest
 				},
 				timeAgo
 			)
@@ -256,4 +244,14 @@ function convertToDate(input)
 	}
 
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
+}
+
+function normalizeDate(date) {
+	if (date instanceof Date) {
+		return date
+	}
+	// Convert timestamp to `Date`.
+	if (typeof date === 'number') {
+		return new Date(time)
+	}
 }
