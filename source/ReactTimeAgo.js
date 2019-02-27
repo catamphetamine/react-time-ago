@@ -252,6 +252,6 @@ function normalizeDate(date) {
 	}
 	// Convert timestamp to `Date`.
 	if (typeof date === 'number') {
-		return new Date(time)
+		return new Date(date)
 	}
 }
