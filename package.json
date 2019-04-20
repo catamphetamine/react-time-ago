@@ -14,7 +14,7 @@
   "dependencies": {
     "javascript-time-ago": "^2.0.1",
     "prop-types": "^15.6.0",
-    "react-responsive-ui": "^0.14.128"
+    "react-responsive-ui": "^0.14.131"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
