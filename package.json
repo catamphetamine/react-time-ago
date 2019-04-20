@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "International highly customizable relative time formatting",
   "main": "index.commonjs.js",
   "module": "index.js",
