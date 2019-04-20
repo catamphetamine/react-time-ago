@@ -203,7 +203,7 @@ export default class ReactTimeAgo extends PureComponent
 
 		// Convert `locale` to `locales`.
 		if (locale) {
-			locales = [locale].concat(locales)
+			locales = [locale]
 		}
 
 		// `javascript-time-ago` default locale.
