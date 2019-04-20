@@ -113,7 +113,12 @@ export default class ReactTimeAgo extends PureComponent
 		// `this.props` are used in `.getPreferredLocales()`.
 		super(props)
 
+		// Create `javascript-time-ago` formatter instance.
 		this.timeAgo = new JavascriptTimeAgo(this.getPreferredLocales())
+
+		// Create verbose date formatter for the tooltip text.
+		const { verboseDateFormat } = this.props
+		this.formatVerboseDate = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
 	}
 
 	componentDidMount()
@@ -121,8 +126,7 @@ export default class ReactTimeAgo extends PureComponent
 		const
 		{
 			tick,
-			updateInterval,
-			verboseDateFormat
+			updateInterval
 		}
 		= this.props
 
@@ -137,10 +141,6 @@ export default class ReactTimeAgo extends PureComponent
 			// Register for the relative time autoupdate as the time goes by.
 			this.stopAutoupdate = window._react_time_ago_updater.add(() => this.forceUpdate())
 		}
-
-		// Format verbose date for HTML `tooltip` attribute.
-		this.formatVerboseDate = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
-		this.forceUpdate()
 	}
 
 	componentWillUnmount()
@@ -170,10 +170,7 @@ export default class ReactTimeAgo extends PureComponent
 		// Convert timestamp to `Date`.
 		const date = normalizeDate(_date)
 
-		// Only after `componentDidMount()` (only on client side).
-		// The rationale is that if javascript is disabled (e.g. Tor Browser)
-		// then the `<Tooltip/>` component won't ever be able to show itself.
-		const verboseDate = this.formatVerboseDate ? this.getVerboseDate(date) : undefined
+		const verboseDate = this.getVerboseDate(date)
 
 		const timeAgo = (
 			<time
