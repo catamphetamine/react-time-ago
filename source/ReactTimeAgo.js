@@ -117,8 +117,11 @@ export default class ReactTimeAgo extends PureComponent
 		this.timeAgo = new JavascriptTimeAgo(this.getPreferredLocales())
 
 		// Create verbose date formatter for the tooltip text.
-		const { verboseDateFormat } = this.props
-		this.formatVerboseDate = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
+		// (only on client side, because tooltips aren't rendered until triggered)
+		if (typeof window !== 'undefined') {
+			const { verboseDateFormat } = this.props
+			this.formatVerboseDate = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
+		}
 	}
 
 	componentDidMount()
@@ -170,7 +173,9 @@ export default class ReactTimeAgo extends PureComponent
 		// Convert timestamp to `Date`.
 		const date = normalizeDate(_date)
 
-		const verboseDate = this.getVerboseDate(date)
+		// Format verbose date for the tooltip.
+		// (only on client side, because tooltips aren't rendered until triggered)
+		const verboseDate = typeof window === 'undefined' ? undefined : this.getVerboseDate(date)
 
 		const timeAgo = (
 			<time
