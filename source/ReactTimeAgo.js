@@ -32,7 +32,7 @@ export default class ReactTimeAgo extends PureComponent
 		locales : PropTypes.arrayOf(PropTypes.string),
 
 		// Date/time formatting style.
-		// E.g. 'twitter', 'fuzzy', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
+		// E.g. 'twitter', 'time', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
 		timeStyle : style,
 
 		// Whether HTML `tooltip` attribute should be set
