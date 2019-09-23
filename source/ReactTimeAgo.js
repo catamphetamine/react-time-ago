@@ -5,6 +5,7 @@ import { style } from 'javascript-time-ago/prop-types'
 
 import Periodic from './Periodic'
 import createVerboseDateFormatter from './verboseDateFormatter'
+import { getDate } from './helpers/date'
 
 // `PureComponent` is only available in React >= 15.3.0.
 const PureComponent = React.PureComponent || React.Component
@@ -171,7 +172,7 @@ export default class ReactTimeAgo extends PureComponent
 
 		// The date or timestamp that was passed.
 		// Convert timestamp to `Date`.
-		const date = normalizeDate(_date)
+		const date = getDate(_date)
 
 		// Format verbose date for the tooltip.
 		// (only on client side, because tooltips aren't rendered until triggered)
@@ -246,14 +247,4 @@ function convertToDate(input)
 	}
 
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
-}
-
-function normalizeDate(date) {
-	if (date instanceof Date) {
-		return date
-	}
-	// Convert timestamp to `Date`.
-	if (typeof date === 'number') {
-		return new Date(date)
-	}
 }
