@@ -237,7 +237,7 @@ export default class ReactTimeAgo extends PureComponent
 // Converts argument into a `Date`.
 function convertToDate(input)
 {
-	if (input.constructor === Date) {
+	if (Object.prototype.toString.call(input) === "[object Date]" && !isNaN(input.getTime())) {
 		return input
 	}
 
