@@ -24,3 +24,5 @@ const ReactTimeAgoContainer = ({ verboseDate, children, ...rest }) => (
 ReactTimeAgoContainer.propTypes = {
 	verboseDate : PropTypes.string
 }
+
+// ReactTimeAgoWithTooltip.addLocale = ReactTimeAgo.addLocale

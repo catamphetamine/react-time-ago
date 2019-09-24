@@ -248,3 +248,5 @@ function convertToDate(input)
 
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
 }
+
+// ReactTimeAgo.addLocale = (data) => JavascriptTimeAgo.addLocale(data)
