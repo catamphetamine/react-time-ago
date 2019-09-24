@@ -7,8 +7,9 @@
 		<link rel="stylesheet" href="./Tooltip.css"/>
 
 		<!-- React 16.3.0 -->
-		<script src="./lib/react.js"></script>
-		<script src="./lib/react-dom.js"></script>
+		<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+		<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.7.2/prop-types.min.js"></script>
 
 		<!-- Babel 6 -->
 		<script src="./lib/babel.min.js"></script>
@@ -20,13 +21,10 @@
 
 		<script src="./react-time-ago.tooltip.min.js"></script>
 		<script>
-			var ReactTimeAgoWithTooltip = window.ReactTimeAgo.default
+			var ReactTimeAgoWithTooltip = window.ReactTimeAgo
 		</script>
 
 		<script src="./react-time-ago.min.js"></script>
-		<script>
-			var ReactTimeAgo = window.ReactTimeAgo.default
-		</script>
 	</head>
 
 
@@ -127,10 +125,9 @@
 		<div id="content"></div>
 
 		<script type="text/babel">
-			var javascript_time_ago = window['javascript-time-ago'].default
-
-			javascript_time_ago.locale(window['javascript-time-ago/locales/en'])
-			javascript_time_ago.locale(window['javascript-time-ago/locales/ru'])
+			var JavascriptTimeAgo = window['javascript-time-ago'].default
+			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/en'])
+			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/ru'])
 
 			const dates =
 			{
