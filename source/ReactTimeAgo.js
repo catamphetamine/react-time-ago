@@ -249,4 +249,8 @@ function convertToDate(input)
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
 }
 
+// Deprecated CDN legacy export.
+// Will be removed in version 6.x
+ReactTimeAgo.default = ReactTimeAgo
+
 // ReactTimeAgo.addLocale = (data) => JavascriptTimeAgo.addLocale(data)

@@ -25,4 +25,8 @@ ReactTimeAgoContainer.propTypes = {
 	verboseDate : PropTypes.string
 }
 
+// Deprecated CDN legacy export.
+// Will be removed in version 6.x
+ReactTimeAgoWithTooltip.default = ReactTimeAgoWithTooltip
+
 // ReactTimeAgoWithTooltip.addLocale = ReactTimeAgo.addLocale
