@@ -5,7 +5,7 @@ import { style } from 'javascript-time-ago/prop-types'
 
 import Periodic from './Periodic'
 import createVerboseDateFormatter from './verboseDateFormatter'
-import { getDate } from './helpers/date'
+import { getDate, isMockedDate } from './helpers/date'
 
 // `PureComponent` is only available in React >= 15.3.0.
 const PureComponent = React.PureComponent || React.Component
@@ -238,7 +238,7 @@ export default class ReactTimeAgo extends PureComponent
 // Converts argument into a `Date`.
 function convertToDate(input)
 {
-	if (input.constructor === Date) {
+	if (input.constructor === Date || isMockedDate(input))
 		return input
 	}
 
