@@ -2,21 +2,16 @@ import {
 	default as ReactTimeAgo,
 } from '../index'
 
-import javascript_time_ago from 'javascript-time-ago'
-javascript_time_ago.locale(require('javascript-time-ago/locale/en'))
+import JavascriptTimeAgo from 'javascript-time-ago'
+JavascriptTimeAgo.locale(require('javascript-time-ago/locale/en'))
 
-describe(`exports`, function()
-{
-	it(`should export ES6`, function()
-	{
-		new ReactTimeAgo({ locale: 'en-US', children: new Date() })
+describe('exports', () => {
+	it('should export ES6', () => {
+		expect(ReactTimeAgo).to.be.a('function')
 	})
-
-	it(`should export CommonJS`, function()
-	{
+	it('should export CommonJS', () => {
 		const Library = require('../index.commonjs')
-
-		new Library({ locale: 'en-US', children: new Date() })
-		new Library.default({ locale: 'en-US', children: new Date() })
+		expect(Library).to.be.a('function')
+		expect(Library.default).to.be.a('function')
 	})
 })

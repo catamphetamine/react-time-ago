@@ -7,6 +7,15 @@ export function getDate(value) {
 	return isDate(value) ? value : new Date(value)
 }
 
+/**
+ * Converts value to a timestamp.
+ * @param {(number|Date)} value
+ * @return {number}
+ */
+export function getTime(value) {
+	return isDate(value) ? value.getTime() : value
+}
+
 function isDate(object) {
 	return object instanceof Date || isMockedDate(object)
 }

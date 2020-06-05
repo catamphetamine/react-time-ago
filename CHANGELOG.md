@@ -1,3 +1,21 @@
+<!-- "Smart" autoupdate intervals should be moved to `javascript-time-ago`'s grading scale. -->
+
+6.0.0 / 05.06.2020
+===================
+
+* Rewrote in React Hooks (requires React >= 16.8).
+
+* Fixed `locale` property dynamic update.
+
+* Removed `/tooltip` and `/copy-text` exports.
+
+* (misc) Removed deprecated `.default` CommonJS exports. Removed deprecated `/no-tooltip` export.
+
+5.0.8 / 17.04.2020
+===================
+
+* By default, for standard `timeStyle`s, "smart" autoupdate interval is used now: every minute for the first hour, then every 10 minutes for the first 12 hours, and so on. Previously the default was "every minute".
+
 5.0.0 / 14.01.2019
 ===================
 

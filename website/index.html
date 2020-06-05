@@ -1,0 +1,263 @@
+<html>
+	<head>
+		<title>React Time Ago</title>
+
+		<meta charset="utf-8"/>
+
+		<link rel="stylesheet" href="./Tooltip.css"/>
+
+		<!-- React 16.3.0 -->
+		<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+		<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.7.2/prop-types.min.js"></script>
+
+		<!-- Babel 6 -->
+		<script src="./lib/babel.min.js"></script>
+		<script src="./lib/babel-polyfill.min.js"></script>
+
+		<script src="./lib/javascript-time-ago.min.js"></script>
+		<script src="./lib/react-responsive-ui.min.js"></script>
+		<script src="./lib/locales.en.js"></script>
+		<script src="./lib/locales.ru.js"></script>
+
+		<script src="./react-time-ago.min.js"></script>
+	</head>
+
+
+	<style>
+		body
+		{
+			margin: 0;
+			padding: 40px;
+		}
+
+		body, input, button
+		{
+			font-family: Arial, Helvetica;
+			font-size: 20px;
+		}
+
+		h2
+		{
+			margin-top: 60px;
+			margin-bottom: 26px;
+			border-bottom: 1px solid #afafaf;
+		}
+
+		h2:first-child
+		{
+			margin-top: 0;
+		}
+
+		.section
+		{
+			margin-top: 20px;
+		}
+
+		a
+		{
+			text-decoration: none;
+			color: #0093C4;
+		}
+
+		a:hover
+		{
+			text-decoration: underline;
+		}
+
+		a.main
+		{
+			display: block;
+			font-size: 32px;
+		}
+
+		p
+		{
+			margin-top: 10px;
+			margin-bottom: 25px;
+		}
+
+		.date
+		{
+			margin-top: 30px;
+			color: #9f9f9f;
+		}
+
+		.time
+		{
+			display: block;
+			margin-top: 1em;
+		}
+
+		time
+		{
+			margin-left: 0.5em;
+			font-weight: bold;
+		}
+
+		.case
+		{
+			margin-top: 3rem;
+		}
+
+		.rrui__tooltip
+		{
+			font-size: 1rem;
+		}
+
+		code.code
+		{
+			color : #965F00;
+		}
+	</style>
+
+	<body>
+		<a target="_blank" class="main" href="https://github.com/catamphetamine/react-time-ago"><code>react-time-ago</code></a>
+
+		<p>International relative time formatting for React</p>
+
+		<p>Time labels periodically refresh themselves. Mouse over or touch down time labels to see verbose date.</p>
+
+		<div id="content"></div>
+
+		<script type="text/babel">
+			const TEST = false
+
+			const Tooltip = window['react-responsive-ui'].Tooltip
+
+			const JavascriptTimeAgo = window['javascript-time-ago'].default
+			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/en'])
+			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/ru'])
+
+			const dates =
+			{
+				recently      : new Date(),
+				a_minute_ago  : new Date(Date.now() - 60 * 1000),
+				two_hours_ago : new Date(Date.now() - 2 * 60 * 60 * 1000),
+				a_day_ago     : new Date(Date.now() - 24 * 60 * 60 * 1000),
+				a_year_ago    : new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
+				in_5_minutes  : new Date(Date.now() + 5 * 60 * 1000)
+			}
+
+			function ReactTimeAgoWithTooltip(props) {
+			  return (
+			    <ReactTimeAgo
+			      {...props}
+			      container={TooltipContainer}
+			      tooltip={false}/>
+			  )
+			}
+
+			const TooltipContainer = ({ verboseDate, children, ...rest }) => (
+			  <Tooltip {...rest} content={verboseDate}>
+			    {children}
+			  </Tooltip>
+			)
+
+			TooltipContainer.propTypes = {
+			  verboseDate: PropTypes.string,
+			  children: PropTypes.node.isRequired
+			}
+
+			class Content extends React.Component
+			{
+				state = {
+					alternativeLocale: 'ru-RU'
+				}
+
+				render()
+				{
+					const styles  = [undefined, 'twitter']
+					const locales = ['en-US', 'ru-RU']
+
+					const cases =
+					[{
+						title : 'Recently',
+						date  : dates.recently
+					},
+					{
+						title : 'A minute ago',
+						date  : dates.a_minute_ago
+					},
+					{
+						title : 'A couple of hours ago',
+						date  : dates.two_hours_ago
+					},
+					{
+						title : 'A day ago',
+						date  : dates.a_day_ago
+					},
+					{
+						title : 'A year ago',
+						date  : dates.a_year_ago
+					},
+					{
+						title : 'In 5 minutes (future date)',
+						date  : dates.in_5_minutes,
+						twitter : false
+					}]
+
+					return (
+						<div>
+							{TEST &&
+								<div>
+									<div>
+										Alternative locale: {this.state.locale}
+									</div>
+									<div>
+										<button onClick={() => this.setState({ alternativeLocale: 'en' })}>
+											Change alternative locale
+										</button>
+									</div>
+								</div>
+							}
+
+							{cases.map(({ title, date, twitter }) => (
+								<div key={title} className="case">
+									<h2>{title}</h2>
+
+									<div className="time">
+										Default style, English:
+										<ReactTimeAgo locale="en-US" date={date}/>
+									</div>
+
+									{twitter !== false &&
+										<div className="time">
+											Twitter style, English:
+											<ReactTimeAgo locale="en-US" timeStyle="twitter" date={date}/>
+										</div>
+									}
+
+									<div className="time">
+										Default style, Russian:
+										<ReactTimeAgo locale={this.state.alternativeLocale} date={date}/>
+									</div>
+
+									{twitter !== false &&
+										<div className="time">
+											Twitter style, Russian:
+											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter" date={date}/>
+										</div>
+									}
+								</div>
+							))}
+
+							<h2>With custom tooltip</h2>
+
+							<div className="time">
+								Default style, English:
+								<ReactTimeAgoWithTooltip locale="en-US" date={cases[0].date}/>
+							</div>
+						</div>
+					)
+				}
+			}
+
+			ReactDOM.render
+			(
+				<Content />,
+				document.getElementById('content')
+			)
+		</script>
+	</body>
+</html>

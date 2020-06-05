@@ -1,256 +1,297 @@
-import React from 'react'
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import { style } from 'javascript-time-ago/prop-types'
 
-import Periodic from './Periodic'
-import createVerboseDateFormatter from './verboseDateFormatter'
-import { getDate, isMockedDate } from './helpers/date'
+import createVerboseDateFormatter from './helpers/verboseDateFormatter'
+import { getDate, getTime, isMockedDate } from './helpers/date'
 
-// `PureComponent` is only available in React >= 15.3.0.
-const PureComponent = React.PureComponent || React.Component
+const MINUTE = 60 * 1000
+const HOUR = 60 * MINUTE
+const DAY = 24 * HOUR
+const MONTH = 30 * DAY
+const YEAR = 365 * DAY
 
-export default class ReactTimeAgo extends PureComponent
-{
-	static propTypes =
-	{
-		// The `date` or `timestamp`.
-		// E.g. `new Date()` or `1355972400000`.
-		date : PropTypes.oneOfType([
-			PropTypes.instanceOf(Date),
-			PropTypes.number
-		]).isRequired,
+// For standard `timeStyle`s, "smart" autoupdate interval is used:
+// every minute for the first hour, then every 10 minutes for the first 12 hours, and so on.
+// "Smart" autoupdate intervals should be moved to `javascript-time-ago`'s grading scale.
+const INTERVALS = [{
+	interval: MINUTE
+}, {
+	threshold: HOUR,
+	interval: 10 * MINUTE
+}, {
+	threshold: 12 * HOUR,
+	interval: 20 * MINUTE
+}, {
+	threshold: DAY,
+	interval: 3 * HOUR
+}, {
+	threshold: 7 * DAY,
+	interval: 6 * HOUR
+}, {
+	threshold: MONTH,
+	interval: 5 * DAY
+}, {
+	threshold: 3 * MONTH,
+	interval: 10 * DAY
+}, {
+	threshold: YEAR,
+	interval: MONTH
+}]
 
-		// Preferred locale.
-		// Is 'en' by default.
-		// E.g. 'ru-RU'.
-		locale : PropTypes.string,
+// `setTimeout()` would enter an infinite cycle when interval is a `MONTH`.
+// https://stackoverflow.com/questions/3468607/why-does-settimeout-break-for-large-millisecond-delay-values
+const SET_TIMEOUT_MAX_DELAY = 2147483647
 
-		// Preferred locales (ordered).
-		// Will choose the first suitable locale from this list.
-		// (the one that has been initialized)
-		// E.g. `['ru-RU', 'en-GB']`.
-		locales : PropTypes.arrayOf(PropTypes.string),
-
-		// Date/time formatting style.
-		// E.g. 'twitter', 'time', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
-		timeStyle : style,
-
-		// Whether HTML `tooltip` attribute should be set
-		// to verbosely formatted date (is `true` by default).
-		// Set to `false` to disable the native HTML `tooltip`.
-		tooltip : PropTypes.bool.isRequired,
-
-		// An optional function returning what will be output in the HTML `title` tooltip attribute.
-		// (by default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`)
-		formatVerboseDate : PropTypes.func,
-
-		// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
-		// Is used when `formatVerboseDate` is not specified.
-		// By default outputs a verbose date.
-		verboseDateFormat : PropTypes.object,
-
-		// How often to update all `<ReactTimeAgo/>` elements on a page.
-		// (is once in a minute by default)
-		updateInterval : PropTypes.number,
-
-		// Set to `false` to disable automatic refresh of
-		// `<ReactTimeAgo/>` elements on a page as time goes by.
-		// (is `true` by default)
-		tick : PropTypes.bool,
-
-		// React Component to wrap the resulting `<time/>` React Element.
-		// Receives `verboseDate` and `children` properties.
-		// `verboseDate` can be used for displaying verbose date label
-		// in an "on mouse over" (or "on touch") tooltip.
-		//
-		// ```js
-		// import React from 'react'
-		// import ReactTimeAgo from 'react-time-ago'
-		// import { Tooltip } from 'react-responsive-ui'
-		// 
-		// export default function TimeAgo(props) {
-		//   return <ReactTimeAgo {...props} container={Container} tooltip={false}/>
-		// }
-		// 
-		// const Container = ({ verboseDate, children }) => (
-		//   <Tooltip content={verboseDate}>
-		//     {children}
-		//   </Tooltip>
-		// )
-		// ```
-		//
-		container : PropTypes.func
-	}
-
-	static defaultProps =
-	{
-		locales : [],
-
-		tooltip : true,
-
-		// Thursday, December 20, 2012, 7:00:00 AM GMT+4
-		verboseDateFormat:
-		{
-			weekday      : 'long',
-			day          : 'numeric',
-			month        : 'long',
-			year         : 'numeric',
-			hour         : 'numeric',
-			minute       : '2-digit',
-			second       : '2-digit',
-			// timeZoneName : 'short'
-		},
-
-		// Updates once a minute
-		updateInterval : 60 * 1000,
-
-		// Refreshes time in a web browser by default
-		tick : true
-	}
-
-	constructor(props)
-	{
-		// `this.props` are used in `.getPreferredLocales()`.
-		super(props)
-
-		// Create `javascript-time-ago` formatter instance.
-		this.timeAgo = new JavascriptTimeAgo(this.getPreferredLocales())
-
-		// Create verbose date formatter for the tooltip text.
-		// (only on client side, because tooltips aren't rendered until triggered)
-		if (typeof window !== 'undefined') {
-			const { verboseDateFormat } = this.props
-			this.formatVerboseDate = createVerboseDateFormatter(this.getPreferredLocales(), verboseDateFormat)
-		}
-	}
-
-	componentDidMount()
-	{
-		const
-		{
-			tick,
-			updateInterval
-		}
-		= this.props
-
-		// If time label autoupdates are enabled.
-		if (tick)
-		{
-			// Run automatic time label updater (in a web browser).
-			if (!window._react_time_ago_updater) {
-				window._react_time_ago_updater = new Periodic(updateInterval)
-			}
-
-			// Register for the relative time autoupdate as the time goes by.
-			this.stopAutoupdate = window._react_time_ago_updater.add(() => this.forceUpdate())
-		}
-	}
-
-	componentWillUnmount()
-	{
-		if (this.stopAutoupdate) {
-			this.stopAutoupdate()
-		}
-	}
-
-	render() {
-		const {
-			date: _date,
-			timeStyle,
-			tooltip,
-			container,
-			// Rest
-			locale,
-			locales,
-			formatVerboseDate,
-			verboseDateFormat,
-			updateInterval,
-			tick,
-			...rest
-		} = this.props
-
-		// The date or timestamp that was passed.
-		// Convert timestamp to `Date`.
-		const date = getDate(_date)
-
-		// Format verbose date for the tooltip.
-		// (only on client side, because tooltips aren't rendered until triggered)
-		const verboseDate = typeof window === 'undefined' ? undefined : this.getVerboseDate(date)
-
-		const timeAgo = (
-			<time
-				dateTime={date.toISOString()}
-				title={tooltip ? verboseDate : undefined} 
-				{...rest}>
-				{this.timeAgo.format(date, timeStyle)}
-			</time>
-		)
-
-		if (container) {
-			return React.createElement(
-				container,
-				{
-					verboseDate,
-					...rest
-				},
-				timeAgo
-			)
-		}
-
-		return timeAgo
-	}
-
+export default function ReactTimeAgo({
+	date,
+	timeStyle,
+	tooltip,
+	container,
+	locale,
+	locales,
+	formatVerboseDate,
+	verboseDateFormat,
+	updateInterval,
+	tick,
+	...rest
+}) {
 	// Composes a list of preferred locales
-	getPreferredLocales()
-	{
-		const { locale } = this.props
-		let { locales } = this.props
-
+	const preferredLocales = useMemo(() => {
 		// Convert `locale` to `locales`.
 		if (locale) {
 			locales = [locale]
 		}
-
 		// `javascript-time-ago` default locale.
-		locales = locales.concat(JavascriptTimeAgo.getDefaultLocale())
+		return locales.concat(JavascriptTimeAgo.getDefaultLocale())
+	}, [
+		locale,
+		locales
+	])
 
-		return locales
-	}
+	// Create `javascript-time-ago` formatter instance.
+	const timeAgo = useMemo(() => {
+		return new JavascriptTimeAgo(preferredLocales)
+	}, [
+		preferredLocales
+	])
+
+	// Create verbose date formatter for the tooltip text.
+	// (only on client side, because tooltips aren't rendered until triggered)
+	const verboseDateFormatter = useMemo(() => {
+		if (typeof window !== 'undefined') {
+			return createVerboseDateFormatter(preferredLocales, verboseDateFormat)
+		}
+	}, [
+		preferredLocales,
+		verboseDateFormat
+	])
+
+	const [unusedState, setUnusedState] = useState()
+	const forceUpdate = useCallback(() => setUnusedState({}), [setUnusedState])
+
+	const autoUpdateTimer = useRef()
+
+	const getNextAutoUpdateDelay = useCallback(() => {
+		// "Smart" autoupdate intervals are only used for standard time styles.
+		if (typeof timeStyle === 'object') {
+			return updateInterval
+		}
+		const time = getTime(date)
+		const now = Date.now()
+		const diff = Math.abs(now - time)
+		let _interval
+		for (const { interval, threshold } of INTERVALS) {
+			if (threshold && diff < threshold) {
+				continue
+			}
+			_interval = interval
+		}
+		return Math.min(_interval, SET_TIMEOUT_MAX_DELAY)
+	}, [
+		date, 
+		timeStyle, 
+		updateInterval
+	])
+
+	const scheduleNextTick = useCallback(() => {
+		// Register for the relative time autoupdate as the time goes by.
+		autoUpdateTimer.current = setTimeout(() => {
+			forceUpdate()
+			scheduleNextTick()
+		}, getNextAutoUpdateDelay())
+	}, [
+		forceUpdate,
+		getNextAutoUpdateDelay
+	])
 
 	// Verbose date string.
 	// Is used as a tooltip text.
 	//
 	// E.g. "Sunday, May 18th, 2012, 18:45"
 	//
-	getVerboseDate(input)
-	{
-		const { formatVerboseDate } = this.props
-
+	const getVerboseDate = useCallback((input) => {
+		const date = convertToDate(input)
 		if (formatVerboseDate) {
-			return formatVerboseDate(convertToDate(input))
+			return formatVerboseDate(date)
 		}
+		return verboseDateFormatter(date)
+	}, [
+		formatVerboseDate,
+		verboseDateFormatter
+	])
 
-		return this.formatVerboseDate(convertToDate(input))
+	const isMounted = useRef()
+
+	useEffect(() => {
+		isMounted.current = true
+		// If time label autoupdates are enabled.
+		if (tick) {
+			scheduleNextTick()
+		}
+		return () => {
+			clearTimeout(autoUpdateTimer.current)
+		}
+	}, [])
+
+	// The date or timestamp that was passed.
+	// Convert timestamp to `Date`.
+	date = getDate(date)
+
+	// Format verbose date for the tooltip.
+	// (only on client side, because tooltips aren't rendered until triggered)
+	const verboseDate = typeof window === 'undefined' ? undefined : getVerboseDate(date)
+
+	const timeElement = (
+		<time
+			dateTime={date.toISOString()}
+			title={tooltip ? verboseDate : undefined} 
+			{...rest}>
+			{timeAgo.format(date, timeStyle)}
+		</time>
+	)
+
+	if (container) {
+		return React.createElement(
+			container,
+			{
+				verboseDate,
+				...rest
+			},
+			timeElement
+		)
 	}
+
+	return timeElement
+}
+
+ReactTimeAgo.propTypes = {
+	// The `date` or `timestamp`.
+	// E.g. `new Date()` or `1355972400000`.
+	date: PropTypes.oneOfType([
+		PropTypes.instanceOf(Date),
+		PropTypes.number
+	]).isRequired,
+
+	// Preferred locale.
+	// Is 'en' by default.
+	// E.g. 'ru-RU'.
+	locale: PropTypes.string,
+
+	// Preferred locales (ordered).
+	// Will choose the first suitable locale from this list.
+	// (the one that has been initialized)
+	// E.g. `['ru-RU', 'en-GB']`.
+	locales: PropTypes.arrayOf(PropTypes.string),
+
+	// Date/time formatting style.
+	// E.g. 'twitter', 'time', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
+	timeStyle: style,
+
+	// Whether HTML `tooltip` attribute should be set
+	// to verbosely formatted date (is `true` by default).
+	// Set to `false` to disable the native HTML `tooltip`.
+	tooltip: PropTypes.bool.isRequired,
+
+	// An optional function returning what will be output in the HTML `title` tooltip attribute.
+	// (by default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`)
+	formatVerboseDate: PropTypes.func,
+
+	// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
+	// Is used when `formatVerboseDate` is not specified.
+	// By default outputs a verbose date.
+	verboseDateFormat: PropTypes.object,
+
+	// How often to update all `<ReactTimeAgo/>` elements on a page.
+	// (is once in a minute by default)
+	// This setting is only used for "custom" `timeStyle`s.
+	// For standard `timeStyle`s, "smart" autoupdate interval is used:
+	// every minute for the first hour, then every 10 minutes for the first 12 hours, and so on.
+	updateInterval: PropTypes.number,
+
+	// Set to `false` to disable automatic refresh of
+	// `<ReactTimeAgo/>` elements on a page as time goes by.
+	// (is `true` by default)
+	tick: PropTypes.bool,
+
+	// React Component to wrap the resulting `<time/>` React Element.
+	// Receives `verboseDate` and `children` properties.
+	// `verboseDate` can be used for displaying verbose date label
+	// in an "on mouse over" (or "on touch") tooltip.
+	//
+	// ```js
+	// import React from 'react'
+	// import ReactTimeAgo from 'react-time-ago'
+	// import { Tooltip } from 'react-responsive-ui'
+	// 
+	// export default function TimeAgo(props) {
+	//   return <ReactTimeAgo {...props} container={Container} tooltip={false}/>
+	// }
+	// 
+	// const Container = ({ verboseDate, children }) => (
+	//   <Tooltip content={verboseDate}>
+	//     {children}
+	//   </Tooltip>
+	// )
+	// ```
+	//
+	container: PropTypes.func
+}
+
+ReactTimeAgo.defaultProps = {
+	// No preferred locales.
+	locales: [],
+
+	// Show verbose date `title` tooltip on mouse over.
+	tooltip: true,
+
+	// Thursday, December 20, 2012, 7:00:00 AM GMT+4
+	verboseDateFormat: {
+		weekday      : 'long',
+		day          : 'numeric',
+		month        : 'long',
+		year         : 'numeric',
+		hour         : 'numeric',
+		minute       : '2-digit',
+		second       : '2-digit',
+		// timeZoneName : 'short'
+	},
+
+	// Updates once a minute
+	updateInterval: MINUTE,
+
+	// Refreshes time in a web browser by default
+	tick: true
 }
 
 // Converts argument into a `Date`.
-function convertToDate(input)
-{
+function convertToDate(input) {
 	if (input.constructor === Date || isMockedDate(input)) {
 		return input
 	}
-
 	if (typeof input === 'number') {
 		return new Date(input)
 	}
-
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
 }
-
-// Deprecated CDN legacy export.
-// Will be removed in version 6.x
-ReactTimeAgo.default = ReactTimeAgo
-
-// ReactTimeAgo.addLocale = (data) => JavascriptTimeAgo.addLocale(data)

@@ -17,42 +17,35 @@ Formats a date/timestamp to:
   * 5 years ago
   * … or whatever else
 
+## GitHub
+
+On March 9th, 2020, GitHub, Inc. silently [banned](https://medium.com/@catamphetamine/how-github-blocked-me-and-all-my-libraries-c32c61f061d3) my account (and all my libraries) without any notice. I opened a support ticked but they didn't answer. Because of that, I had to move all my libraries to [GitLab](https://gitlab.com/catamphetamine).
+
 ## Install
 
 ```sh
 $ npm install react-time-ago --save
 ```
 
+This component uses [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago) library internally for generating date/time labels. When `react-time-ago` package is installed, it automatically installs `javascript-time-ago` package as a dependency, so there's no need to install `javascript-time-ago` manually.
+
 ## Use
 
-This library exports two components: a "base" component and a "custom-tooltip" component:
-
-```js
-// "base" component.
-import ReactTimeAgo from 'react-time-ago'
-
-// "custom-tooltip" component.
-// Requires React >= 16.
-import ReactTimeAgo from 'react-time-ago/tooltip'
-```
-
-Both components use [`javascript-time-ago`](https://github.com/catamphetamine/javascript-time-ago) library internally for generating localized relative time strings. When `react-time-ago` package is installed the `javascript-time-ago` package is installed automatically along with it. At runtime the `javascript-time-ago` library must be initialized in the application's code with the desired locales (by default no locales are initialized):
+First, `javascript-time-ago` must be initialized with a list of supported locales:
 
 #### ./src/index.js
 
 ```js
 import JavascriptTimeAgo from 'javascript-time-ago'
 
-// The desired locales.
 import en from 'javascript-time-ago/locale/en'
 import ru from 'javascript-time-ago/locale/ru'
 
-// Initialize the desired locales.
-JavascriptTimeAgo.locale(en)
-JavascriptTimeAgo.locale(ru)
+JavascriptTimeAgo.addLocale(en)
+JavascriptTimeAgo.addLocale(ru)
 ```
 
-Now `<ReactTimeAgo/>` component can be used on any page. The component refreshes itself every minute (by default).
+Then, `<ReactTimeAgo/>` component can be used anywhere: 
 
 #### ./src/LastSeen.js
 
@@ -69,12 +62,14 @@ export default function LastSeen({ date }) {
 }
 ```
 
-`<ReactTimeAgo/>` component takes an optional `locale` property (is `"en"` by default):
+`<ReactTimeAgo/>` accepts an optional `locale` (or `locales`) property (which is `"en"` by default):
 
 ```js
 // Displays relative time in Russian.
 <ReactTimeAgo date={date} locale="ru"/>
 ```
+
+The component periodically refreshes itself (by default, a "smart" autoupdate interval is used: every minute for the first hour, then every 10 minutes for the first 12 hours, and so on).
 
 ## Customization
 
@@ -88,40 +83,42 @@ See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-ti
 
 ## Tooltip
 
-The "custom-tooltip" component uses `react-responsive-ui`'s [`<Tooltip/>`](https://catamphetamine.github.io/react-responsive-ui/#tooltip) component internally that displays itself "on mouse over" on desktops and "on touch down" on mobile devices. The behavior of the tooltip is similar to that of the HTML `title` attribute which displays a tooltip "on mouse over". The difference is that the "custom-tooltip" component also displays the tooltip "on touch down" on mobile devices while the HTML `title` attribute doesn't handle mobile users in any way. That's the primary reason why one may choose the "custom-tooltip" component over the "base" (default) one.
+By default, the standard HTML `title` attribute is used, which shows a standard web browser tooltip on mouse over. The tooltip text is a verbose date label. If [`Intl`](https://caniuse.com/#search=intl) is supported (which is the case for all modern web browsers) then [`Intl.DateTimeFormat`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) is used for formatting the label (`"Thursday, January 11, 2018, 9:53:00 PM"`). Otherwise, it falls back to `date.toString()`.
 
-The tooltip text is a verbose date label. If [`Intl`](https://caniuse.com/#search=intl) is supported (which is the case for all modern web browsers) then [`Intl.DateTimeFormat`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) is used for formatting the label (`"Thursday, January 11, 2018, 9:53:00 PM"`). Otherwise, it falls back to `date.toString()`.
+For custom tooltip design, a custom tooltip component could be rendered. For that, `<ReactTimeAgo/>` supports properties:
+
+* `tooltip={false}` — Instructs the component not to add the default HTML `title` attribute.
+* `container` — A React component that's gonna wrap the date/time label. All "unknown" properties will be passed through to the `container`. Also, the `container` will receive `verboseDate: string` property with the verbose date/time label.
+
+For example, here's how to render a [`react-responsive-ui/Tooltip`](https://catamphetamine.github.io/react-responsive-ui/#tooltip):
 
 ```js
-import ReactTimeAgo from 'react-time-ago/tooltip'
-
-// Include tooltip CSS:
+import React from 'react'
+import PropTypes from 'prop-types'
+import Tooltip from 'react-responsive-ui/commonjs/Tooltip'
+import ReactTimeAgo from 'react-time-ago'
 import 'react-time-ago/Tooltip.css'
-// Also make sure that `document.body` has no `margin`
-// otherwise tooltip `left` and `top` positions will be slightly off.
 
-// Shows a verbose date tooltip on mouse over and on touch down.
-<ReactTimeAgo date={date}/>
-```
-
-```css
-.rrui__tooltip {
-  /* Display the tooltip above the content. */
-  margin-top : -0.5em;
-  background-color : black;
-  color : white;
+export default function ReactTimeAgoWithTooltip(props) {
+  return (
+    <ReactTimeAgo
+      {...props}
+      container={TooltipContainer}
+      tooltip={false}/>
+  )
 }
 
-.rrui__tooltip--after-show {
-  opacity : 0.85;
-}
+const TooltipContainer = ({ verboseDate, children, ...rest }) => (
+  <Tooltip {...rest} content={verboseDate}>
+    {children}
+  </Tooltip>
+)
 
-.rrui__tooltip--before-hide {
-  opacity : 0;
+TooltipContainer.propTypes = {
+  verboseDate: PropTypes.string,
+  children: PropTypes.node.isRequired
 }
 ```
-
-The "custom-tooltip" component takes an optional `tooltipClassName` property for styling the tooltip.
 
 ## Future
 
@@ -175,6 +172,9 @@ verboseDateFormat : PropTypes.object,
 
 // How often to update all `<ReactTimeAgo/>` elements on a page.
 // (is once in a minute by default)
+// This setting is only used for "custom" `timeStyle`s.
+// For standard `timeStyle`s, "smart" autoupdate interval is used:
+// every minute for the first hour, then every 10 minutes for the first 12 hours, and so on.
 updateInterval : PropTypes.number,
 
 // Set to `false` to disable automatic refresh of

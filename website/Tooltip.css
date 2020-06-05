@@ -1,0 +1,114 @@
+.rrui__tooltip
+{
+	display     : flex;
+	align-items : center;
+
+	padding-left  : calc(0.6rem * 1.5);
+	padding-right : calc(0.6rem * 1.5);
+	height        : calc(0.6rem * 4);
+
+	color            : white;
+	background-color : black;
+
+	border-radius : 0.1rem;
+
+	cursor: default;
+	outline: none;
+}
+
+.rrui__tooltip
+{
+	opacity: 0;
+}
+
+.rrui__tooltip--after-show
+{
+	opacity: 1;
+}
+
+/* `--before-hide` must be placed after `--after-show`. */
+.rrui__tooltip--before-hide
+{
+	opacity: 0;
+}
+
+.rrui__tooltip--top
+{
+	transform: translateY(calc(-1 * 0.5em));
+}
+
+.rrui__tooltip--top.rrui__tooltip--after-show
+{
+	transform: translateY(calc(-1 * 0.2em));
+}
+
+/* `--before-hide` must be placed after `--after-show`. */
+.rrui__tooltip--top.rrui__tooltip--before-hide
+{
+	transform: translateY(calc(-1 * 0.5em));
+}
+
+.rrui__tooltip--left
+{
+	transform: translateX(calc(-1 * 0.5em));
+}
+
+.rrui__tooltip--left.rrui__tooltip--after-show
+{
+	transform: translateX(calc(-1 * 0.2em));
+}
+
+/* `--before-hide` must be placed after `--after-show`. */
+.rrui__tooltip--left.rrui__tooltip--before-hide
+{
+	transform: translateX(calc(-1 * 0.5em));
+}
+
+.rrui__tooltip--bottom
+{
+	transform: translateY(0.5em);
+}
+
+.rrui__tooltip--bottom.rrui__tooltip--after-show
+{
+	transform: translateY(0.2em);
+}
+
+/* `--before-hide` must be placed after `--after-show`. */
+.rrui__tooltip--bottom.rrui__tooltip--before-hide
+{
+	transform: translateY(0.5em);
+}
+
+.rrui__tooltip--right
+{
+	transform: translateX(0.5em);
+}
+
+.rrui__tooltip--right.rrui__tooltip--after-show
+{
+	transform: translateX(0.2em);
+}
+
+/* `--before-hide` must be placed after `--after-show`. */
+.rrui__tooltip--right.rrui__tooltip--before-hide
+{
+	transform: translateX(0.5em);
+}
+
+.rrui__tooltip--after-show,
+.rrui__tooltip--before-hide
+{
+	transition : opacity 120ms, transform 120ms;
+}
+
+.rrui__tooltip__target
+{
+	/* Prevents entering text selection mode
+	   on mobile devices when tapping down and holding */
+	user-select: none;
+	/* Resets `cursor: pointer` set by `interactive={true}`'s `.rrui__button-reset`. */
+	cursor: inherit;
+	/* Resets `white-space : nowrap` set by `interactive={true}`'s `.rrui__button-reset`. */
+	white-space: initial;
+}
