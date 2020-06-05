@@ -16,13 +16,9 @@
 		<script src="./lib/babel-polyfill.min.js"></script>
 
 		<script src="./javascript-time-ago.min.js"></script>
+		<script src="./react-responsive-ui.min.js"></script>
 		<script src="./locales.en.js"></script>
 		<script src="./locales.ru.js"></script>
-
-		<script src="./react-time-ago.tooltip.min.js"></script>
-		<script>
-			var ReactTimeAgoWithTooltip = window.ReactTimeAgo
-		</script>
 
 		<script src="./react-time-ago.min.js"></script>
 	</head>
@@ -120,12 +116,16 @@
 
 		<p>International relative time formatting for React</p>
 
-		<p>Time labels refresh themselves every minute. Mouse over or touch down time labels to see verbose date.</p>
+		<p>Time labels periodically refresh themselves. Mouse over or touch down time labels to see verbose date.</p>
 
 		<div id="content"></div>
 
 		<script type="text/babel">
-			var JavascriptTimeAgo = window['javascript-time-ago'].default
+			const TEST = false
+
+			const Tooltip = window['react-responsive-ui'].Tooltip
+
+			const JavascriptTimeAgo = window['javascript-time-ago'].default
 			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/en'])
 			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/ru'])
 
@@ -139,8 +139,32 @@
 				in_5_minutes  : new Date(Date.now() + 5 * 60 * 1000)
 			}
 
+			function ReactTimeAgoWithTooltip(props) {
+			  return (
+			    <ReactTimeAgo
+			      {...props}
+			      container={TooltipContainer}
+			      tooltip={false}/>
+			  )
+			}
+
+			const TooltipContainer = ({ verboseDate, children, ...rest }) => (
+			  <Tooltip {...rest} content={verboseDate}>
+			    {children}
+			  </Tooltip>
+			)
+
+			TooltipContainer.propTypes = {
+			  verboseDate: PropTypes.string,
+			  children: PropTypes.node.isRequired
+			}
+
 			class Content extends React.Component
 			{
+				state = {
+					alternativeLocale: 'ru-RU'
+				}
+
 				render()
 				{
 					const styles  = [undefined, 'twitter']
@@ -175,6 +199,19 @@
 
 					return (
 						<div>
+							{TEST &&
+								<div>
+									<div>
+										Alternative locale: {this.state.locale}
+									</div>
+									<div>
+										<button onClick={() => this.setState({ alternativeLocale: 'en' })}>
+											Change alternative locale
+										</button>
+									</div>
+								</div>
+							}
+
 							{cases.map(({ title, date, twitter }) => (
 								<div key={title} className="case">
 									<h2>{title}</h2>
@@ -193,13 +230,13 @@
 
 									<div className="time">
 										Default style, Russian:
-										<ReactTimeAgo locale="ru-RU" date={date}/>
+										<ReactTimeAgo locale={this.state.alternativeLocale} date={date}/>
 									</div>
 
 									{twitter !== false &&
 										<div className="time">
 											Twitter style, Russian:
-											<ReactTimeAgo locale="ru-RU" timeStyle="twitter" date={date}/>
+											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter" date={date}/>
 										</div>
 									}
 								</div>
