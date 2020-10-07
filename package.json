@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Localized relative date/time formatting in React",
   "main": "index.commonjs.js",
   "module": "index.js",
@@ -66,7 +66,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/catamphetamine/react-time-ago.git"
+    "url": "git+https://gitlab.com/catamphetamine/react-time-ago.git"
   },
   "keywords": [
     "react",
@@ -78,7 +78,7 @@
   "author": "catamphetamine <purecatamphetamine@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/catamphetamine/react-time-ago/issues"
+    "url": "https://gitlab.com/catamphetamine/react-time-ago/issues"
   },
-  "homepage": "https://github.com/catamphetamine/react-time-ago#readme"
+  "homepage": "https://gitlab.com/catamphetamine/react-time-ago#readme"
 }

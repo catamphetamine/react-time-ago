@@ -1,5 +1,12 @@
 <!-- "Smart" autoupdate intervals should be moved to `javascript-time-ago`'s grading scale. -->
 
+6.0.1 / 07.08.2020
+===================
+
+* Renamed `container` property to `wrapperComponent` (the older one still works).
+
+* Added `wrapperProps` property.
+
 6.0.0 / 05.06.2020
 ===================
 

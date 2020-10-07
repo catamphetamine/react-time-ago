@@ -8,7 +8,7 @@ const resolveModules = resolve({})
 
 export default [
   {
-    input: 'index.js',
+    input: 'modules/ReactTimeAgo.js',
     plugins: [
       resolveModules,
       commonjs(),
@@ -28,6 +28,7 @@ export default [
       name: 'ReactTimeAgo',
       file: 'bundle/react-time-ago.min.js',
       sourcemap: true,
+      exports: 'default',
       globals: {
         'react': 'React',
         'prop-types': 'PropTypes',

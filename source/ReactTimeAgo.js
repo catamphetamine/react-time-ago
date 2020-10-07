@@ -6,39 +6,8 @@ import { style } from 'javascript-time-ago/prop-types'
 import createVerboseDateFormatter from './helpers/verboseDateFormatter'
 import { getDate, getTime, isMockedDate } from './helpers/date'
 
-const MINUTE = 60 * 1000
-const HOUR = 60 * MINUTE
-const DAY = 24 * HOUR
-const MONTH = 30 * DAY
-const YEAR = 365 * DAY
-
-// For standard `timeStyle`s, "smart" autoupdate interval is used:
-// every minute for the first hour, then every 10 minutes for the first 12 hours, and so on.
-// "Smart" autoupdate intervals should be moved to `javascript-time-ago`'s grading scale.
-const INTERVALS = [{
-	interval: MINUTE
-}, {
-	threshold: HOUR,
-	interval: 10 * MINUTE
-}, {
-	threshold: 12 * HOUR,
-	interval: 20 * MINUTE
-}, {
-	threshold: DAY,
-	interval: 3 * HOUR
-}, {
-	threshold: 7 * DAY,
-	interval: 6 * HOUR
-}, {
-	threshold: MONTH,
-	interval: 5 * DAY
-}, {
-	threshold: 3 * MONTH,
-	interval: 10 * DAY
-}, {
-	threshold: YEAR,
-	interval: MONTH
-}]
+// Stupid Rollup doesn't know how to property read "default" export.
+import UPDATE_INTERVALS from './updateIntervals'
 
 // `setTimeout()` would enter an infinite cycle when interval is a `MONTH`.
 // https://stackoverflow.com/questions/3468607/why-does-settimeout-break-for-large-millisecond-delay-values
@@ -48,7 +17,11 @@ export default function ReactTimeAgo({
 	date,
 	timeStyle,
 	tooltip,
+	// `container` property name is deprecated, 
+	// use `wrapperComponent` property name instead.
 	container,
+	wrapperComponent,
+	wrapperProps,
 	locale,
 	locales,
 	formatVerboseDate,
@@ -94,21 +67,11 @@ export default function ReactTimeAgo({
 	const autoUpdateTimer = useRef()
 
 	const getNextAutoUpdateDelay = useCallback(() => {
-		// "Smart" autoupdate intervals are only used for standard time styles.
-		if (typeof timeStyle === 'object') {
-			return updateInterval
+		const interval = getUpdateIntervalSetting(updateInterval, timeStyle)
+		if (Array.isArray(interval)) {
+			return getUpdateIntervalBasedOnTime(interval, date)
 		}
-		const time = getTime(date)
-		const now = Date.now()
-		const diff = Math.abs(now - time)
-		let _interval
-		for (const { interval, threshold } of INTERVALS) {
-			if (threshold && diff < threshold) {
-				continue
-			}
-			_interval = interval
-		}
-		return Math.min(_interval, SET_TIMEOUT_MAX_DELAY)
+		return interval
 	}, [
 		date, 
 		timeStyle, 
@@ -142,10 +105,7 @@ export default function ReactTimeAgo({
 		verboseDateFormatter
 	])
 
-	const isMounted = useRef()
-
 	useEffect(() => {
-		isMounted.current = true
 		// If time label autoupdates are enabled.
 		if (tick) {
 			scheduleNextTick()
@@ -172,12 +132,12 @@ export default function ReactTimeAgo({
 		</time>
 	)
 
-	if (container) {
+	if (wrapperComponent || container) {
 		return React.createElement(
-			container,
+			wrapperComponent || container,
 			{
 				verboseDate,
-				...rest
+				...wrapperProps
 			},
 			timeElement
 		)
@@ -206,7 +166,7 @@ ReactTimeAgo.propTypes = {
 	locales: PropTypes.arrayOf(PropTypes.string),
 
 	// Date/time formatting style.
-	// E.g. 'twitter', 'time', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
+	// E.g. 'round', 'round-minute', 'twitter', 'approximate', 'time', or custom (`{ gradation: […], units: […], flavour: 'long', custom: function }`)
 	timeStyle: style,
 
 	// Whether HTML `tooltip` attribute should be set
@@ -228,7 +188,13 @@ ReactTimeAgo.propTypes = {
 	// This setting is only used for "custom" `timeStyle`s.
 	// For standard `timeStyle`s, "smart" autoupdate interval is used:
 	// every minute for the first hour, then every 10 minutes for the first 12 hours, and so on.
-	updateInterval: PropTypes.number,
+	updateInterval: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.arrayOf(PropTypes.shape({
+			threshold: PropTypes.number,
+			interval: PropTypes.number.isRequired
+		}))
+	]),
 
 	// Set to `false` to disable automatic refresh of
 	// `<ReactTimeAgo/>` elements on a page as time goes by.
@@ -237,6 +203,7 @@ ReactTimeAgo.propTypes = {
 
 	// React Component to wrap the resulting `<time/>` React Element.
 	// Receives `verboseDate` and `children` properties.
+	// Also receives `wrapperProps`, if they're passed.
 	// `verboseDate` can be used for displaying verbose date label
 	// in an "on mouse over" (or "on touch") tooltip.
 	//
@@ -246,17 +213,25 @@ ReactTimeAgo.propTypes = {
 	// import { Tooltip } from 'react-responsive-ui'
 	// 
 	// export default function TimeAgo(props) {
-	//   return <ReactTimeAgo {...props} container={Container} tooltip={false}/>
+	//   return (
+	//     <ReactTimeAgo 
+	//       {...props} 
+	//       wrapperComponent={Wrapper} 
+	//       tooltip={false}/>
+	//   )
 	// }
 	// 
-	// const Container = ({ verboseDate, children }) => (
-	//   <Tooltip content={verboseDate}>
+	// const Wrapper = ({ verboseDate, children, ...rest }) => (
+	//   <Tooltip {...rest} content={verboseDate}>
 	//     {children}
 	//   </Tooltip>
 	// )
 	// ```
 	//
-	container: PropTypes.func
+	wrapperComponent: PropTypes.func,
+
+	// Custom `props` passed to `wrapperComponent`.
+	wrapperProps: PropTypes.object
 }
 
 ReactTimeAgo.defaultProps = {
@@ -278,8 +253,8 @@ ReactTimeAgo.defaultProps = {
 		// timeZoneName : 'short'
 	},
 
-	// Updates once a minute
-	updateInterval: MINUTE,
+	// // Updates once a minute
+	// updateInterval: MINUTE,
 
 	// Refreshes time in a web browser by default
 	tick: true
@@ -294,4 +269,29 @@ function convertToDate(input) {
 		return new Date(input)
 	}
 	throw new Error(`Unsupported react-time-ago input: ${typeof input}, ${input}`)
+}
+
+function getUpdateIntervalSetting(updateInterval, timeStyle) {
+	if (updateInterval === undefined) {
+		// "Smart" autoupdate intervals are only used for standard time styles.
+		if (typeof timeStyle === 'object') {
+			return MINUTE
+		}
+		return UPDATE_INTERVALS
+	}
+	return updateInterval
+}
+
+function getUpdateIntervalBasedOnTime(intervals, date) {
+	const time = getTime(date)
+	const now = Date.now()
+	const diff = Math.abs(now - time)
+	let _interval
+	for (const { interval, threshold } of intervals) {
+		if (threshold && diff < threshold) {
+			continue
+		}
+		_interval = interval
+	}
+	return Math.min(_interval, SET_TIMEOUT_MAX_DELAY)
 }
