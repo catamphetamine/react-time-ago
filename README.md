@@ -2,9 +2,11 @@
 
 [![npm version](https://img.shields.io/npm/v/react-time-ago.svg?style=flat-square)](https://www.npmjs.com/package/react-time-ago)
 
-Intelligent, international, higly customizable relative date/time formatter (both for past and future dates).
+Localized relative date/time formatting (both for past and future dates).
 
 Automatically chooses the right units (seconds, minutes, etc) to format a time interval.
+
+Automatically refreshes itself.
 
 [See Demo](https://catamphetamine.gitlab.io/react-time-ago/)
 
@@ -21,29 +23,31 @@ Examples:
 
 ## Install
 
+The `react-time-ago` component uses [`javascript-time-ago`](https://gitlab.com/catamphetamine/javascript-time-ago) library for generating date/time labels, so both of these packages should be installed:
+
 ```sh
-$ npm install react-time-ago --save
+$ npm install react-time-ago javascript-time-ago --save
 ```
 
-This component uses [`javascript-time-ago`](https://gitlab.com/catamphetamine/javascript-time-ago) library internally for generating date/time labels. When `react-time-ago` package is installed, it automatically installs `javascript-time-ago` package as a dependency, so there's no need to install `javascript-time-ago` manually.
+If you're not using a bundler then use a [standalone version from a CDN](#cdn).
 
 ## Use
 
-First, `javascript-time-ago` must be initialized with a list of supported locales:
+First, `javascript-time-ago` must be [initialized](https://github.com/catamphetamine/javascript-time-ago#locales) with some locales:
 
 #### ./src/index.js
 
 ```js
-import JavascriptTimeAgo from 'javascript-time-ago'
+import TimeAgo from 'javascript-time-ago'
 
-import en from 'javascript-time-ago/locale/en'
-import ru from 'javascript-time-ago/locale/ru'
+import en from 'javascript-time-ago/locale/en.json'
+import ru from 'javascript-time-ago/locale/ru.json'
 
-JavascriptTimeAgo.addLocale(en)
-JavascriptTimeAgo.addLocale(ru)
+TimeAgo.addDefaultLocale(en)
+TimeAgo.addLocale(ru)
 ```
 
-Then, `<ReactTimeAgo/>` component can be used anywhere:
+Then, use `<ReactTimeAgo/>` component:
 
 #### ./src/LastSeen.js
 
@@ -54,43 +58,54 @@ import ReactTimeAgo from 'react-time-ago'
 export default function LastSeen({ date }) {
   return (
     <div>
-      Last seen: <ReactTimeAgo date={date}/>
+      Last seen: <ReactTimeAgo date={date} locale="en-US"/>
     </div>
   )
 }
 ```
 
-`<ReactTimeAgo/>` accepts an optional `locale` (or `locales`) property (which is `"en"` by default):
+## Style
+
+`<ReactTimeAgo/>` component accepts an optional `timeStyle` property — it should be a `javascript-time-ago` [style](https://github.com/catamphetamine/javascript-time-ago#styles): either a built-in style name (like `"round"`, `"round-minute"`, `"twitter"`, etc) or a [custom](https://github.com/catamphetamine/javascript-time-ago#custom) style object.
 
 ```js
-// Displays relative time in Russian.
-<ReactTimeAgo date={date} locale="ru"/>
+<ReactTimeAgo date={date} locale="en-US" timeStyle="twitter"/>
 ```
 
-The component periodically refreshes itself (by default, a "smart" autoupdate interval is used: every minute for the first hour, then every 10 minutes for the first 12 hours, and so on).
+## React Native
 
-## Customization
+By default, this component renders a `<time/>` HTML tag. When using this component in React Native, pass a custom `component` property:
 
-`ReactTimeAgo` component accepts a `style` property which can be:
+```js
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReactTimeAgo from 'react-time-ago'
 
-  * [`"round"`](https://github.com/catamphetamine/javascript-time-ago#round)
-  * [`"round-minute"`](https://github.com/catamphetamine/javascript-time-ago#round-minute)
-  * [`"twitter"`](https://github.com/catamphetamine/javascript-time-ago#twitter)
-  * [`"approximate"`](https://github.com/catamphetamine/javascript-time-ago#approximate)
-  * [`"time"`](https://github.com/catamphetamine/javascript-time-ago#approximate-time)
-  * [`{ gradation, units, flavour }`](https://github.com/catamphetamine/javascript-time-ago#custom) object
+export default function TimeAgo(props) {
+  return <ReactTimeAgo {...props} component={Time}/>
+}
 
-See [`javascript-time-ago` docs](https://github.com/catamphetamine/javascript-time-ago#advanced) for more info on how to customize the generated output.
+function Time({ date, verboseDate, tooltip, children, ...rest }) {
+  return <Text>{children}</Text>
+}
+
+Time.propTypes = {
+  date: PropTypes.instanceOf(Date).isRequired,
+  verboseDate: PropTypes.string,
+  tooltip: PropTypes.bool.isRequired,
+  children: PropTypes.string.isRequired
+}
+```
 
 ## Tooltip
 
-By default, the standard HTML `title` attribute is used, which shows a standard web browser tooltip on mouse over. The tooltip text is a verbose date label. If [`Intl`](https://caniuse.com/#search=intl) is supported (which is the case for all modern web browsers) then [`Intl.DateTimeFormat`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat) is used for formatting the label (`"Thursday, January 11, 2018, 9:53:00 PM"`). Otherwise, it falls back to `date.toString()`.
+By default, the standard HTML `title` attribute is used to display a tooltip with the verbose date on mouse over.
 
 For custom tooltip design, a custom tooltip component could be rendered. For that, `<ReactTimeAgo/>` supports properties:
 
 * `tooltip={false}` — Instructs the component not to add the default HTML `title` attribute.
-* `wrapperComponent` — A React component that's gonna wrap the date/time label. Will receive `children` and `verboseDate: string` properties, `verboseDate` being verbose date/time label (for example, "Wednesday, January 1, 2000, 10:45:10 PM").
-* `wrapperProps` — If passed, these properties will be passed through to the `wrapperComponent`.
+* `wrapperComponent` — A React component that's gonna wrap the date/time label. Receives properties: `children` (Example: `<time>2 days ago</time>`) and `verboseDate: string` (Example: "Wednesday, January 1, 2000, 10:45:10 PM").
+* `wrapperProps` — If defined, these properties are passed through to the `wrapperComponent`.
 
 For example, here's how to render a [`react-responsive-ui/Tooltip`](https://catamphetamine.gitlab.io/react-responsive-ui/#tooltip):
 
@@ -117,6 +132,9 @@ const TooltipContainer = ({ verboseDate, children, ...rest }) => (
 )
 
 TooltipContainer.propTypes = {
+  // `verboseDate` is not generated on server side
+  // (because tooltips are only shown on mouse over),
+  // so it's not declared a "required" property.
   verboseDate: PropTypes.string,
   children: PropTypes.node.isRequired
 }
@@ -124,7 +142,13 @@ TooltipContainer.propTypes = {
 
 ## Future
 
-When given future dates it produces the corresponding output, e.g. "in 5 minutes", "in a year", etc.
+When given future dates, `.format()` produces the corresponding output.: `"in 5 minutes"`, `"in 10 days"`, etc.
+
+To restrict the formatted date to be future-only, pass `future` property, and it will stop when it reaches "zero point" (`"in a moment"`) and won't allow the `date` to be formatted as a past one.
+
+```js
+<ReactTimeAgo future date={date} .../>
+```
 
 <!--
 ## ES6
@@ -132,12 +156,54 @@ When given future dates it produces the corresponding output, e.g. "in 5 minutes
 This library uses ES6 `Set` so any ES6 polyfill for `Set` is required (e.g. `import 'babel-polyfill'` or `import 'core-js/fn/set'`).
 -->
 
+## CDN
+
+One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.com](https://jsdelivr.com)
+
+```html
+<!-- Example `[version]`: `2.x` -->
+<script src="https://unpkg.com/javascript-time-ago@[version]/bundle/javascript-time-ago.js"></script>
+<script src="https://unpkg.com/react-time-ago@[version]/bundle/react-time-ago.js"></script>
+
+<script>
+  TimeAgo.addDefaultLocale({
+    locale: 'en',
+    now: {
+      now: {
+        current: "now",
+        future: "in a moment",
+        past: "just now"
+      }
+    },
+    long: {
+      year: {
+        past: {
+          one: "{0} year ago",
+          other: "{0} years ago"
+        },
+        future: {
+          one: "in {0} year",
+          other: "in {0} years"
+        }
+      },
+      ...
+    }
+  })
+</script>
+
+<script>
+  ...
+  <ReactTimeAgo date={new Date()} locale="en-US" timeStyle="twitter"/>
+  ...
+</script>
+```
+
 ## Props
 
 ```js
 // The `date` (or `timestamp`).
 // E.g. `new Date()` or `1355972400000`.
-date : PropTypes.oneOfType([
+date: PropTypes.oneOfType([
   PropTypes.instanceOf(Date),
   PropTypes.number
 ]).isRequired,
@@ -145,70 +211,85 @@ date : PropTypes.oneOfType([
 // Preferred locale.
 // Is 'en' by default.
 // E.g. 'ru-RU'.
-locale : PropTypes.string,
+locale: PropTypes.string,
 
-// Preferred locales (ordered).
-// Will choose the first suitable locale from this list.
-// (the one that has been initialized)
+// Alternatively to `locale`, one could pass `locales`:
+// A list of preferred locales (ordered).
+// Will choose the first supported locale from the list.
 // E.g. `['ru-RU', 'en-GB']`.
-locales : PropTypes.arrayOf(PropTypes.string),
+locales: PropTypes.arrayOf(PropTypes.string),
+
+// If set to `true`, then will stop at "zero point"
+// when going from future dates to past dates.
+// In other words, even if the `date` has passed,
+// it will still render as if `date` is `now`.
+future: PropTypes.bool,
 
 // Date/time formatting style.
-// E.g. 'round', 'round-minute', 'twitter', 'approximate', 'time', or an object.
-// See `javascript-time-ago` docs for more info.
-timeStyle : PropTypes.oneOfType([
+// See `javascript-time-ago` docs on "Styles" for more info.
+// E.g. 'round', 'round-minute', 'twitter', 'twitter-first-minute'.
+timeStyle: PropTypes.oneOfType([
   PropTypes.string,
   PropTypes.object
 ]),
 
-// Whether HTML `tooltip` attribute should be set
-// to verbosely formatted date (is `true` by default).
-// Set to `false` to disable the native HTML `tooltip`.
-tooltip : PropTypes.bool.isRequired,
+// `round` parameter of `javascript-time-ago`.
+// See `javascript-time-ago` docs on "Rounding" for more info.
+// Examples: "round", "floor".
+round: PropTypes.string,
 
-// An optional function returning what will be output in the HTML `title` tooltip attribute.
-// (by default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`)
-formatVerboseDate : PropTypes.func,
+// A React component to render the relative time label.
+// Receives properties:
+// * date: Date — The date.
+// * verboseDate: string? — Formatted verbose date. Is always present on client, is always `undefined` on server (because tooltips aren't shown on server).
+// * tooltip: boolean — The `tooltip` property of `<ReactTimeAgo/>` component.
+// * children: string — The relative time label.
+// * All "unknown" properties that have been passed to `<ReactTimeAgo/>` are passed through to this component.
+component: PropTypes.elementType.isRequired,
 
-// `Intl.DateTimeFormat` format for the HTML `title` tooltip attribute.
-// Is used when `formatVerboseDate` is not specified.
-// By default outputs a verbose date.
-verboseDateFormat : PropTypes.object,
+// Whether to use HTML `tooltip` attribute to show a verbose date tooltip.
+// Is `true` by default.
+// Can be set to `false` to disable the native HTML `tooltip`.
+tooltip: PropTypes.bool.isRequired,
 
-// How often to update all `<ReactTimeAgo/>` elements on a page.
-// (is once in a minute by default)
-// This setting is only used for "custom" `style`s.
-// For standard `style`s, "smart" autoupdate interval is used:
-// every minute for the first hour, then every 10 minutes for the first 12 hours, and so on.
-updateInterval : PropTypes.number,
+// Allows setting a custom baseline for relative time measurement.
+// https://gitlab.com/catamphetamine/react-time-ago/-/issues/4
+now: PropTypes.number,
 
-// Set to `false` to disable automatic refresh of
-// `<ReactTimeAgo/>` elements on a page as time goes by.
-// (is `true` by default)
-tick : PropTypes.bool,
+// Allows offsetting the `date` by an arbitrary amount of milliseconds.
+// https://gitlab.com/catamphetamine/react-time-ago/-/issues/4
+timeOffset: PropTypes.number,
+
+// Pass `false` to use native `Intl.RelativeTimeFormat` / `Intl.PluralRules`
+// instead of the polyfilled ones in `javascript-time-ago`.
+polyfill: PropTypes.bool,
+
+// Verbose date formatter.
+// By default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`.
+formatVerboseDate: PropTypes.func,
+
+// `Intl.DateTimeFormat` format for formatting verbose date.
+// See `Intl.DateTimeFormat` docs for more info.
+verboseDateFormat: PropTypes.object,
 
 // (advanced)
-// React Component to wrap the resulting `<time/>` React Element.
+// A React Component to wrap the resulting `<time/>` React Element.
 // Receives `verboseDate` and `children` properties.
 // Also receives `wrapperProps`, if they're passed.
 // `verboseDate` can be used for displaying verbose date label
 // in an "on mouse over" (or "on touch") tooltip.
-// See the "Tooltip" section for usage example.
-// Another example could be `wrapperComponent`
-// getting rerendered every time `<time/>` is rerendered.
-wrapperComponent : PropTypes.func,
+// See the "Tooltip" readme section for more info.
+// Another example could be having `wrapperComponent`
+// being rerendered every time the component refreshes itself.
+wrapperComponent: PropTypes.func,
 
-// (advanced)
 // Custom `props` passed to `wrapperComponent`.
-wrapperProps : PropTypes.object,
-
-// CSS `style` object.
-// E.g. `{ color: white }`.
-style : PropTypes.object,
-
-// CSS class name.
-className : PropTypes.string
+wrapperProps: PropTypes.object
 ```
+
+## TypeScript
+
+This library comes with TypeScript "typings". If you happen to find any bugs in those, create an issue.
 
 ## GitHub
 

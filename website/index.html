@@ -15,14 +15,13 @@
 		<script src="./lib/babel.min.js"></script>
 		<script src="./lib/babel-polyfill.min.js"></script>
 
-		<script src="./lib/javascript-time-ago.min.js"></script>
+		<script src="./lib/javascript-time-ago.js"></script>
 		<script src="./lib/react-responsive-ui.min.js"></script>
-		<script src="./lib/locales.en.js"></script>
-		<script src="./lib/locales.ru.js"></script>
+		<script src="./locales.en.js"></script>
+		<script src="./locales.ru.js"></script>
 
-		<script src="./react-time-ago.min.js"></script>
+		<script src="./react-time-ago.js"></script>
 	</head>
-
 
 	<style>
 		body
@@ -105,18 +104,21 @@
 			font-size: 1rem;
 		}
 
-		code.code
-		{
-			color : #965F00;
+		code.code {
+			color: #876c31;
+		}
+
+		.string-value {
+			color: #00849e;
 		}
 	</style>
 
 	<body>
-		<a target="_blank" class="main" href="https://github.com/catamphetamine/react-time-ago"><code>react-time-ago</code></a>
+		<a target="_blank" class="main" href="https://www.npmjs.com/package/react-time-ago"><code>react-time-ago</code></a>
 
 		<p>International relative time formatting for React</p>
 
-		<p>Time labels periodically refresh themselves. Mouse over or touch down time labels to see verbose date.</p>
+		<!-- <p>Time labels periodically refresh themselves. Mouse over or touch down time labels to see verbose date.</p> -->
 
 		<div id="content"></div>
 
@@ -125,25 +127,23 @@
 
 			const Tooltip = window['react-responsive-ui'].Tooltip
 
-			const JavascriptTimeAgo = window['javascript-time-ago'].default
-			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/en'])
-			JavascriptTimeAgo.addLocale(window['javascript-time-ago/locales/ru'])
+			TimeAgo.addLocale(window['javascript-time-ago/locales/en'])
+			TimeAgo.addLocale(window['javascript-time-ago/locales/ru'])
 
-			const dates =
-			{
+			const dates = {
 				recently      : new Date(),
 				a_minute_ago  : new Date(Date.now() - 60 * 1000),
 				two_hours_ago : new Date(Date.now() - 2 * 60 * 60 * 1000),
 				a_day_ago     : new Date(Date.now() - 24 * 60 * 60 * 1000),
 				a_year_ago    : new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
-				in_5_minutes  : new Date(Date.now() + 5 * 60 * 1000)
+				in_15_minutes  : new Date(Date.now() + 15 * 60 * 1000)
 			}
 
 			function ReactTimeAgoWithTooltip(props) {
 			  return (
 			    <ReactTimeAgo
 			      {...props}
-			      container={TooltipContainer}
+			      wrapperComponent={TooltipContainer}
 			      tooltip={false}/>
 			  )
 			}
@@ -192,8 +192,8 @@
 						date  : dates.a_year_ago
 					},
 					{
-						title : 'In 5 minutes (future date)',
-						date  : dates.in_5_minutes,
+						title : 'In 15 minutes (future date)',
+						date  : dates.in_15_minutes,
 						twitter : false
 					}]
 
@@ -216,27 +216,55 @@
 								<div key={title} className="case">
 									<h2>{title}</h2>
 
+									<h3>English</h3>
+
 									<div className="time">
-										Default style, English:
-										<ReactTimeAgo locale="en-US" date={date}/>
+										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
+										<ReactTimeAgo locale="en-US" timeStyle="round" date={date}/>
+									</div>
+
+									<div className="time">
+										<code className="code">timeStyle=<span className="string-value">"round-minute"</span></code>
+										<ReactTimeAgo locale="en-US" timeStyle="round-minute" date={date}/>
 									</div>
 
 									{twitter !== false &&
 										<div className="time">
-											Twitter style, English:
+											<code className="code">timeStyle=<span className="string-value">"twitter"</span></code>
 											<ReactTimeAgo locale="en-US" timeStyle="twitter" date={date}/>
 										</div>
 									}
 
+									{twitter !== false &&
+										<div className="time">
+											<code className="code">timeStyle=<span className="string-value">"twitter-first-minute"</span></code>
+											<ReactTimeAgo locale="en-US" timeStyle="twitter-first-minute" date={date}/>
+										</div>
+									}
+
+									<h3>Russian</h3>
+
 									<div className="time">
-										Default style, Russian:
-										<ReactTimeAgo locale={this.state.alternativeLocale} date={date}/>
+										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
+										<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="round" date={date}/>
+									</div>
+
+									<div className="time">
+										<code className="code">timeStyle=<span className="string-value">"round-minute"</span></code>
+										<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="round-minute" date={date}/>
 									</div>
 
 									{twitter !== false &&
 										<div className="time">
-											Twitter style, Russian:
+											<code className="code">timeStyle=<span className="string-value">"twitter"</span></code>
 											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter" date={date}/>
+										</div>
+									}
+
+									{twitter !== false &&
+										<div className="time">
+											<code className="code">timeStyle=<span className="string-value">"twitter-first-minute"</span></code>
+											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter-first-minute" date={date}/>
 										</div>
 									}
 								</div>
@@ -245,9 +273,15 @@
 							<h2>With custom tooltip</h2>
 
 							<div className="time">
-								Default style, English:
-								<ReactTimeAgoWithTooltip locale="en-US" date={cases[0].date}/>
+								<code className="code">timeStyle=<span className="string-value">"round"</span></code>
+								<ReactTimeAgoWithTooltip locale="en-US" timeStyle="round" date={cases[0].date}/>
 							</div>
+
+							{/*
+							<button onClick={() => this.setState({ alternativeLocale: 'fr' })}>
+								Change locale
+							</button>
+							*/}
 						</div>
 					)
 				}

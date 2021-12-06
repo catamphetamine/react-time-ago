@@ -1,11 +1,9 @@
-import
-{
+import {
 	intlDateTimeFormatSupported,
 	intlDateTimeFormatSupportedLocale
-}
-from 'javascript-time-ago'
+} from './locale'
 
-import Cache from 'javascript-time-ago/cache'
+import Cache from './cache'
 
 const cache = new Cache()
 
@@ -24,8 +22,7 @@ const cache = new Cache()
  *
  * @returns {Function} `(date) -> string`.
  */
-export default function createVerboseDateFormatter(locales, format)
-{
+export default function createVerboseDateFormatter(locales, format) {
 	// Fall back to `date.toString()` for old web browsers.
 	// https://caniuse.com/#search=intl
 	if (!intlDateTimeFormatSupported()) {

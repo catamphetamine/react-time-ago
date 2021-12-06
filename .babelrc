@@ -1,47 +1,34 @@
 {
-	"env":
-	{
-		"development":
-		{
-			"presets":
-			[
+	"env": {
+		"development": {
+			"presets": [
 				"react",
 				"env"
 			],
-
-			"plugins":
-			[
+			"plugins": [
 				["transform-es2015-for-of", { loose: true }],
 				"transform-object-rest-spread",
 				"transform-class-properties"
 			]
 		},
-		"commonjs":
-		{
-			"presets":
-			[
+		"commonjs": {
+			"presets": [
 				"react",
 				"env"
 			],
-
-			"plugins":
-			[
+			"plugins": [
 				["transform-es2015-for-of", { loose: true }],
 				"transform-object-rest-spread",
 				"transform-class-properties",
 				"transform-react-display-name"
 			]
 		},
-		"es6":
-		{
-			"presets":
-			[
+		"es6": {
+			"presets": [
 				"react",
 				["env", { modules: false }]
 			],
-
-			"plugins":
-			[
+			"plugins": [
 				["transform-es2015-for-of", { loose: true }],
 				"transform-object-rest-spread",
 				"transform-class-properties",

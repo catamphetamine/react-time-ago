@@ -1,4 +1,60 @@
-<!-- "Smart" autoupdate intervals should be moved to `javascript-time-ago`'s grading scale. -->
+<!-- TO DO: Maybe make `locale` not have any default and be a required property. -->
+
+<!-- TO DO: Maybe remove `updateInterval` property. -->
+
+<!-- TO DO: Maybe remove `tick` property. -->
+
+7.1.2 / 27.09.2021
+==================
+
+* Added TypeScript "typings".
+
+7.1.1 / 30.07.2021
+==================
+
+* [Added](https://gitlab.com/catamphetamine/react-time-ago/-/issues/4) `timeOffset` property.
+
+7.1.0 / 27.07.2021
+==================
+
+* [Added](https://gitlab.com/catamphetamine/react-time-ago/-/issues/4) custom `now` property.
+
+7.0.0 / 21.06.2021
+==================
+
+* `javascript-time-ago` is now a [peer dependency](https://gitlab.com/catamphetamine/react-time-ago/-/issues/2) and has to be installed explictly along with `react-time-ago`.
+
+6.2.2 / 19.12.2020
+==================
+
+* The component now sets the "verbose date" tooltip after the component has mounted rather than on the first render. The reason is that otherwise React would complain that server-side-rendered markup doesn't match client-side-rendered one.
+
+6.2.1 / 12.11.2020
+==================
+
+* [Added](https://github.com/catamphetamine/javascript-time-ago/issues/39) `component` property.
+
+6.2.0 / 22.10.2020
+==================
+
+* Live updater now uses a single `requestAnimationFrame()` loop rather than individual `setTimeout()`s. The rationale is that Chrome has a [bug](https://www.npmjs.com/package/request-animation-frame-timeout) when handling `setTimeout()`s, and also `requestAnimationFrame()` aren't triggered when a tab is not visible (when the time doesn't need to be updated).
+
+* Added `minTimeLeft: number` property (in seconds).
+
+6.1.2 / 19.10.2020
+==================
+
+* Updated `javascript-time-ago` to fix the update interval.
+
+6.1.1 / 11.10.2020
+==================
+
+* Renamed the bundle file from `react-time-ago.min.js` to `react-time-ago.js`, and `javascript-time-ago` dependency global variable is now `TimeAgo` rather than `window['javascript-time-ago'].default`.
+
+6.1.0 / 09.10.2020
+===================
+
+* Updated to `getNextTimeToUpdate()` of the latest version of `javascript-time-ago`.
 
 6.0.1 / 07.08.2020
 ===================
