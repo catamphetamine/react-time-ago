@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import TimeAgo from 'javascript-time-ago'
 
-import createVerboseDateFormatter from './helpers/verboseDateFormatter'
+import getVerboseDateFormatter from './helpers/getVerboseDateFormatter'
 import { getDate } from './helpers/date'
 import getTimeAgo from './helpers/getTimeAgo'
 
@@ -143,27 +143,22 @@ function ReactTimeAgo({
 	}, [])
 
 	// Create verbose date formatter for the tooltip text.
-	// (only on client side, because tooltips aren't rendered 
-	//  until triggered by user interaction)
 	const verboseDateFormatter = useMemo(() => {
-		if (typeof window !== 'undefined') {
-			return createVerboseDateFormatter(preferredLocales, verboseDateFormat)
-		}
+		return getVerboseDateFormatter(
+			preferredLocales, 
+			verboseDateFormat
+		)
 	}, [
 		preferredLocales,
 		verboseDateFormat
 	])
 
 	// Format verbose date for the tooltip.
-	// (only on client side, because tooltips aren't rendered 
-	//  until triggered by user interaction)
 	const verboseDate = useMemo(() => {
-		if (typeof window !== 'undefined') {
-			if (formatVerboseDate) {
-				return formatVerboseDate(date)
-			}
-			return verboseDateFormatter(date)
+		if (formatVerboseDate) {
+			return formatVerboseDate(date)
 		}
+		return verboseDateFormatter(date)
 	}, [
 		date,
 		formatVerboseDate,
@@ -238,7 +233,7 @@ ReactTimeAgo.propTypes = {
 	// A React component to render the relative time label.
 	// Receives properties:
 	// * date: Date — The date.
-	// * verboseDate: string? — Formatted verbose date. Is always present on client, is always `undefined` on server (because tooltips aren't shown on server).
+	// * verboseDate: string — Formatted verbose date.
 	// * tooltip: boolean — The `tooltip` property of `<ReactTimeAgo/>` component.
 	// * children: string — The relative time label.
 	// * All "unknown" properties that have been passed to `<ReactTimeAgo/>` are passed through to this component.

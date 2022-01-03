@@ -241,7 +241,7 @@ round: PropTypes.string,
 // A React component to render the relative time label.
 // Receives properties:
 // * date: Date — The date.
-// * verboseDate: string? — Formatted verbose date. Is always present on client, is always `undefined` on server (because tooltips aren't shown on server).
+// * verboseDate: string — Formatted verbose date.
 // * tooltip: boolean — The `tooltip` property of `<ReactTimeAgo/>` component.
 // * children: string — The relative time label.
 // * All "unknown" properties that have been passed to `<ReactTimeAgo/>` are passed through to this component.

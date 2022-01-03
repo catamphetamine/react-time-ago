@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "7.1.5",
+  "version": "7.1.6",
   "description": "Localized relative date/time formatting in React",
   "main": "index.commonjs.js",
   "module": "index.js",
@@ -11,6 +11,7 @@
     "javascript-time-ago": "^2.3.7"
   },
   "dependencies": {
+    "memoize-one": "^6.0.0",
     "prop-types": "^15.7.2",
     "raf": "^3.4.1"
   },
@@ -28,6 +29,7 @@
     "copyfiles": "^1.2.0",
     "intl": "^1.2.4",
     "istanbul": "^1.1.0-alpha.1",
+    "javascript-time-ago": "^2.3.10",
     "mocha": "^6.2.0",
     "npm-run-all": "^1.4.0",
     "react": "^16.13.1",
