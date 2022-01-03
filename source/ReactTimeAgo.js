@@ -110,12 +110,6 @@ function ReactTimeAgo({
 	const [_formattedDate, _nextUpdateTime] = useMemo(formatDate, [])
 	const [formattedDate, setFormattedDate] = useState(_formattedDate)
 
-	// The component sets the "verbose date" tooltip after the component 
-	// has mounted rather than on the first render. 
-	// The reason is that otherwise React would complain that 
-	// server-side-rendered markup doesn't match client-side-rendered one.
-	const [shouldSetTooltipText, setShouldSetTooltipText] = useState()
-
 	const updater = useRef()
 
 	useEffect(() => {
@@ -137,10 +131,6 @@ function ReactTimeAgo({
 			setFormattedDate(formattedDate)
 		}
 	}, [formatDate])
-
-	useEffect(() => {
-		setShouldSetTooltipText(true)
-	}, [])
 
 	// Create verbose date formatter for the tooltip text.
 	const verboseDateFormatter = useMemo(() => {
@@ -168,7 +158,7 @@ function ReactTimeAgo({
 	const result = (
 		<Component
 			date={date}
-			verboseDate={shouldSetTooltipText ? verboseDate : undefined}
+			verboseDate={verboseDate}
 			tooltip={tooltip}
 			{...rest}>
 			{formattedDate}
@@ -181,7 +171,7 @@ function ReactTimeAgo({
 		return (
 			<WrapperComponent
 				{...wrapperProps}
-				verboseDate={shouldSetTooltipText ? verboseDate : undefined}>
+				verboseDate={verboseDate}>
 				{result}
 			</WrapperComponent>
 		)
