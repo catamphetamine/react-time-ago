@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "stable"
+sudo: false
+script:
+  - "npm run test-coverage"
+after_success:
+  - "npm install coveralls && npm run coveralls"

@@ -4,8 +4,10 @@ import TimeAgo from 'javascript-time-ago'
 
 import createVerboseDateFormatter from './helpers/verboseDateFormatter'
 import { getDate } from './helpers/date'
-import Cache from './helpers/cache'
+import getTimeAgo from './helpers/getTimeAgo'
+
 import Updater from './Updater'
+import Time from './Time'
 
 import { style as styleType } from './PropTypes'
 
@@ -48,7 +50,7 @@ function ReactTimeAgo({
 
 	// Create `javascript-time-ago` formatter instance.
 	const timeAgo = useMemo(() => {
-		return getTimeAgo(preferredLocales, polyfill)
+		return getTimeAgo(preferredLocales, { polyfill })
 	}, [
 		preferredLocales,
 		polyfill
@@ -336,49 +338,7 @@ ReactTimeAgo = React.memo(ReactTimeAgo)
 
 export default ReactTimeAgo
 
-// `setTimeout()` has a bug where it fires immediately
-// when the interval is longer than about `24.85` days.
-// https://stackoverflow.com/questions/3468607/why-does-settimeout-break-for-large-millisecond-delay-values
-const SET_TIMEOUT_MAX_SAFE_INTERVAL = 2147483647
-function getSafeTimeoutInterval(interval) {
-  return Math.min(interval, SET_TIMEOUT_MAX_SAFE_INTERVAL)
-}
-
-// A thousand years is practically a metaphor for "infinity".
+// A thousand years is practically a metaphor for "infinity"
+// in the context of this component.
 const YEAR = 365 * 24 * 60 * 60 * 1000
 const INFINITY = 1000 * YEAR
-
-function Time({
-	date,
-	verboseDate,
-	tooltip,
-	children,
-	...rest
-}) {
-	const isoString = useMemo(() => date.toISOString(), [date])
-	return (
-		<time
-			{...rest}
-			dateTime={isoString}
-			title={tooltip ? verboseDate : undefined}>
-			{children}
-		</time>
-	)
-}
-
-Time.propTypes = {
-	date: PropTypes.instanceOf(Date).isRequired,
-	verboseDate: PropTypes.string,
-	tooltip: PropTypes.bool.isRequired,
-	children: PropTypes.string.isRequired
-}
-
-const TimeAgoCache = new Cache()
-function getTimeAgo(preferredLocales, polyfill) {
-	// `TimeAgo` instance creation is (hypothetically) assumed
-	// a lengthy operation so the instances are cached and reused.
-	// https://gitlab.com/catamphetamine/react-time-ago/-/issues/1
-	const key = String(preferredLocales) + ':' + String(polyfill)
-	return TimeAgoCache.get(key) ||
-		TimeAgoCache.put(key, new TimeAgo(preferredLocales, { polyfill }))
-}
