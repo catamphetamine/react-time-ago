@@ -1,14 +1,28 @@
 import * as React from 'react';
 
+import { Style } from 'javascript-time-ago';
+
+export { Style } from 'javascript-time-ago';
+
 interface UpdateIntervalForStep {
 	threshold?: number;
 	interval: number;
 }
 
+interface StepMinTimeFormatAs {
+	minTime?: number;
+	formatAs: string;
+}
+
+interface StepMinTimeFormat {
+	minTime?: number,
+	format: (string) => 
+}
+
 interface Props extends React.HTMLAttributes<HTMLElement> {
 	date: Date | number;
 	future?: boolean;
-	timeStyle?: string;
+	timeStyle?: string | Style;
 	round?: string;
 	minTimeLeft?: number;
 	tooltip?: boolean;
