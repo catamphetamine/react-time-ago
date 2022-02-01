@@ -9,16 +9,6 @@ interface UpdateIntervalForStep {
 	interval: number;
 }
 
-interface StepMinTimeFormatAs {
-	minTime?: number;
-	formatAs: string;
-}
-
-interface StepMinTimeFormat {
-	minTime?: number,
-	format: (string) => 
-}
-
 interface Props extends React.HTMLAttributes<HTMLElement> {
 	date: Date | number;
 	future?: boolean;

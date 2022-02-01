@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "7.1.8",
+  "version": "7.1.9",
   "description": "Localized relative date/time formatting in React",
   "main": "index.commonjs.js",
   "module": "index.js",
