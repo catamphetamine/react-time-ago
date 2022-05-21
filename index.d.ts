@@ -16,8 +16,8 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
 	round?: string;
 	minTimeLeft?: number;
 	tooltip?: boolean;
-	component?: React.ReactType;
-	wrapperComponent?: React.ReactType;
+	component?: React.ElementType;
+	wrapperComponent?: React.ElementType;
 	wrapperProps?: object;
 	locale?: string;
 	locales?: string[];
