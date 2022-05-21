@@ -1,1 +1,1 @@
-export { default as default } from './modules/ReactTimeAgo'
+export { default as default } from './modules/ReactTimeAgo.js'

@@ -1,6 +1,6 @@
 import TimeAgo from 'javascript-time-ago'
 
-import Cache from './cache'
+import Cache from './cache.js'
 
 const TimeAgoCache = new Cache()
 export default function getTimeAgo(preferredLocales, { polyfill }) {

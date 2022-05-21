@@ -4,6 +4,11 @@
 
 <!-- TO DO: Maybe remove `tick` property. -->
 
+7.2.0 / 21.05.2022
+==================
+
+* Migrated to "ES Module" exports.
+
 7.1.2 / 27.09.2021
 ==================
 

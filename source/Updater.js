@@ -7,7 +7,7 @@
 // `requestAnimationFrame()` polyfill for old browsers.
 import requestAnimationFrame from 'raf'
 
-import binarySearch from './helpers/binarySearch'
+import binarySearch from './helpers/binarySearch.js'
 
 export default {
 	instances: [],

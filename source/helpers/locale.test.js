@@ -1,4 +1,4 @@
-import { intlDateTimeFormatSupportedLocale } from './locale'
+import { intlDateTimeFormatSupportedLocale } from './locale.js'
 
 describe('locale', () => {
 	it(`should tell if can use Intl for date formatting`, () => {

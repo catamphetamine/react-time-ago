@@ -85,7 +85,7 @@ export default function TimeAgo(props) {
   return <ReactTimeAgo {...props} component={Time}/>
 }
 
-function Time({ date, verboseDate, tooltip, children, ...rest }) {
+function Time({ date, verboseDate, tooltip, children }) {
   return <Text>{children}</Text>
 }
 

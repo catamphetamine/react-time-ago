@@ -1,11 +1,13 @@
-import {
+import PropTypes from 'prop-types'
+
+const {
 	oneOfType,
 	arrayOf,
 	string,
 	number,
 	shape,
 	func
-} from 'prop-types'
+} = PropTypes
 
 // The first step isn't required to define `minTime` or `test()`.
 const step = oneOfType([

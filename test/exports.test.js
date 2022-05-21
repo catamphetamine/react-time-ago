@@ -1,7 +1,9 @@
-import ReactTimeAgo from '../index'
+import ReactTimeAgo from '../index.js'
+import Library from '../index.cjs'
 
 import TimeAgo from 'javascript-time-ago'
-TimeAgo.locale(require('javascript-time-ago/locale/en'))
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.locale(en)
 
 describe('exports', () => {
 	it('should export ES6', () => {
@@ -9,7 +11,6 @@ describe('exports', () => {
 	})
 
 	it('should export CommonJS', () => {
-		const Library = require('../index.commonjs')
 		expect(Library.type.name).to.equal('ReactTimeAgo')
 		expect(Library.default.type.name).to.equal('ReactTimeAgo')
 	})

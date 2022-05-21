@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import TimeAgo from 'javascript-time-ago'
 
-import getVerboseDateFormatter from './helpers/getVerboseDateFormatter'
-import { getDate } from './helpers/date'
-import getTimeAgo from './helpers/getTimeAgo'
+import getVerboseDateFormatter from './helpers/getVerboseDateFormatter.js'
+import { getDate } from './helpers/date.js'
+import getTimeAgo from './helpers/getTimeAgo.js'
 
-import Updater from './Updater'
-import Time from './Time'
+import Updater from './Updater.js'
+import Time from './Time.js'
 
-import { style as styleType } from './PropTypes'
+import { style as styleType } from './PropTypes.js'
 
 function ReactTimeAgo({
 	date,

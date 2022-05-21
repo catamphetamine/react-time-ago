@@ -3,9 +3,9 @@ import memoize from 'memoize-one'
 import {
 	intlDateTimeFormatSupported,
 	intlDateTimeFormatSupportedLocale
-} from './locale'
+} from './locale.js'
 
-import Cache from './cache'
+import Cache from './cache.js'
 
 const cache = new Cache()
 

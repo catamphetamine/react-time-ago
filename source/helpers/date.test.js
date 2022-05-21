@@ -1,4 +1,4 @@
-import { getDate } from './date'
+import { getDate } from './date.js'
 
 describe('helpers/date', () => {
 	it('should convert Date/number to Date', () => {
