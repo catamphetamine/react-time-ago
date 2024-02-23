@@ -40,8 +40,8 @@ First, `javascript-time-ago` must be [initialized](https://github.com/catampheta
 ```js
 import TimeAgo from 'javascript-time-ago'
 
-import en from 'javascript-time-ago/locale/en.json'
-import ru from 'javascript-time-ago/locale/ru.json'
+import en from 'javascript-time-ago/locale/en'
+import ru from 'javascript-time-ago/locale/ru'
 
 TimeAgo.addDefaultLocale(en)
 TimeAgo.addLocale(ru)
@@ -63,6 +63,27 @@ export default function LastSeen({ date }) {
   )
 }
 ```
+
+## Hook
+
+If you prefer using a React Hook instead of a React Component, the parameters for it are the same as the [props](#props) for the React component, except:
+
+* `tooltip: boolean` 
+* `component: React.Component`
+* `wrapperComponent: React.Component`
+* `wrapperProps: object`
+
+```js
+import { useTimeAgo } from 'react-time-ago'
+
+const result = useTimeAgo(parameters)
+```
+
+Returns an object with properties:
+
+* `date: Date` — Same as the `date` input parameter. If the input parameter was a timestamp (`number`) then it gets converted to a `Date`.
+* `formattedDate: string` — Formatted `date`. Example: `"5 min ago"`.
+* `verboseDate: string` — Formatted `date` (verbose variant). Example: `"Thursday, December 20, 2012, 7:00:00 AM GMT+4"`.
 
 ## Style
 

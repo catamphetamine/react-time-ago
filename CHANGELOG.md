@@ -4,6 +4,11 @@
 
 <!-- TO DO: Maybe remove `tick` property. -->
 
+7.3.0 / 23.02.2024
+==================
+
+* Added React Hook export.
+
 7.2.0 / 21.05.2022
 ==================
 

@@ -6,4 +6,5 @@
 // https://gitlab.com/catamphetamine/libphonenumber-js/-/issues/61#note_950728292
 
 exports = module.exports = require('./commonjs/ReactTimeAgo.js').default
+exports.useTimeAgo = require('./commonjs/useTimeAgo.js').default
 exports['default'] = require('./commonjs/ReactTimeAgo.js').default

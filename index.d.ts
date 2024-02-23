@@ -9,18 +9,14 @@ interface UpdateIntervalForStep {
 	interval: number;
 }
 
-interface Props extends React.HTMLAttributes<HTMLElement> {
+interface TimeAgoParameters {
 	date: Date | number;
 	future?: boolean;
+	locale?: string;
+	locales?: string[];
 	timeStyle?: string | Style;
 	round?: string;
 	minTimeLeft?: number;
-	tooltip?: boolean;
-	component?: React.ElementType;
-	wrapperComponent?: React.ElementType;
-	wrapperProps?: object;
-	locale?: string;
-	locales?: string[];
 	formatVerboseDate?: (date: Date) => string;
 	verboseDateFormat?: object;
 	updateInterval?: number | UpdateIntervalForStep[];
@@ -28,7 +24,14 @@ interface Props extends React.HTMLAttributes<HTMLElement> {
 	now?: number;
 	timeOffset?: number;
 	polyfill?: boolean;
-	// All other properties are passed through to the `<time/>` element.
+}
+
+interface Props extends React.HTMLAttributes<HTMLElement>, TimeAgoParameters {
+	tooltip?: boolean;
+	component?: React.ElementType;
+	wrapperComponent?: React.ElementType;
+	wrapperProps?: object;
+	// Any other properties are passed through to the `<time/>` element.
 	[otherProperty: string]: any;
 }
 
@@ -41,3 +44,11 @@ type ReactTimeAgoComponent = (props: Props) => JSX.Element;
 declare const ReactTimeAgo: ReactTimeAgoComponent;
 
 export default ReactTimeAgo;
+
+interface TimeAgoResult {
+	date: Date;
+	verboseDate: string;
+	formattedDate: string;
+}
+
+export function useTimeAgo(parameters: TimeAgoParameters): TimeAgoResult;

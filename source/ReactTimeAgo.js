@@ -1,159 +1,60 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import TimeAgo from 'javascript-time-ago'
 
-import getVerboseDateFormatter from './helpers/getVerboseDateFormatter.js'
-import { getDate } from './helpers/date.js'
-import getTimeAgo from './helpers/getTimeAgo.js'
-
-import Updater from './Updater.js'
 import Time from './Time.js'
+import useTimeAgo from './useTimeAgo.js'
 
 import { style as styleType } from './PropTypes.js'
 
 function ReactTimeAgo({
-	date,
+	date: dateProperty,
 	future,
 	timeStyle,
 	round,
 	minTimeLeft,
-	tooltip,
-	component: Component,
-	// `container` property name is deprecated, 
-	// use `wrapperComponent` property name instead.
-	container,
-	wrapperComponent,
-	wrapperProps,
 	locale,
-	locales,
+	locales = [],
 	formatVerboseDate,
+	// `Intl.DateTimeFormat` for verbose date.
 	verboseDateFormat,
 	updateInterval,
 	tick,
 	now: nowProperty,
 	timeOffset,
 	polyfill,
+
+	// React Component properties:
+	// Use HTML `tooltip` attribute to show a verbose date tooltip.
+	tooltip = true,
+	// Use `<time/>` tag by default.
+	component: Component = Time,
+	// `container` property name is deprecated, 
+	// use `wrapperComponent` property name instead.
+	container,
+	wrapperComponent,
+	wrapperProps,
 	...rest
 }) {
-	// Get the list of preferred locales.
-	const preferredLocales = useMemo(() => {
-		// Convert `locale` to `locales`.
-		if (locale) {
-			locales = [locale]
-		}
-		// Add `javascript-time-ago` default locale.
-		return locales.concat(TimeAgo.getDefaultLocale())
-	}, [
-		locale,
-		locales
-	])
-
-	// Create `javascript-time-ago` formatter instance.
-	const timeAgo = useMemo(() => {
-		return getTimeAgo(preferredLocales, { polyfill })
-	}, [
-		preferredLocales,
-		polyfill
-	])
-
-	// The date or timestamp that was passed.
-	// Convert timestamp to `Date`.
-	date = useMemo(() => getDate(date), [date])
-
-	// Formats the `date`.
-	const formatDate = useCallback(() => {
-		let now = (nowProperty || Date.now()) - timeOffset
-		let stopUpdates
-		if (future) {
-			if (now >= date.getTime()) {
-				now = date.getTime()
-				stopUpdates = true
-			}
-		}
-		if (minTimeLeft !== undefined) {
-			const maxNow = date.getTime() - minTimeLeft * 1000
-			if (now > maxNow) {
-				now = maxNow
-				stopUpdates = true
-			}
-		}
-		let [formattedDate, timeToNextUpdate] = timeAgo.format(date, timeStyle, {
-			getTimeToNextUpdate: true,
-			now,
-			future,
-			round
-		})
-		if (stopUpdates) {
-			timeToNextUpdate = INFINITY
-		} else {
-			// Legacy compatibility: there used to be an `updateInterval` property.
-			// That was before `getTimeToNextUpdate` feature was introduced in `javascript-time-ago`.
-			// A default interval of one minute is introduced because
-			// `getTimeToNextUpdate` feature may theoretically return `undefined`.
-			timeToNextUpdate = updateInterval || timeToNextUpdate || 60 * 1000 // A minute by default.
-		}
-		return [formattedDate, now + timeToNextUpdate]
-	}, [
+	const {
 		date,
+		verboseDate,
+		formattedDate
+	} = useTimeAgo({
+		date: dateProperty,
 		future,
 		timeStyle,
-		updateInterval,
 		round,
 		minTimeLeft,
-		timeAgo,
-		nowProperty
-	])
-
-	const formatDateRef = useRef()
-	formatDateRef.current = formatDate
-
-	const [_formattedDate, _nextUpdateTime] = useMemo(formatDate, [])
-	const [formattedDate, setFormattedDate] = useState(_formattedDate)
-
-	const updater = useRef()
-
-	useEffect(() => {
-		if (tick) {
-			updater.current = Updater.add({
-				getNextValue: () => formatDateRef.current(),
-				setValue: setFormattedDate,
-				nextUpdateTime: _nextUpdateTime
-			})
-			return () => updater.current.stop()
-		}
-	}, [tick])
-
-	useEffect(() => {
-		if (updater.current) {
-			updater.current.forceUpdate()
-		} else {
-			const [formattedDate] = formatDate()
-			setFormattedDate(formattedDate)
-		}
-	}, [formatDate])
-
-	// Create verbose date formatter for the tooltip text.
-	const verboseDateFormatter = useMemo(() => {
-		return getVerboseDateFormatter(
-			preferredLocales, 
-			verboseDateFormat
-		)
-	}, [
-		preferredLocales,
-		verboseDateFormat
-	])
-
-	// Format verbose date for the tooltip.
-	const verboseDate = useMemo(() => {
-		if (formatVerboseDate) {
-			return formatVerboseDate(date)
-		}
-		return verboseDateFormatter(date)
-	}, [
-		date,
+		locale,
+		locales,
 		formatVerboseDate,
-		verboseDateFormatter
-	])
+		verboseDateFormat,
+		updateInterval,
+		tick,
+		now: nowProperty,
+		timeOffset,
+		polyfill
+	});
 
 	const result = (
 		<Component
@@ -181,7 +82,7 @@ function ReactTimeAgo({
 }
 
 ReactTimeAgo.propTypes = {
-	// The `date` or `timestamp`.
+	// `date: Date` or `timestamp: number`.
 	// E.g. `new Date()` or `1355972400000`.
 	date: PropTypes.oneOfType([
 		PropTypes.instanceOf(Date),
@@ -244,8 +145,8 @@ ReactTimeAgo.propTypes = {
 
 	// (deprecated)
 	// How often the component refreshes itself.
-	// Instead, consider using `getNextTimeToUpdate()` feature
-	// of `javascript-time-ago` styles.
+	// When not provided, will use `getNextTimeToUpdate()` feature
+	// of `javascript-time-ago` styles to determine the update interval.
 	updateInterval: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.arrayOf(PropTypes.shape({
@@ -257,7 +158,7 @@ ReactTimeAgo.propTypes = {
 	// (deprecated).
 	// Set to `false` to disable automatic refresh of the component.
 	// Is `true` by default.
-	// I guess no one actually turns that off.
+	// I guess no one actually turns auto-update off, so this parameter is deprecated.
 	tick: PropTypes.bool,
 
 	// Allows setting a custom baseline for relative time measurement.
@@ -287,43 +188,8 @@ ReactTimeAgo.propTypes = {
 	wrapperProps: PropTypes.object
 }
 
-ReactTimeAgo.defaultProps = {
-	// No preferred locales.
-	locales: [],
-
-	// Use a `<time/>` tag by default.
-	component: Time,
-
-	// Use HTML `tooltip` attribute to show a verbose date tooltip.
-	tooltip: true,
-
-	// `Intl.DateTimeFormat` for verbose date.
-	// Example: "Thursday, December 20, 2012, 7:00:00 AM GMT+4"
-	verboseDateFormat: {
-		weekday: 'long',
-		day: 'numeric',
-		month: 'long',
-		year: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
-		second: '2-digit',
-		// timeZoneName: 'short'
-	},
-
-	// Automatically refreshes itself.
-	tick: true,
-
-	// No time offset.
-	timeOffset: 0
-}
-
 // The component schedules a next refresh every time it renders.
 // There's no need to rerender this component unless its props change.
 ReactTimeAgo = React.memo(ReactTimeAgo)
 
 export default ReactTimeAgo
-
-// A thousand years is practically a metaphor for "infinity"
-// in the context of this component.
-const YEAR = 365 * 24 * 60 * 60 * 1000
-const INFINITY = 1000 * YEAR
