@@ -222,7 +222,7 @@ One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdeliv
 ## Props
 
 ```js
-// The `date` (or `timestamp`).
+// `date: Date` or `timestamp: number`.
 // E.g. `new Date()` or `1355972400000`.
 date: PropTypes.oneOfType([
   PropTypes.instanceOf(Date),
@@ -259,6 +259,11 @@ timeStyle: PropTypes.oneOfType([
 // Examples: "round", "floor".
 round: PropTypes.string,
 
+// If specified, the time won't "tick" past this threshold (in seconds).
+// For example, if `minTimeLeft` is `60 * 60`
+// then the time won't "tick" past "in 1 hour".
+minTimeLeft: PropTypes.number,
+
 // A React component to render the relative time label.
 // Receives properties:
 // * date: Date — The date.
@@ -266,12 +271,38 @@ round: PropTypes.string,
 // * tooltip: boolean — The `tooltip` property of `<ReactTimeAgo/>` component.
 // * children: string — The relative time label.
 // * All "unknown" properties that have been passed to `<ReactTimeAgo/>` are passed through to this component.
-component: PropTypes.elementType.isRequired,
+component: PropTypes.elementType,
 
 // Whether to use HTML `tooltip` attribute to show a verbose date tooltip.
 // Is `true` by default.
 // Can be set to `false` to disable the native HTML `tooltip`.
-tooltip: PropTypes.bool.isRequired,
+tooltip: PropTypes.bool,
+
+// Verbose date formatter.
+// By default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`.
+formatVerboseDate: PropTypes.func,
+
+// `Intl.DateTimeFormat` format for formatting verbose date.
+// See `Intl.DateTimeFormat` docs for more info.
+verboseDateFormat: PropTypes.object,
+
+// (deprecated)
+// How often the component refreshes itself.
+// When not provided, will use `getNextTimeToUpdate()` feature
+// of `javascript-time-ago` styles to determine the update interval.
+updateInterval: PropTypes.oneOfType([
+  PropTypes.number,
+  PropTypes.arrayOf(PropTypes.shape({
+    threshold: PropTypes.number,
+    interval: PropTypes.number.isRequired
+  }))
+]),
+
+// (deprecated).
+// Set to `false` to disable automatic refresh of the component.
+// Is `true` by default.
+// I guess no one actually turns auto-update off, so this parameter is deprecated.
+tick: PropTypes.bool,
 
 // Allows setting a custom baseline for relative time measurement.
 // https://gitlab.com/catamphetamine/react-time-ago/-/issues/4
@@ -285,14 +316,6 @@ timeOffset: PropTypes.number,
 // instead of the polyfilled ones in `javascript-time-ago`.
 polyfill: PropTypes.bool,
 
-// Verbose date formatter.
-// By default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`.
-formatVerboseDate: PropTypes.func,
-
-// `Intl.DateTimeFormat` format for formatting verbose date.
-// See `Intl.DateTimeFormat` docs for more info.
-verboseDateFormat: PropTypes.object,
-
 // (advanced)
 // A React Component to wrap the resulting `<time/>` React Element.
 // Receives `verboseDate` and `children` properties.
@@ -302,7 +325,7 @@ verboseDateFormat: PropTypes.object,
 // See the "Tooltip" readme section for more info.
 // Another example could be having `wrapperComponent`
 // being rerendered every time the component refreshes itself.
-wrapperComponent: PropTypes.func,
+wrapperComponent: PropTypes.elementType,
 
 // Custom `props` passed to `wrapperComponent`.
 wrapperProps: PropTypes.object
