@@ -26,22 +26,14 @@ interface TimeAgoParameters {
 	polyfill?: boolean;
 }
 
-interface Props extends React.HTMLAttributes<HTMLElement>, TimeAgoParameters {
+interface Props extends TimeAgoParameters {
 	tooltip?: boolean;
 	component?: React.ElementType;
 	wrapperComponent?: React.ElementType;
 	wrapperProps?: object;
-	// Any other properties are passed through to the `<time/>` element.
-	[otherProperty: string]: any;
 }
 
-// React TypeScript Cheatsheet doesn't recommend using `React.FunctionalComponent`.
-// https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components
-// declare const ReactTimeAgo: React.FC<Props>;
-
-type ReactTimeAgoComponent = (props: Props) => JSX.Element;
-
-declare const ReactTimeAgo: ReactTimeAgoComponent;
+declare const ReactTimeAgo: React.ForwardRefExoticComponent<Props & React.AllHTMLAttributes<HTMLTimeElement> & React.RefAttributes<HTMLTimeElement>>;
 
 export default ReactTimeAgo;
 
