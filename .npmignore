@@ -8,6 +8,11 @@
 # Sources aren't needed for npm
 /source
 
+# Demo isn't required in the npm package distribution.
+# One time it also caused a security issue error due to an outdated `react-dom.js` file included in it.
+# https://github.com/catamphetamine/relative-time-format/issues/10
+/website
+
 # testing package
 /javascript-isomorphic-render-*.tgz
 
