@@ -30,11 +30,11 @@ Alternatively, one could include it on a web page [directly](#cdn) via a `<scrip
 
 To begin, decide on the set of languages that your application will be translated into. For now, let's assume that it's gonna be just English.
 
-Then, for each of those languages, import the language data from `react-time-ago/locale/..`
+Then, for each of those languages, import the language data:
 
 ```js
 // Adds support for English language.
-import en from "react-time-ago/locale/en"
+import "react-time-ago/locale/en"
 ```
 
 Now you're ready to render a `<ReactTimeAgo/>` component for any of those languages.
