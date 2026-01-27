@@ -16,7 +16,7 @@ interface TimeAgoParameters {
 	locales?: string[];
 	timeStyle?: string | Style;
 	round?: string;
-	minTimeLeft?: number;
+	freezeAt?: number;
 	formatVerboseDate?: (date: Date) => string;
 	verboseDateFormat?: object;
 	updateInterval?: number | UpdateIntervalForStep[];

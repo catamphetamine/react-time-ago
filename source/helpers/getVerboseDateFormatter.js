@@ -1,83 +1,91 @@
 import memoize from 'memoize-one'
 
 import {
-	intlDateTimeFormatSupported,
-	intlDateTimeFormatSupportedLocale
+	isIntlDateTimeFormatSupported,
+	chooseOneSupportedLocale
 } from './locale.js'
 
+import FullDateFormatter from './FullDateFormatter.js'
 import Cache from './cache.js'
 
 const cache = new Cache()
 
-const INTL_DATE_TIME_FORMAT_SUPPORTED = intlDateTimeFormatSupported()
-const FALLBACK_VERBOSE_DATE_FORMATTER = date => date.toString()
+// `Intl` is supported in all modern web browsers.
+// https://caniuse.com/#search=intl
+const INTL_DATE_TIME_FORMAT_IS_SUPPORTED = isIntlDateTimeFormatSupported()
 
 /**
  * Returns a verbose date formatter.
- * 
- * @param {string} locale - Date formatting locale
- * @param {object} format - Output format
- * @param {string} format.day     - Day format
- * @param {string} format.month   - Month format
- * @param {string} format.year    - Year format
- * @param {string} format.weekday - Weekday format
- * @param {string} format.hour    - Hour format
- * @param {string} format.minute  - Minute format
- * @param {string} format.second  - Second format
+ *
+ * @param {(string|string[])} locale - `locale` or `locales`
+ * @param {object} [format] - Output format
+ * @param {string} [format.day]     - Day format
+ * @param {string} [format.month]   - Month format
+ * @param {string} [format.year]    - Year format
+ * @param {string} [format.weekday] - Weekday format
+ * @param {string} [format.hour]    - Hour format
+ * @param {string} [format.minute]  - Minute format
+ * @param {string} [format.second]  - Second format
  *
  * @returns {Function} `(date) -> string`.
  */
 function getVerboseDateFormatter(locales, format) {
-	// Fall back to `date.toString()` for old web browsers.
-	// https://caniuse.com/#search=intl
-	if (!INTL_DATE_TIME_FORMAT_SUPPORTED) {
-		return FALLBACK_VERBOSE_DATE_FORMATTER
-	}
+	// Chooses one `locale` from the list of `locales`.
+	//
+	// If none of the `locales` are supported,
+	// `locale` will be `undefined` and a default system locale will be used.
+	//
+	const locale = chooseLocale(locales)
 
-	// If none of the `locales` are supported
-	// a default system locale will be used.
-	const locale = resolveLocale(locales)
-
-	// `Intl.DateTimeFormat` format caching key.
-	// E.g. `"{"day":"numeric","month":"short",...}"`.
-	// Didn't benchmark what's faster:
-	// creating a new `Intl.DateTimeFormat` instance
-	// or stringifying a small JSON `format`.
-	// Perhaps strigifying JSON `format` is faster.
+	// Create a formatter cache key.
+	// Example: `"{"day":"numeric","month":"short",...}"` or `"undefined"`.
+	// I didn't really test what's faster:
+	// creating a new `Intl.DateTimeFormat` instance or calling `JSON.stringify(format)`.
+	// Perhaps `JSON.stringify(format)` is faster.
 	const formatFingerprint = JSON.stringify(format)
 
-	// Get `Intl.DateTimeFormat` instance for these `locale` and `format`.
+	// Creates a date formatter instance.
+	const createFormatter = () => {
+		if (format && INTL_DATE_TIME_FORMAT_IS_SUPPORTED) {
+			return new Intl.DateTimeFormat(locale, format)
+		}
+		return new FullDateFormatter(locale)
+	}
+
+	// Get a formatter instance for these `locale` and `format`.
 	// (`locale` can be `undefined`, hence the `String(locale)` conversion)
 	const formatter = cache.get(String(locale), formatFingerprint) ||
-		cache.put(String(locale), formatFingerprint, new Intl.DateTimeFormat(locale, format))
+		cache.put(String(locale), formatFingerprint, createFormatter())
 
-	// Return date formatter
-	return date => formatter.format(date)
+	// Return date formatter function.
+	return (date) => formatter.format(date)
 }
 
 // Even though `getVerboseDateFormatter()` function is called inside a
-// `useMemo()` hook, it's still invoked every time for different 
-// `<ReactTimeAgo/>` elements on a page. There could be a lot of such
-// `<ReactTimeAgo/>` elements on a page. And `useMemo()` wouldn't speed up
-// the initial render. To work around that, simple argument-based memoization
-// is used.
+// `useMemo()` hook, it's still invoked every time for a different
+// `<ReactTimeAgo/>` element on a page. There could be a lot of such
+// `<ReactTimeAgo/>` elements on a page — hundreds or more — and `useMemo()` hook
+// only speeds up subsequent renders and doesn't speed up the initial render,
+// so the initial render could still potentially affect the performance of the page.
+// To work around that, simple argument-based memoization is used here.
 export default memoize(getVerboseDateFormatter)
 
-// Caching locale resolving for optimizing pages 
-// with a lot of `<ReactTimeAgo/>` elements (say, 100 or more).
-// `Intl.DateTimeFormat.supportedLocalesOf(locales)` is not instantaneous.
-// For example, it could be 25 milliseconds for 200 calls.
-const resolvedLocales = {}
+// A cache for `chooseLocale()` function results.
+// A cache was introduced because `Intl.DateTimeFormat.supportedLocalesOf(locales)`
+// calls aren't instantaneous. One call is fine but hundreds in a row might be noticeable.
+// For example, if there's a page with a lot of `<ReactTimeAgo/>` elements on it (say, 100 or more),
+// the total execution time of calling `chooseLocale()` 100 times in a row could be about 10 milliseconds.
+const choosenLocaleCache = {}
 
 /**
- * Resolves a list of possible locales to a single ("best fit") supported locale.
+ * Picks a single ("best fit") supported locale from the list of `locales`.
  * @param  {string[]} locales
  * @return {string}
  */
-function resolveLocale(locales) {
+function chooseLocale(locales) {
 	const localesFingerprint = locales.toString()
-	if (resolvedLocales[localesFingerprint]) {
-		return resolvedLocales[localesFingerprint] 
+	if (choosenLocaleCache[localesFingerprint]) {
+		return choosenLocaleCache[localesFingerprint]
 	}
-	return resolvedLocales[localesFingerprint] = intlDateTimeFormatSupportedLocale(locales)
+	return choosenLocaleCache[localesFingerprint] = chooseOneSupportedLocale(locales)
 }

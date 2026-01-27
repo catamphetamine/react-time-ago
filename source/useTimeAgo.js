@@ -12,10 +12,8 @@ export default function useTimeAgo({
 	// E.g. `new Date()` or `1355972400000`.
 	date,
 
-	// If set to `true`, then will stop at "zero point"
-	// when going from future dates to past dates.
-	// In other words, even if the `date` has passed,
-	// it will still render as if `date` is `now`.
+	// When `future` is set to `true` and `date` is equal to `Date.now()`,
+	// it will format it as "in 0 seconds" rather than "0 seconds ago".
 	future,
 
 	// Preferred locale.
@@ -39,10 +37,12 @@ export default function useTimeAgo({
 	// Examples: "round", "floor".
 	round,
 
-	// If specified, the time won't "tick" past this threshold (in seconds).
-	// For example, if `minTimeLeft` is `60 * 60`
-	// then the time won't "tick" past "in 1 hour".
-	minTimeLeft,
+	// When `freezeAt` timestamp is specified, the label will stop refreshing
+	// itself when `Date.now()` becomes equal to `freezeAt`.
+	// For example, if `freezeAt = Date.now() + 60 * 1000` is passed,
+	// the label will refresh itself for 1 minute, after which it will freeze
+	// and stop refreshing itself.
+	freezeAt,
 
 	// Verbose date formatter.
 	// By default it's `(date) => new Intl.DateTimeFormat(locale, {…}).format(date)`.
@@ -50,7 +50,7 @@ export default function useTimeAgo({
 
 	// `Intl.DateTimeFormat` format for formatting verbose date.
 	// See `Intl.DateTimeFormat` docs for more info.
-	verboseDateFormat = DEFAULT_VERBOSE_DATE_FORMAT,
+	verboseDateFormat,
 
 	// (deprecated)
 	// How often the component refreshes itself.
@@ -105,18 +105,11 @@ export default function useTimeAgo({
 	// Formats the `date`.
 	const formatDate = useCallback(() => {
 		let now = (nowProperty || Date.now()) - timeOffset
-		let stopUpdates
-		if (future) {
-			if (now >= date.getTime()) {
-				now = date.getTime()
-				stopUpdates = true
-			}
-		}
-		if (minTimeLeft !== undefined) {
-			const maxNow = date.getTime() - minTimeLeft * 1000
-			if (now > maxNow) {
-				now = maxNow
-				stopUpdates = true
+		let stopRefreshing = false
+		if (freezeAt !== undefined) {
+			if (now > freezeAt) {
+				now = freezeAt
+				stopRefreshing = true
 			}
 		}
 		let [formattedDate, timeToNextUpdate] = timeAgo.format(date, timeStyle, {
@@ -125,7 +118,7 @@ export default function useTimeAgo({
 			future,
 			round
 		})
-		if (stopUpdates) {
+		if (stopRefreshing) {
 			timeToNextUpdate = INFINITY
 		} else {
 			// Legacy compatibility: there used to be an `updateInterval` property.
@@ -141,7 +134,7 @@ export default function useTimeAgo({
 		timeStyle,
 		updateInterval,
 		round,
-		minTimeLeft,
+		freezeAt,
 		timeAgo,
 		nowProperty
 	])
@@ -152,22 +145,24 @@ export default function useTimeAgo({
 	const [_formattedDate, _nextUpdateTime] = useMemo(formatDate, [])
 	const [formattedDate, setFormattedDate] = useState(_formattedDate)
 
-	const updater = useRef()
+	const textUpdater = useRef()
 
 	useEffect(() => {
 		if (tick) {
-			updater.current = Updater.add({
-				getNextValue: () => formatDateRef.current(),
+			textUpdater.current = Updater.add({
+				getNewValueAndNextUpdateTime: () => formatDateRef.current(),
 				setValue: setFormattedDate,
-				nextUpdateTime: _nextUpdateTime
+				updateTime: _nextUpdateTime
 			})
-			return () => updater.current.stop()
+			return () => {
+				textUpdater.current.stop()
+			}
 		}
 	}, [tick])
 
 	useEffect(() => {
-		if (updater.current) {
-			updater.current.forceUpdate()
+		if (textUpdater.current) {
+			textUpdater.current.forceUpdate()
 		} else {
 			const [formattedDate] = formatDate()
 			setFormattedDate(formattedDate)
@@ -177,7 +172,7 @@ export default function useTimeAgo({
 	// Create verbose date formatter for the tooltip text.
 	const verboseDateFormatter = useMemo(() => {
 		return getVerboseDateFormatter(
-			preferredLocales, 
+			preferredLocales,
 			verboseDateFormat
 		)
 	}, [
@@ -208,16 +203,3 @@ export default function useTimeAgo({
 // in the context of this component.
 const YEAR = 365 * 24 * 60 * 60 * 1000
 const INFINITY = 1000 * YEAR
-
-// `Intl.DateTimeFormat` for verbose date.
-// Formatted date example: "Thursday, December 20, 2012, 7:00:00 AM GMT+4"
-const DEFAULT_VERBOSE_DATE_FORMAT = {
-	weekday: 'long',
-	day: 'numeric',
-	month: 'long',
-	year: 'numeric',
-	hour: 'numeric',
-	minute: '2-digit',
-	second: '2-digit'
-	// timeZoneName: 'short'
-};

@@ -11,7 +11,7 @@ function ReactTimeAgo({
 	future,
 	timeStyle,
 	round,
-	minTimeLeft,
+	freezeAt,
 	locale,
 	locales = [],
 	formatVerboseDate,
@@ -28,7 +28,7 @@ function ReactTimeAgo({
 	tooltip = true,
 	// Use `<time/>` tag by default.
 	component: Component = Time,
-	// `container` property name is deprecated, 
+	// `container` property name is deprecated,
 	// use `wrapperComponent` property name instead.
 	container,
 	wrapperComponent,
@@ -44,7 +44,7 @@ function ReactTimeAgo({
 		future,
 		timeStyle,
 		round,
-		minTimeLeft,
+		freezeAt,
 		locale,
 		locales,
 		formatVerboseDate,
@@ -100,10 +100,8 @@ ReactTimeAgo.propTypes = {
 	// E.g. `['ru-RU', 'en-GB']`.
 	locales: PropTypes.arrayOf(PropTypes.string),
 
-	// If set to `true`, then will stop at "zero point"
-	// when going from future dates to past dates.
-	// In other words, even if the `date` has passed,
-	// it will still render as if `date` is `now`.
+	// When `future` is set to `true` and `date` is equal to `Date.now()`,
+	// it will format it as "in 0 seconds" rather than "0 seconds ago".
 	future: PropTypes.bool,
 
 	// Date/time formatting style.
@@ -116,10 +114,12 @@ ReactTimeAgo.propTypes = {
 	// Examples: "round", "floor".
 	round: PropTypes.string,
 
-	// If specified, the time won't "tick" past this threshold (in seconds).
-	// For example, if `minTimeLeft` is `60 * 60`
-	// then the time won't "tick" past "in 1 hour".
-	minTimeLeft: PropTypes.number,
+	// When `freezeAt` timestamp is specified, the label will stop refreshing
+	// itself when `Date.now()` becomes equal to `freezeAt`.
+	// For example, if `freezeAt = Date.now() + 60 * 1000` is passed,
+	// the label will refresh itself for 1 minute, after which it will freeze
+	// and stop refreshing itself.
+	freezeAt: PropTypes.number,
 
 	// A React component to render the relative time label.
 	// Receives properties:

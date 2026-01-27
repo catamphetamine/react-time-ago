@@ -4,6 +4,17 @@
 
 <!-- TO DO: Maybe remove `tick` property. -->
 
+7.4.0 / 27.01.2026
+==================
+
+* Moved from `requestAnimationFrame()`/`cancelAnimationFrame()` back to `setTimeout()`/`clearTimeout()` because using "animation frame" functions seemed to be overkill, and Chrome web browser developers seems to have fixed their [bug](https://www.npmjs.com/package/request-animation-frame-timeout) with weird `setTimeout()` lagging.
+
+* `javascript-time-ago` is now a `dependency` rather than a `peerDependency`. This simplifies the setup process, and also simplifies potential future updates.
+
+* When `future: true` property is passed, it no longer stops when the current time surpasses the `date`. Such behavior didn't really make sense. Instead, it will continue refreshing the label. This change won't really "break" any existing applications. The old behavior could be emulated using the new `freezeAt` property.
+
+* Replaced `minTimeLeft` property with `freezeAt` property: it's now an absolute timestamp rather than a time difference in seconds. This won't really "break" any existing applications.
+
 7.3.0 / 23.02.2024
 ==================
 

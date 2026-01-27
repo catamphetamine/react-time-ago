@@ -1,90 +1,98 @@
 // Manages the updates of all `<ReactTimeAgo/>` elements on a page.
-
-// The reasons for going with `requestAnimationFrame()`:
-// * `requestAnimationFrame` won't be called when a tab is in background.
-// * Chrome has bugs when handling `setTimeout()`: https://www.npmjs.com/package/request-animation-frame-timeout
-
-// `requestAnimationFrame()` polyfill for old browsers.
-import requestAnimationFrame from 'raf'
-
-import binarySearch from './helpers/binarySearch.js'
-
 export default {
-	instances: [],
-	add(instance) {
-		const wasIdle = this.instances.length === 0
-		add(this.instances, instance)
+	listeners: [],
+
+	add(listener) {
+		const wasIdle = this.listeners.length === 0
+		add(this.listeners, listener)
 		if (wasIdle) {
 			this.start()
+		} else {
+			this.scheduleNextTick()
 		}
+
 		return {
 			stop: () => {
-				remove(this.instances, instance)
-				if (this.instances.length === 0) {
+				remove(this.listeners, listener)
+				if (this.listeners.length === 0) {
 					this.stop()
+				} else {
+					this.scheduleNextTick()
 				}
 			},
 			forceUpdate: () => {
-				updateInstance(instance, this.instances)
+				triggerListener(listener)
 			}
 		}
 	},
+
 	tick() {
+		// This line isn't required but I personally clear timer IDs when they're triggered.
+		this.scheduledTick = undefined
+
+		// Trigger every listener that should be triggered.
 		const now = Date.now()
-		while (true) {
-			const instance = this.instances[0]
-			if (now >= instance.nextUpdateTime) {
-				updateInstance(instance, this.instances)
-			} else {
-				break
+		for (const listener of this.listeners) {
+			if (now >= listener.updateTime) {
+				triggerListener(listener)
 			}
 		}
 	},
+
 	scheduleNextTick() {
-		this.scheduledTick = requestAnimationFrame(() => {
+		this.cancelNextTick()
+
+		if (this.listeners.length === 0) {
+			return
+		}
+
+		let earliestUpdateTime = this.listeners[0].updateTime
+		let i = 1
+		while (i < this.listeners.length) {
+			if (this.listeners[i].updateTime < earliestUpdateTime) {
+				earliestUpdateTime = this.listeners[i].updateTime
+			}
+			i++
+		}
+		this.scheduledTick = setTimeout(() => {
 			this.tick()
 			this.scheduleNextTick()
-		})
+		}, earliestUpdateTime - Date.now())
 	},
+
+	cancelNextTick() {
+		clearTimeout(this.scheduledTick)
+		// This line isn't required but I personally clear timer IDs when they're triggered.
+		this.scheduledTick = undefined
+	},
+
 	start() {
 		this.scheduleNextTick()
 	},
+
 	stop() {
-		requestAnimationFrame.cancel(this.scheduledTick)
+		this.cancelNextTick()
 	}
 }
 
-function _updateInstance(instance) {
-	const [value, nextUpdateTime] = instance.getNextValue()
-	instance.setValue(value)
-	instance.nextUpdateTime = nextUpdateTime
+function triggerListener(listener) {
+	const [value, updateTime] = listener.getNewValueAndNextUpdateTime()
+	listener.setValue(value)
+	listener.updateTime = updateTime
 }
 
-function updateInstance(instance, instances) {
-	_updateInstance(instance)
-	remove(instances, instance)
-	add(instances, instance)
+// Adds a listener.
+function add(listeners, listener) {
+	listeners.push(listener)
 }
 
-function add(instances, instance) {
-	const i = findTargetIndex(instances, instance)
-	instances.splice(i, 0, instance)
+// Removes a listener.
+function remove(listeners, listener) {
+	const i = findIndex(listeners, listener)
+	listeners.splice(i, 1)
 }
 
-function remove(instances, instance) {
-	const i = instances.indexOf(instance)
-	instances.splice(i, 1)	
-}
-
-function findTargetIndex(instances, instance) {
-	const { nextUpdateTime } = instance
-	return binarySearch(instances, (instance) => {
-		if (instance.nextUpdateTime === nextUpdateTime) {
-			return 0
-		} else if (instance.nextUpdateTime > nextUpdateTime) {
-			return 1
-		} else {
-			return -1
-		}
-	})
+// Finds an index of `listener` in `listeners` array.
+function findIndex(listeners, listener) {
+	return listeners.indexOf(listener)
 }

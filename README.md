@@ -2,76 +2,70 @@
 
 [![npm version](https://img.shields.io/npm/v/react-time-ago.svg?style=flat-square)](https://www.npmjs.com/package/react-time-ago)
 
-Localized relative date/time formatting (both for past and future dates).
-
-Automatically chooses the right units (seconds, minutes, etc) to format a time interval.
-
-Automatically refreshes itself.
-
-[See Demo](https://catamphetamine.gitlab.io/react-time-ago/)
-
-Examples:
+Formats a `Date` into a string like `"1 day ago"`. In any language.
 
   * just now
   * 45s
   * 5m
   * 15 minutes ago
   * 3 hours ago
-  * in 2 months
+  * 2 days ago
+  * in 4 months
   * in 5 years
   * …
 
+Automatically refreshes itself.
+
+[See Demo](https://catamphetamine.gitlab.io/react-time-ago/)
+
 ## Install
 
-The `react-time-ago` component uses [`javascript-time-ago`](https://gitlab.com/catamphetamine/javascript-time-ago) library for generating date/time labels, so both of these packages should be installed:
-
 ```sh
-$ npm install react-time-ago javascript-time-ago --save
+$ npm install react-time-ago --save
 ```
 
-If you're not using a bundler then use a [standalone version from a CDN](#cdn).
+Alternatively, one could include it on a web page [directly](#cdn) via a `<script/>` tag.
 
 ## Use
 
-First, `javascript-time-ago` must be [initialized](https://github.com/catamphetamine/javascript-time-ago#locales) with some locales:
+To begin, decide on the set of languages that your application will be translated into. For now, let's assume that it's gonna be just English.
 
-#### ./src/index.js
+Then, for each of those languages, import the language data from `react-time-ago/locale/..`
 
 ```js
-import TimeAgo from 'javascript-time-ago'
-
-import en from 'javascript-time-ago/locale/en'
-import ru from 'javascript-time-ago/locale/ru'
-
-TimeAgo.addDefaultLocale(en)
-TimeAgo.addLocale(ru)
+// Adds support for English language.
+import en from "react-time-ago/locale/en"
 ```
 
-Then, use `<ReactTimeAgo/>` component:
-
-#### ./src/LastSeen.js
+Now you're ready to render a `<ReactTimeAgo/>` component for any of those languages.
 
 ```js
-import React from 'react'
-import ReactTimeAgo from 'react-time-ago'
+import React from "react"
+import ReactTimeAgo from "react-time-ago"
 
-export default function LastSeen({ date }) {
+export default function Example({ date }) {
   return (
     <div>
-      Last seen: <ReactTimeAgo date={date} locale="en-US"/>
+      Last seen: <ReactTimeAgo date={date} locale="en"/>
     </div>
   )
 }
 ```
 
+To change the output style, pass a `timeStyle` property: see the list of available [formatting styles](https://www.npmjs.com/package/javascript-time-ago#formatting-styles).
+
+The label will automatically refresh itself.
+
 ## Hook
 
-If you prefer using a React Hook instead of a React Component, the parameters for it are the same as the [props](#props) for the React component, except:
+If you prefer using a React Hook rather than a React Component, the parameters for it are the same as the [props](#props) for the React component, excluding:
 
-* `tooltip: boolean` 
+* `tooltip: boolean`
 * `component: React.Component`
 * `wrapperComponent: React.Component`
 * `wrapperProps: object`
+
+Example:
 
 ```js
 import { useTimeAgo } from 'react-time-ago'
@@ -79,23 +73,15 @@ import { useTimeAgo } from 'react-time-ago'
 const result = useTimeAgo(parameters)
 ```
 
-Returns an object with properties:
+The hook returns an object with properties:
 
 * `date: Date` — Same as the `date` input parameter. If the input parameter was a timestamp (`number`) then it gets converted to a `Date`.
 * `formattedDate: string` — Formatted `date`. Example: `"5 min ago"`.
 * `verboseDate: string` — Formatted `date` (verbose variant). Example: `"Thursday, December 20, 2012, 7:00:00 AM GMT+4"`.
 
-## Style
-
-`<ReactTimeAgo/>` component accepts an optional `timeStyle` property — it should be a `javascript-time-ago` [style](https://github.com/catamphetamine/javascript-time-ago#styles): either a built-in style name (like `"round"`, `"round-minute"`, `"twitter"`, etc) or a [custom](https://github.com/catamphetamine/javascript-time-ago#custom) style object.
-
-```js
-<ReactTimeAgo date={date} locale="en-US" timeStyle="twitter"/>
-```
-
 ## React Native
 
-By default, this component renders a `<time/>` HTML tag. When using this component in React Native, pass a custom `component` property:
+By default, this component renders a `<time/>` HTML element. When using this component in React Native, a developer should pass a custom `component` property that will be used instead of the `<time/>` HTML element. Example:
 
 ```js
 import React from 'react'
@@ -120,15 +106,18 @@ Time.propTypes = {
 
 ## Tooltip
 
-By default, the standard HTML `title` attribute is used to display a tooltip with the verbose date on mouse over.
+By default, a standard HTML `title` attribute is used to display a tooltip with the verbose date on when the user hovers the label.
 
-For custom tooltip design, a custom tooltip component could be rendered. For that, `<ReactTimeAgo/>` supports properties:
+If such "native" tooltip doesn't fit the application's design, a custom tooltip component could be rendered. For that, `<ReactTimeAgo/>` supports properties:
 
-* `tooltip={false}` — Instructs the component not to add the default HTML `title` attribute.
-* `wrapperComponent` — A React component that's gonna wrap the date/time label. Receives properties: `children` (Example: `<time>2 days ago</time>`) and `verboseDate: string` (Example: "Wednesday, January 1, 2000, 10:45:10 PM").
-* `wrapperProps` — If defined, these properties are passed through to the `wrapperComponent`.
+* `tooltip={false}` — Instructs the component to not add an HTML `title` attribute.
+* `wrapperComponent` — Should be a React component that will wrap the label.
+  * Properties:
+    * `children` — Example: `<time>2 days ago</time>`
+    * `verboseDate: string` — Example: "Wednesday, January 1, 2000, 10:45:10 PM"
+* `wrapperProps` — If defined, these properties are simply passed through to the `wrapperComponent`.
 
-For example, here's how to render a [`react-responsive-ui/Tooltip`](https://catamphetamine.gitlab.io/react-responsive-ui/#tooltip):
+Here's an example that renders a [`react-responsive-ui/Tooltip`](https://catamphetamine.gitlab.io/react-responsive-ui/#tooltip) instead of a "native" HTML `title` tooltip:
 
 ```js
 import React from 'react'
@@ -161,14 +150,31 @@ TooltipContainer.propTypes = {
 }
 ```
 
-## Future
+## Past vs Future
 
-When given future dates, `.format()` produces the corresponding output.: `"in 5 minutes"`, `"in 10 days"`, etc.
+When given a past date, `.format()` returns an `"... ago"` label.
 
-To restrict the formatted date to be future-only, pass `future` property, and it will stop when it reaches "zero point" (`"in a moment"`) and won't allow the `date` to be formatted as a past one.
+When given a future date, `.format()` returns an `"in ..."` label.
 
 ```js
-<ReactTimeAgo future date={date} .../>
+<ReactTimeAgo date={Date.now() + 5 * 60 * 1000}/>
+// "in 5 minutes"
+```
+
+When given a "now" date, which is neither past, nor future, `.format()` doesn't really know how it should represent the time difference — as `-0` or as `+0`.
+
+By default, it treats it as `-0`, meaning that it will return `"0 seconds ago"` rather than `"in 0 seconds"`.
+
+To instruct `.format()` to treat it as `+0`, pass `future: true` parameter.
+
+```js
+// Without `future: true`
+<ReactTimeAgo date={Date.now()}/>
+// "just now"
+
+// With `future: true`
+<ReactTimeAgo future date={Date.now()}/>
+// "in a moment"
 ```
 
 <!--
@@ -179,7 +185,7 @@ This library uses ES6 `Set` so any ES6 polyfill for `Set` is required (e.g. `imp
 
 ## CDN
 
-One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.com](https://jsdelivr.com)
+To include this library directly via a `<script/>` tag on a page, one can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdelivr.com](https://jsdelivr.com)
 
 ```html
 <!-- Example `[version]`: `2.x` -->
@@ -187,7 +193,7 @@ One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdeliv
 <script src="https://unpkg.com/react-time-ago@[version]/bundle/react-time-ago.js"></script>
 
 <script>
-  TimeAgo.addDefaultLocale({
+  TimeAgo.addLocale({
     locale: 'en',
     now: {
       now: {
@@ -214,7 +220,7 @@ One can use any npm CDN service, e.g. [unpkg.com](https://unpkg.com) or [jsdeliv
 
 <script>
   ...
-  <ReactTimeAgo date={new Date()} locale="en-US" timeStyle="twitter"/>
+  <ReactTimeAgo date={new Date()} locale="en" timeStyle="twitter"/>
   ...
 </script>
 ```
@@ -240,10 +246,8 @@ locale: PropTypes.string,
 // E.g. `['ru-RU', 'en-GB']`.
 locales: PropTypes.arrayOf(PropTypes.string),
 
-// If set to `true`, then will stop at "zero point"
-// when going from future dates to past dates.
-// In other words, even if the `date` has passed,
-// it will still render as if `date` is `now`.
+// When `future` is set to `true` and `date` is equal to `Date.now()`,
+// it will format it as "in 0 seconds" rather than "0 seconds ago".
 future: PropTypes.bool,
 
 // Date/time formatting style.
@@ -259,10 +263,12 @@ timeStyle: PropTypes.oneOfType([
 // Examples: "round", "floor".
 round: PropTypes.string,
 
-// If specified, the time won't "tick" past this threshold (in seconds).
-// For example, if `minTimeLeft` is `60 * 60`
-// then the time won't "tick" past "in 1 hour".
-minTimeLeft: PropTypes.number,
+// When `freezeAt` timestamp is specified, the label will stop refreshing
+// itself when `Date.now()` becomes equal to `freezeAt`.
+// For example, if `freezeAt = Date.now() + 60 * 1000` is passed,
+// the label will refresh itself for 1 minute, after which it will freeze
+// and stop refreshing itself.
+freezeAt: PropTypes.number,
 
 // A React component to render the relative time label.
 // Receives properties:
@@ -330,10 +336,6 @@ wrapperComponent: PropTypes.elementType,
 // Custom `props` passed to `wrapperComponent`.
 wrapperProps: PropTypes.object
 ```
-
-## TypeScript
-
-This library comes with TypeScript "typings". If you happen to find any bugs in those, create an issue.
 
 ## GitHub
 

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 
+// Renders a `<time/>` element.
 export default function Time({
 	date,
 	verboseDate,
@@ -25,8 +26,8 @@ export default function Time({
 // Someone used this component with "Material UI"'s `<Tooltip/>` component,
 // and that component required `children` be `ref`-able.
 // https://github.com/mui-org/material-ui/blob/a9903917f919092f80d84075f39fb51d51f241f2/packages/mui-material/src/Tooltip/Tooltip.js#L494-L496
-// 
-// That component seems to only be using that `ref-`ability to check whether 
+//
+// That component seems to only be using that `ref-`ability to check whether
 // the `children` element qualifies for `:focus-visible` selector.
 // https://github.com/mui-org/material-ui/blob/a9903917f919092f80d84075f39fb51d51f241f2/packages/mui-utils/src/useIsFocusVisible.ts#L105
 //

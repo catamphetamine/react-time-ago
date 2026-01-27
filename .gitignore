@@ -11,6 +11,9 @@
 # npm errors
 npm-debug.log
 
+# locales that're copied from `javascript-time-ago`
+/locale/
+
 # github pages
 /gh-pages/
 

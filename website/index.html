@@ -111,14 +111,23 @@
 		.string-value {
 			color: #00849e;
 		}
+
+		.not-specified {
+			opacity: 0.5;
+		}
 	</style>
 
 	<body>
 		<a target="_blank" class="main" href="https://www.npmjs.com/package/react-time-ago"><code>react-time-ago</code></a>
 
-		<p>International relative time formatting for React</p>
+		<p>React component for relative date/time formatting</p>
 
-		<!-- <p>Time labels periodically refresh themselves. Mouse over or touch down time labels to see verbose date.</p> -->
+		<p>
+			<code class="code">&lt;TimeAgo date=<span class="string-value">{date}</span>/&gt;</code>
+		</p>
+		<p>
+			Optional property: <code class="code">timeStyle=<span class="string-value">"…"</span></code>
+		</p>
 
 		<div id="content"></div>
 
@@ -219,6 +228,11 @@
 									<h3>English</h3>
 
 									<div className="time">
+										<code className="code">timeStyle</code> <span className="not-specified">not specified</span>
+										<ReactTimeAgo locale="en-US" date={date}/>
+									</div>
+
+									<div className="time">
 										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
 										<ReactTimeAgo locale="en-US" timeStyle="round" date={date}/>
 									</div>
@@ -243,6 +257,11 @@
 									}
 
 									<h3>Russian</h3>
+
+									<div className="time">
+										<code className="code">timeStyle</code> <span className="not-specified">not specified</span>
+										<ReactTimeAgo locale={this.state.alternativeLocale} date={date}/>
+									</div>
 
 									<div className="time">
 										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
