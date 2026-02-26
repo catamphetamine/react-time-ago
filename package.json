@@ -1651,7 +1651,8 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "scripts": {
-    "test": "node --experimental-json-modules node_modules/mocha/bin/_mocha --bail --require ./test/setup.js \"source/**/*.test.js\" \"test/**/*.test.js\"",
+    "test": "mocha --bail \"source/**/*.test.js\" \"test/*.test.js\" \"test/!(exports)/**/*.test.js\"",
+    "test:exports": "mocha --bail \"test/exports/**/*.test.js\"",
     "browser-build": "rollup --config rollup.config.mjs",
     "clean-for-build": "rimraf ./commonjs/**/* ./modules/**/*",
     "generate-locales": "node scripts/generate-locales.js",
@@ -1661,7 +1662,7 @@
     "build-commonjs-modules": "better-npm-run build-commonjs-modules",
     "build-es6-modules": "better-npm-run build-es6-modules",
     "build": "npm-run-all clean-for-build build-commonjs build-es6-modules browser-build generate-locales generate-locale-exports",
-    "prepublishOnly": "npm-run-all build test"
+    "prepublishOnly": "npm-run-all build test test:exports"
   },
   "betterScripts": {
     "build-commonjs-modules": {

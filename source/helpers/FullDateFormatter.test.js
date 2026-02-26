@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 // This file was copy-pasted from:
 // https://gitlab.com/catamphetamine/javascript-time-ago/-/blob/main/source/FullDateFormatter.test.js
 

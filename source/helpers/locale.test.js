@@ -1,3 +1,6 @@
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
+
 import { chooseOneSupportedLocale } from './locale.js'
 
 describe('locale', () => {

@@ -1,8 +1,12 @@
-import ReactTimeAgo, { useTimeAgo } from '../index.js'
-import Library from '../index.cjs'
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
 
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
+
+import ReactTimeAgo, { useTimeAgo } from '../../index.js'
+import Library from '../../index.cjs'
+
 TimeAgo.locale(en)
 
 describe('exports', () => {
