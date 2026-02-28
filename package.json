@@ -1,6 +1,6 @@
 {
   "name": "react-time-ago",
-  "version": "7.4.1",
+  "version": "7.4.2",
   "description": "Localized relative date/time formatting in React",
   "main": "index.cjs",
   "module": "index.js",
@@ -1613,7 +1613,10 @@
       "require": "./locale/zu/index.cjs"
     }
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./locale/*/index.js",
+    "./locale/*/index.cjs"
+  ],
   "peerDependencies": {
     "react": ">=0.16.8",
     "react-dom": ">=0.16.8"
