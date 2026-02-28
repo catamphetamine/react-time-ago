@@ -78,7 +78,7 @@ const LOCALE_PACKAGE_JSON = `
 			"require": "./index.cjs"
 		}
 	},
-	"sideEffects": false
+	"sideEffects": true
 }
 `.trim()
 
