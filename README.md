@@ -33,7 +33,7 @@ To begin, decide on the set of languages that your application will be translate
 Then, for each of those languages, import the language data:
 
 ```js
-// Adds support for English language.
+// Adds support for English language
 import "react-time-ago/locale/en"
 ```
 
