@@ -11,6 +11,8 @@
 
 * `javascript-time-ago` is now a `dependency` rather than a `peerDependency`. This simplifies the setup process, and also simplifies potential future updates.
 
+* Locale data is now `import`ed from `react-time-ago` package rather than from `javascript-time-ago` package, and there's no need to perform an additional step — `TimeAgo.addLocale()` — so the setup code is a bit shorter now.
+
 * When `future: true` property is passed, it no longer stops when the current time surpasses the `date`. Such behavior didn't really make sense. Instead, it will continue refreshing the label. This change won't really "break" any existing applications. The old behavior could be emulated using the new `freezeAt` property.
 
 * Replaced `minTimeLeft` property with `freezeAt` property: it's now an absolute timestamp rather than a time difference in seconds. This won't really "break" any existing applications.
