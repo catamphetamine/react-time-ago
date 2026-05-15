@@ -38,8 +38,9 @@
 
 		h2
 		{
-			margin-top: 60px;
-			margin-bottom: 26px;
+			margin-top: 3em;
+			margin-bottom: 1em;
+			padding-bottom: 0.25em;
 			border-bottom: 1px solid #afafaf;
 		}
 
@@ -82,21 +83,48 @@
 			color: #9f9f9f;
 		}
 
+		.time-rows + .locale
+		{
+			margin-top: 2em;
+		}
+
+		.time-rows
+		{
+    	display: table;
+		}
+
 		.time
 		{
-			display: block;
-			margin-top: 1em;
+			display: table-row;
+		}
+
+		.timeStyle,
+		.time-label,
+		.time-label-with-tooltip
+		{
+			display: table-cell;
+			padding-top: 0.525em;
+		}
+
+		.time-label,
+		.time-label-with-tooltip
+		{
+			padding-left: 3em;
 		}
 
 		time
 		{
-			margin-left: 0.5em;
 			font-weight: bold;
 		}
 
 		.case
 		{
 			margin-top: 3rem;
+		}
+
+		.case + .case
+		{
+			margin-top: 4rem;
 		}
 
 		.rrui__tooltip
@@ -115,6 +143,11 @@
 		.not-specified {
 			opacity: 0.5;
 		}
+
+		.locale {
+			font-weight: normal;
+			color: #6f6f6f;
+		}
 	</style>
 
 	<body>
@@ -126,7 +159,7 @@
 			<code class="code">&lt;TimeAgo date=<span class="string-value">{date}</span>/&gt;</code>
 		</p>
 		<p>
-			Optional property: <code class="code">timeStyle=<span class="string-value">"…"</span></code>
+			Optional properties:&nbsp; <code class="code">locale=<span class="string-value">"…"</span></code><code class="code"> </code><code class="code">timeStyle=<span class="string-value">"…"</span></code>
 		</p>
 
 		<div id="content"></div>
@@ -153,14 +186,17 @@
 			    <ReactTimeAgo
 			      {...props}
 			      wrapperComponent={TooltipContainer}
-			      tooltip={false}/>
+			      tooltip={false}
+					/>
 			  )
 			}
 
 			const TooltipContainer = ({ verboseDate, children, ...rest }) => (
-			  <Tooltip {...rest} content={verboseDate}>
-			    {children}
-			  </Tooltip>
+				<div className="time-label-with-tooltip">
+					<Tooltip {...rest} content={verboseDate}>
+						{children}
+					</Tooltip>
+				</div>
 			)
 
 			TooltipContainer.propTypes = {
@@ -181,7 +217,7 @@
 
 					const cases =
 					[{
-						title : 'Recently',
+						title : 'Just now',
 						date  : dates.recently
 					},
 					{
@@ -225,65 +261,87 @@
 								<div key={title} className="case">
 									<h2>{title}</h2>
 
-									<h3>English</h3>
+									<h3 className="locale"><code>locale="en"</code></h3>
+
+									<div className="time-rows">
+										<div className="time">
+											<div className="timeStyle">
+												<code className="code">timeStyle</code> <span className="not-specified">not specified</span>
+											</div>
+											<ReactTimeAgo locale="en-US" date={date} className="time-label"/>
+										</div>
+
+										<div className="time">
+											<div className="timeStyle">
+												<code className="code">timeStyle=<span className="string-value">"round"</span></code>
+											</div>
+											<ReactTimeAgo locale="en-US" timeStyle="round" date={date} className="time-label"/>
+										</div>
+
+										<div className="time">
+											<div className="timeStyle">
+												<code className="code">timeStyle=<span className="string-value">"round-minute"</span></code>
+											</div>
+											<ReactTimeAgo locale="en-US" timeStyle="round-minute" date={date} className="time-label"/>
+										</div>
+
+										{twitter !== false &&
+											<div className="time">
+												<div className="timeStyle">
+													<code className="code">timeStyle=<span className="string-value">"twitter"</span></code>
+												</div>
+												<ReactTimeAgo locale="en-US" timeStyle="twitter" date={date} className="time-label"/>
+											</div>
+										}
+
+										{twitter !== false &&
+											<div className="time">
+												<div className="timeStyle">
+													<code className="code">timeStyle=<span className="string-value">"twitter-first-minute"</span></code>
+												</div>
+												<ReactTimeAgo locale="en-US" timeStyle="twitter-first-minute" date={date} className="time-label"/>
+											</div>
+										}
+									</div>
+
+									<h3 className="locale"><code>locale="ru"</code></h3>
 
 									<div className="time">
-										<code className="code">timeStyle</code> <span className="not-specified">not specified</span>
-										<ReactTimeAgo locale="en-US" date={date}/>
+										<div className="timeStyle">
+											<code className="code">timeStyle</code> <span className="not-specified">not specified</span>
+										</div>
+										<ReactTimeAgo locale={this.state.alternativeLocale} date={date} className="time-label"/>
 									</div>
 
 									<div className="time">
-										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
-										<ReactTimeAgo locale="en-US" timeStyle="round" date={date}/>
+										<div className="timeStyle">
+											<code className="code">timeStyle=<span className="string-value">"round"</span></code>
+										</div>
+										<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="round" date={date} className="time-label"/>
 									</div>
 
 									<div className="time">
-										<code className="code">timeStyle=<span className="string-value">"round-minute"</span></code>
-										<ReactTimeAgo locale="en-US" timeStyle="round-minute" date={date}/>
+										<div className="timeStyle">
+											<code className="code">timeStyle=<span className="string-value">"round-minute"</span></code>
+										</div>
+										<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="round-minute" date={date} className="time-label"/>
 									</div>
 
 									{twitter !== false &&
 										<div className="time">
-											<code className="code">timeStyle=<span className="string-value">"twitter"</span></code>
-											<ReactTimeAgo locale="en-US" timeStyle="twitter" date={date}/>
+											<div className="timeStyle">
+												<code className="code">timeStyle=<span className="string-value">"twitter"</span></code>
+											</div>
+											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter" date={date} className="time-label"/>
 										</div>
 									}
 
 									{twitter !== false &&
 										<div className="time">
-											<code className="code">timeStyle=<span className="string-value">"twitter-first-minute"</span></code>
-											<ReactTimeAgo locale="en-US" timeStyle="twitter-first-minute" date={date}/>
-										</div>
-									}
-
-									<h3>Russian</h3>
-
-									<div className="time">
-										<code className="code">timeStyle</code> <span className="not-specified">not specified</span>
-										<ReactTimeAgo locale={this.state.alternativeLocale} date={date}/>
-									</div>
-
-									<div className="time">
-										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
-										<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="round" date={date}/>
-									</div>
-
-									<div className="time">
-										<code className="code">timeStyle=<span className="string-value">"round-minute"</span></code>
-										<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="round-minute" date={date}/>
-									</div>
-
-									{twitter !== false &&
-										<div className="time">
-											<code className="code">timeStyle=<span className="string-value">"twitter"</span></code>
-											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter" date={date}/>
-										</div>
-									}
-
-									{twitter !== false &&
-										<div className="time">
-											<code className="code">timeStyle=<span className="string-value">"twitter-first-minute"</span></code>
-											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter-first-minute" date={date}/>
+											<div className="timeStyle">
+												<code className="code">timeStyle=<span className="string-value">"twitter-first-minute"</span></code>
+											</div>
+											<ReactTimeAgo locale={this.state.alternativeLocale} timeStyle="twitter-first-minute" date={date} className="time-label"/>
 										</div>
 									}
 								</div>
@@ -291,9 +349,13 @@
 
 							<h2>With custom tooltip</h2>
 
-							<div className="time">
-								<code className="code">timeStyle=<span className="string-value">"round"</span></code>
-								<ReactTimeAgoWithTooltip locale="en-US" timeStyle="round" date={cases[0].date}/>
+							<div className="time-rows">
+								<div className="time">
+									<div className="timeStyle">
+										<code className="code">timeStyle=<span className="string-value">"round"</span></code>
+									</div>
+									<ReactTimeAgoWithTooltip locale="en-US" timeStyle="round" date={cases[0].date}/>
+								</div>
 							</div>
 
 							{/*
